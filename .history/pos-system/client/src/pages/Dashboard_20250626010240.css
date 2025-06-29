@@ -1,0 +1,346 @@
+/* Universal Settings */
+body, h1, h2, h3, p, ul {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+.dashboard-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f8f9fa; /* A neutral light grey for the background */
+}
+
+/* --- NEW SIDEBAR STYLES --- */
+.sidebar {
+  width: 280px;
+  background-color: #EAEBF0; /* The light grey/purple background */
+  padding: 2.5rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-header {
+  padding: 0 1rem;
+  margin-bottom: 2.5rem;
+}
+
+.sidebar-header h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #535978; /* The dark purple-grey color for the title */
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem; /* Spacing between main links/sections */
+}
+
+.sidebar-link {
+  text-decoration: none;
+  color: #6a708e; /* The default text color */
+  font-size: 1.1rem;
+  font-weight: 500;
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  transition: all 0.2s ease-in-out;
+}
+
+.sidebar-link:hover {
+  background-color: #DDDEF0;
+}
+
+/* NavLink will automatically add this class to the active link */
+.sidebar-link.active {
+  color: #333;
+  background-color: #fff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.transactions-section {
+  background-color: #DCDDF0; /* The light purple highlight for the section */
+  border-radius: 8px;
+  padding: 0.8rem 1rem;
+}
+
+.sidebar-link-header {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #535978;
+}
+
+.sub-links {
+  margin-top: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding-left: 1rem;
+}
+
+.sidebar-sublink {
+  text-decoration: none;
+  color: #6a708e;
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.2s ease-in-out;
+}
+
+.sidebar-sublink:hover {
+  background-color: #d1d3e8;
+}
+
+.sidebar-sublink.active {
+  background-color: #FFFFFF;
+  color: #333;
+  font-weight: 600;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+/* --- YOUR EXISTING DASHBOARD CONTENT STYLES --- */
+.dashboard-main {
+  flex: 1;
+  padding: 30px;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding-bottom: 10px;
+}
+
+.user-profile {
+  background-color: #eee;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.dashboard-content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.card {
+  background-color: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  flex: 1 1 300px;
+}
+
+.card h3 {
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.card p {
+  font-size: 1rem;/* Dashboard.css */
+
+/* --- Main Layout Structure --- */
+/* This now uses the correct class name from your Dashboard.jsx layout */
+.dashboard-layout {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* --- Sidebar Styles --- */
+.sidebar {
+  width: 280px;
+  background-color: #EAEBF0;
+  padding: 2.5rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0; /* Prevents the sidebar from shrinking */
+}
+
+.sidebar-header {
+  padding: 0 1rem;
+  margin-bottom: 2.5rem;
+}
+
+.sidebar-header h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #535978;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.sidebar-link {
+  text-decoration: none;
+  color: #6a708e;
+  font-size: 1.1rem;
+  font-weight: 500;
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  transition: all 0.2s ease-in-out;
+  display: flex; /* Added for alignment */
+  justify-content: space-between; /* Added for arrow */
+  align-items: center; /* Added for alignment */
+  cursor: pointer;
+}
+
+.sidebar-link:hover {
+  background-color: #DDDEF0;
+}
+
+.sidebar-link.active {
+  color: #333;
+  background-color: #fff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.transactions-section .sidebar-link:hover {
+    background-color: transparent; /* Prevent double hover effect */
+}
+
+.sub-links {
+  margin-top: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding-left: 1rem;
+}
+
+.sidebar-sublink {
+  text-decoration: none;
+  color: #6a708e;
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.2s ease-in-out;
+}
+
+.sidebar-sublink:hover {
+  background-color: #d1d3e8;
+}
+
+.sidebar-sublink.active {
+  background-color: #FFFFFF;
+  color: #333;
+  font-weight: 600;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+/* --- Main Content Area --- */
+/* This now uses the correct class name for the main content wrapper */
+.dashboard-main-content {
+  flex-grow: 1; /* Allows this section to take up the remaining space */
+  display: flex;
+  flex-direction: column;
+}
+
+.dashboard-main-header {
+  display: flex;
+  justify-content: flex-end; /* Pushes the user profile to the right */
+  align-items: center;
+  padding: 1.5rem 2.5rem;
+  background-color: #fff;
+  border-bottom: 1px solid #e9ecef;
+}
+
+/* This is the container for the actual page content (e.g., DashboardHome, Profile) */
+.page-content {
+    padding: 2.5rem;
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+
+/* --- Dashboard Home Cards --- */
+.dashboard-title {
+    font-size: 1.75rem;
+    color: #333;
+    margin-bottom: 2rem;
+}
+
+.summary-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+}
+
+.summary-card {
+    background-color: #fff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    border: 1px solid #e9ecef;
+}
+
+.summary-card h3 {
+    font-size: 1.1rem;
+    color: #6c757d;
+    font-weight: 500;
+    margin: 0 0 1.5rem 0;
+}
+
+.card-metric {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+.card-metric:not(:last-child) {
+    margin-bottom: 1.5rem;
+}
+.metric-icon {
+    font-size: 1.75rem;
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #e7f1ff;
+    color: #0d6efd;
+}
+.metric-icon.dollar {
+    font-weight: bold;
+}
+.metric-details p {
+    margin: 0;
+    color: #6c757d;
+}
+.metric-details strong {
+    font-size: 1.75rem;
+    color: #343a40;
+}
+
+.full-width-card {
+    grid-column: span 2;
+}
+
+.product-details-grid {
+    display: flex;
+    justify-content: space-around;
+    text-align: center;
+}
+.product-details-grid p {
+    margin: 0 0 0.5rem 0;
+    color: #6c757d;
+}
+.product-details-grid strong {
+    font-size: 2.25rem;
+    color: #343a40;
+}
+
+  margin: 6px 0;
+  color: #555;
+}
+
+.card strong {
+  font-size: 1.6rem;
+  color: #1a1a1a;
+}

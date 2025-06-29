@@ -1,0 +1,58 @@
+.billing-events-container {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+}
+
+.billing-events-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.billing-events-content {
+  display: flex;
+  justify-content: space-between;
+}
+
+.order-details, .order-summary {
+  width: 45%;
+}
+
+.order-details h3, .order-summary h3 {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.order-details p, .order-summary p {
+  margin: 5px 0;
+}
+
+.order-summary-details {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.summary-item {
+  display: flex;
+  justify-content: space-between;
+}
+
+.order-summary-total {
+  margin-top: 20px;
+  font-size: 16px;
+}
+
+.proceed-payment-button {
+  background-color: #5cb85c;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.proceed-payment-button:hover {
+  background-color: #4cae4c;
+}

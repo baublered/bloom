@@ -1,0 +1,86 @@
+.billing-events-container {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+}
+
+.billing-events-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.billing-events-content {
+  display: flex;
+  justify-content: space-between;
+}
+
+.order-details-panel {
+  width: 50%;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.order-details-panel h3 {
+  font-size: 30px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.order-details-panel label {
+  display: block;
+  margin-top: 10px;
+}
+
+.order-details-panel input {
+  width: 100%;
+  padding: 8px;
+  margin: 8px 0;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+}
+
+.order-summary {
+  background-color: #fff;
+  padding: 70px;
+  border-radius: 40px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.order-summary h3 {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.order-summary-details {
+  display: grid;
+  grid-template-columns: 1fr 3fr 1fr;
+  gap: 10px;
+}
+
+.summary-item {
+  display: grid;
+  grid-template-columns: 1fr 3fr 1fr;
+  gap: 10px;
+}
+
+.order-summary-total {
+  margin-top: 20px;
+  font-size: 16px;
+}
+
+.proceed-payment-button {
+  background-color: #5cb85c;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.proceed-payment-button:hover {
+  background-color: #4cae4c;
+}

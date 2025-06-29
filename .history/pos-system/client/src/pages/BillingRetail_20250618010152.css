@@ -1,0 +1,183 @@
+/* General container for the entire page */
+.billing-container {
+  padding: 2rem;
+  background-color: #f8f8f8;
+  font-family: Arial, sans-serif;
+}
+
+/* User Profile Header stub */
+.user-profile-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 2rem;
+}
+
+.user-profile-stub {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+.user-profile-stub .dropdown-arrow {
+  margin-left: 0.5rem;
+}
+
+/* Main layout with Stepper and Content */
+.billing-retail-layout {
+  display: flex;
+  gap: 2rem;
+}
+
+/* --- Stepper Styles --- */
+.stepper-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100px;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #a0a0a0;
+}
+
+.step.active .step-label {
+  color: #1D154A;
+  font-weight: bold;
+}
+
+.step-icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: #a0a0a0;
+  border: 3px solid #fff;
+  box-shadow: 0 0 0 2px #a0a0a0;
+  margin-bottom: 0.5rem;
+}
+
+.step.active .step-icon {
+  background-color: #1D154A;
+  box-shadow: 0 0 0 2px #1D154A;
+}
+
+.stepper-line {
+  width: 2px;
+  height: 100px;
+  background-color: #e0e0e0;
+  margin: 0.5rem 0;
+}
+
+/* --- Main Content Styles --- */
+.billing-content {
+  display: flex;
+  flex: 1;
+  gap: 2rem;
+}
+
+.billing-panel {
+  padding: 1.5rem;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+}
+
+.left-panel {
+  flex: 3;
+}
+
+.right-panel {
+  flex: 2;
+  background-color: #F7F7F7;
+}
+
+/* Order Details Panel (Left) */
+.order-details-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.order-details-header h3 { margin: 0; flex-grow: 1; }
+.order-details-header p { margin: 0; color: #888; }
+
+.back-arrow {
+  background: none; border: 1px solid #ccc; border-radius: 50%;
+  width: 30px; height: 30px; font-size: 1.2rem; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.order-table-header {
+  display: flex; background-color: #4A4A4A; color: white;
+  font-weight: bold; padding: 0.75rem; border-radius: 6px;
+}
+
+.order-table-cell { flex: 1; text-align: left; padding: 0 10px; }
+.order-table-cell.product-cell { flex: 2; }
+.order-items-box { margin-top: 1rem; }
+
+.order-item-row {
+  display: flex; align-items: center; padding: 1rem 0.75rem;
+  border-bottom: 1px solid #eee;
+}
+.order-item-row:last-child { border-bottom: none; }
+.add-ons-text { font-size: 0.85rem; color: #666; margin-top: 4px; }
+
+
+/* --- Order Summary Panel (Right) - Restored Styles --- */
+.right-panel h3 { margin-top: 0; }
+
+.order-summary-box.original-summary {
+  background-color: #ffffff; padding: 20px; border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.order-summary-item {
+  display: flex; justify-content: space-between;
+  padding: 10px 0; border-bottom: 1px solid #e5e5e5;
+}
+.order-summary-item:last-child { border-bottom: none; }
+
+.order-summary-details { width: 100%; }
+.order-summary-details div { margin-bottom: 5px; }
+
+.order-summary-item div { font-size: 16px; }
+.order-summary-item .total-amount { font-weight: bold; }
+.discount { color: red; }
+.total { font-size: 18px; font-weight: bold; }
+.total-amount { color: #1D154A; font-size: 20px; }
+
+
+/* --- Discount Section - Restored Styles --- */
+.discount-section {
+  margin-top: 1.5rem; display: flex; flex-direction: column;
+}
+
+.discount-section input {
+  padding: 0.75rem; margin-bottom: 10px; border: 1px solid #ccc;
+  border-radius: 6px; font-size: 16px;
+}
+
+.apply-button {
+  padding: 0.75rem; background-color: #5a4fcf; color: white;
+  border: none; border-radius: 6px; cursor: pointer; font-size: 16px;
+}
+.apply-button:hover { background-color: #4732a1; }
+.error-message { color: red; font-size: 14px; margin-top: 5px; }
+
+/* --- Proceed Button --- */
+.proceed-button {
+  background-color: #5a4fcf; color: white; padding: 0.8rem 1rem;
+  border: none; border-radius: 6px; width: 100%; font-size: 1rem;
+  font-weight: bold; cursor: pointer; transition: background-color 0.2s;
+  margin-top: auto; /* Pushes button to the bottom */
+}
+.proceed-button:hover { background-color: #4732a1; }

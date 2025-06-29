@@ -1,0 +1,166 @@
+/* BillingEvents.css */
+
+/* --- General Layout --- */
+.billing-page {
+  background-color: #f0f2f5;
+  min-height: 100vh;
+  padding: 2rem;
+  font-family: Arial, sans-serif;
+}
+
+.billing-container {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  padding: 24px;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.billing-title {
+  font-size: 1.5rem;
+  color: #333;
+  margin-bottom: 2rem;
+}
+
+.content-wrapper {
+  display: flex;
+  gap: 2rem;
+}
+
+/* --- Stepper (Left Side) --- */
+.stepper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.stepper-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #aaa;
+}
+.stepper-item.active { color: #000; font-weight: bold; }
+.stepper-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: #ccc;
+  border: 3px solid #fff;
+  outline: 2px solid #ccc;
+}
+.stepper-item.active .stepper-dot { background-color: #333; outline-color: #333; }
+.stepper-line {
+  width: 2px;
+  height: 60px;
+  background-color: #ccc;
+}
+
+/* --- Main Content (Details & Summary) --- */
+.main-content {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 2rem;
+  width: 100%;
+}
+
+/* --- Order Details (Left Panel) --- */
+.order-details {
+  padding: 1.5rem;
+}
+.order-details h3, .order-summary h3 { font-size: 1.25rem; margin-bottom: 8px; }
+.invoice-id { font-size: 0.9rem; color: #888; margin-bottom: 2rem; }
+.details-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem 2rem; }
+.detail-item { display: flex; flex-direction: column; gap: 8px; }
+.detail-item.full-width { grid-column: 1 / -1; }
+.detail-item label { font-size: 0.9rem; color: #555; }
+.detail-value {
+  background-color: #f7f7f7;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #333;
+}
+.date-container { position: relative; }
+.mini-calendar {
+  position: absolute;
+  top: 0;
+  left: calc(100% + 1rem); /* Position next to the date field */
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  width: 280px; /* Fixed width */
+}
+/* Calendar Customization */
+.mini-calendar .react-calendar__navigation,
+.mini-calendar .react-calendar__year-view__months { display: none; } /* Hide top nav */
+.mini-calendar .react-calendar__month-view__weekdays { text-align: center; font-size: 0.7rem; }
+.mini-calendar .react-calendar__tile { border-radius: 4px; }
+.mini-calendar .react-calendar__tile--active { background: #333; color: white; }
+.mini-calendar .react-calendar__tile--now { background: #e6e6e6; }
+
+/* --- Order Summary (Right Panel) --- */
+.order-summary {
+  background-color: #fff;
+  padding: 1.5rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+}
+.summary-header, .summary-item {
+  display: grid;
+  grid-template-columns: 30px 1fr auto;
+  gap: 1rem;
+  padding: 1rem 0;
+  align-items: start;
+}
+.summary-header { font-weight: bold; color: #888; border-bottom: 1px solid #eee; }
+.align-right { text-align: right; }
+.item-name { font-weight: bold; margin: 0; }
+.item-remark { font-size: 0.8rem; color: #777; margin: 4px 0 0 0; }
+.summary-totals {
+  margin-top: auto; /* Pushes totals to the bottom */
+  padding-top: 1rem;
+  border-top: 1px solid #eee;
+}
+.total-row { display: flex; justify-content: space-between; margin-bottom: 0.75rem; }
+.total-row span:first-child { color: #555; }
+.total-row span:last-child, .total-row div { font-weight: bold; }
+.grand-total { font-size: 1.1rem; }
+.discount div { display: flex; flex-direction: column; align-items: flex-end; }
+.discount-code {
+  font-size: 0.8rem;
+  color: #d9534f;
+  font-weight: normal;
+}
+.original-price {
+  text-decoration: line-through;
+  color: #999;
+  font-weight: normal;
+  font-size: 0.8rem;
+}
+
+.proceed-button {
+  background-color: #333;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 1.5rem;
+  font-size: 1rem;
+  font-weight: bold;
+}
+.proceed-button:hover { background-color: #555; }
+
+/* Placeholder for User Profile Header */
+.user-profile-header {
+  display: flex; justify-content: flex-end; margin-bottom: 1rem;
+}
+.user-profile-dropdown {
+  display: flex; align-items: center; gap: 8px; padding: 8px 12px; border: 1px solid #e0e0e0; border-radius: 20px;
+}

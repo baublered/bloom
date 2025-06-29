@@ -1,0 +1,93 @@
+.retail-container {
+  padding: 1rem 2rem;
+  display: flex;
+}
+
+.retail-header {
+  font-size: 24px;
+  margin-bottom: 0.5rem;
+  flex-basis: 100%;
+}
+
+.retail-content {
+  display: flex;
+  gap: 1rem;
+  flex: 1;
+}
+
+.product-list {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  flex: 1;
+  background-color: #f4f4f4;
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.product-item {
+  background-color: white;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.product-image {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.product-info {
+  margin-top: 1rem;
+}
+
+.product-checkbox {
+  margin-top: 1rem;
+}
+
+.quantity-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.quantity-controls button {
+  padding: 0.3rem 0.6rem;
+  font-weight: bold;
+}
+
+.current-order {
+  background-color: white;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-left: 1rem;
+  width: 300px;
+}
+
+.order-list {
+  margin-bottom: 1rem;
+}
+
+.order-item {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.total {
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.proceed-button {
+  margin-top: 1rem;
+  background-color: #5a4fcf;
+  color: white;
+  padding: 0.6rem 1rem;
+  border: none;
+  border-radius: 6px;
+  width: 100%;
+  cursor: pointer;
+}

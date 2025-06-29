@@ -1,0 +1,215 @@
+/* Receipt.css */
+.receipt-page {
+  padding: 2rem 3rem;
+  background-color: #f4f5f7;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  min-height: 100vh;
+}
+
+.receipt-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.receipt-page-header h1 {
+  font-size: 1.75rem;
+}
+
+/* Reusing user profile style */
+.user-profile-button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 16px;
+  background-color: #fff;
+  border: 1px solid #E0E0E0;
+  border-radius: 25px;
+  cursor: pointer;
+  font-weight: 500;
+}
+.user-profile-button .dropdown-arrow { margin-left: 0.5rem; }
+
+.receipt-main-content {
+    display: flex;
+    gap: 2rem;
+}
+
+/* Reusing stepper styles */
+.stepper-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100px;
+}
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #6B778C;
+}
+.step.complete {
+  color: #172B4D;
+  font-weight: 500;
+}
+.step-icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: #006442;
+  color: white;
+  border: 3px solid #f4f5f7;
+  box-shadow: 0 0 0 2px #006442;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+.stepper-line {
+  width: 2px;
+  height: 100px;
+  background-color: #dfe1e6;
+  margin: 0.5rem 0;
+}
+
+/* Main receipt area */
+.receipt-area {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.receipt-paper {
+    background-color: #fff;
+    width: 100%;
+    max-width: 580px; /* Standard receipt width */
+    padding: 2.5rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    border: 1px solid #dfe1e6;
+    /* This creates the wavy edge effect */
+    border-image: url('data:image/svg+xml;utf8,<svg width="100" height="10" xmlns="http://www.w3.org/2000/svg"><path d="M0,5 Q2.5,0 5,5 T10,5 T15,5 T20,5 T25,5 T30,5 T35,5 T40,5 T45,5 T50,5 T55,5 T60,5 T65,5 T70,5 T75,5 T80,5 T85,5 T90,5 T95,5 T100,5" stroke="%23dfe1e6" fill="none"/></svg>') 5 round;
+    border-width: 5px;
+}
+
+.receipt-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px dashed #ccc;
+    padding-bottom: 1.5rem;
+}
+
+.receipt-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #172B4D;
+}
+
+.receipt-header p {
+    margin: 0.25rem 0 0;
+    color: #6B778C;
+}
+
+.receipt-info {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+    color: #6B778C;
+}
+.receipt-info p { margin: 0.2rem 0; }
+.info-right { text-align: right; }
+
+.receipt-orders h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #172B4D;
+    margin-bottom: 1rem;
+}
+
+.order-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+    font-size: 0.95rem;
+}
+.item-name {
+    margin: 0;
+    color: #172B4D;
+}
+.item-price {
+    margin: 0;
+    font-weight: 500;
+}
+
+.receipt-summary {
+    margin-top: 1.5rem;
+    border-top: 1px dashed #ccc;
+    padding-top: 1.5rem;
+}
+
+.summary-line {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+    font-size: 0.95rem;
+    color: #6B778C;
+}
+.summary-line.total, .summary-line.change {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #172B4D;
+}
+.summary-line .discount-text {
+    color: #DE350B;
+}
+
+.receipt-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+.print-button, .done-button {
+    padding: 0.8rem 2rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+.print-button {
+    background-color: #0052CC;
+    color: white;
+}
+.done-button {
+    background-color: #dfe1e6;
+    color: #42526E;
+}
+
+/* --- Print-Specific Styles --- */
+@media print {
+    /* Hide everything except the receipt container */
+    body * {
+        visibility: hidden;
+    }
+    .receipt-paper, .receipt-paper * {
+        visibility: visible;
+    }
+    /* Position the receipt at the top left of the print page */
+    .receipt-paper {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        max-width: 100%;
+        box-shadow: none;
+        border: none;
+        margin: 0;
+        padding: 0;
+    }
+    .receipt-page {
+        padding: 0;
+    }
+}

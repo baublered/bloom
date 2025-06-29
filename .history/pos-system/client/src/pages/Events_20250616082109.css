@@ -1,0 +1,277 @@
+/* FONT - To get the cursive style */
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap');
+
+/* --- Main Layout --- */
+.events-layout {
+  display: flex;
+  background-color: #F0F2F5; /* Light gray background for the page */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 260px;
+  background-color: #C5C6D0; /* Muted purple from image */
+  padding: 1.5rem;
+  color: #333;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  flex: 1;
+  padding: 1.5rem 2.5rem;
+}
+
+/* --- Sidebar Styles (Placeholder) --- */
+.sidebar-header {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 2rem;
+  color: #4A4A6A;
+}
+
+.sidebar-nav a {
+  display: block;
+  color: #4A4A6A;
+  text-decoration: none;
+  padding: 0.75rem 0;
+  border-radius: 6px;
+  margin-bottom: 0.5rem;
+  padding-left: 1rem;
+}
+
+.sidebar-nav .nav-group {
+  margin-bottom: 0.5rem;
+}
+
+.sidebar-nav .nav-group-title {
+  font-weight: bold;
+}
+
+.sidebar-nav .nav-group.active {
+  background-color: #B0B1C0; /* Slightly darker for active group */
+  border-radius: 6px;
+}
+
+.sidebar-nav .nav-submenu a {
+  padding-left: 2rem;
+  position: relative;
+}
+
+.sidebar-nav .nav-submenu .active-link {
+  background-color: #FFFFFF;
+  font-weight: bold;
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  display: flex;
+  gap: 1rem;
+  font-size: 1.2rem;
+  justify-content: center;
+}
+
+/* --- Header Styles (Placeholder) --- */
+.user-profile-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+}
+
+.user-profile-dropdown {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  border: 1px solid #E0E0E0;
+  cursor: pointer;
+}
+
+/* --- Main Content Card --- */
+.page-title {
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.content-card {
+  background-color: #FFFFFF;
+  padding: 1.5rem 2rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #E0E0E0;
+}
+
+.card-header h2 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.add-event-button {
+  background-color: #4A4A6A;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 0.6rem 1.2rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: background-color 0.2s;
+}
+
+.add-event-button:hover {
+  background-color: #33334d;
+}
+
+.add-event-button .plus-icon {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+
+/* --- Calendar Styles --- */
+.calendar-container {
+  padding-top: 1.5rem;
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+.month-nav {
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  color: #888;
+  cursor: pointer;
+  padding: 0 1rem;
+}
+
+.month-display {
+  text-align: center;
+}
+
+.month-name {
+  font-family: 'Dancing Script', cursive;
+  font-size: 3.5rem;
+  color: #333;
+  line-height: 1;
+}
+
+.year-name {
+  display: block;
+  font-size: 1rem;
+  color: #999;
+  letter-spacing: 2px;
+}
+
+/* --- Calendar Grid --- */
+.calendar-grid {
+  border-top: 1px solid #EAEAEA;
+}
+.calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  font-weight: 600;
+  color: #888;
+  font-size: 0.8rem;
+}
+
+.weekday-cell {
+  padding: 0.75rem 0.5rem;
+  border-bottom: 1px solid #EAEAEA;
+}
+
+.calendar-dates {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+}
+
+.date-cell {
+  min-height: 110px; /* Adjust height as needed */
+  border-bottom: 1px solid #EAEAEA;
+  border-left: 1px solid #EAEAEA;
+  padding: 0.5rem;
+}
+
+.date-cell:first-child,
+.weekday-cell:first-child {
+  border-left: none;
+}
+
+.date-number {
+  font-size: 0.9rem;
+  color: #333;
+}
+
+
+/* --- Modal Styles --- */
+.event-form-modal {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-form {
+  background-color: #fff;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  width: 400px;
+  max-width: 90%;
+}
+
+.modal-form h3 {
+  text-align: center; margin-top: 0; margin-bottom: 1.5rem;
+}
+
+.modal-form input,
+.modal-form select,
+.modal-form textarea {
+  width: 100%; padding: 12px; margin-bottom: 1rem;
+  border-radius: 6px; border: 1px solid #ddd;
+  box-sizing: border-box; /* Important for consistent sizing */
+}
+.modal-form textarea {
+  min-height: 80px; resize: vertical;
+}
+
+.form-actions {
+  display: flex; gap: 1rem; margin-top: 1.5rem;
+}
+
+.form-actions button {
+  flex: 1; padding: 12px; border-radius: 6px; border: none;
+  font-size: 1rem; font-weight: 600; cursor: pointer;
+}
+
+.form-actions button[type="submit"] {
+  background-color: #4A4A6A; color: white;
+}
+.form-actions .cancel-button {
+  background-color: #EAEAEA; color: #333;
+}

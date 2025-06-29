@@ -1,0 +1,195 @@
+/* Reports.css */
+.reports-page {
+  flex-grow: 1;
+  padding: 2rem 3rem;
+  background-color: #f8f9fa;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+.reports-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.reports-page-header h1 {
+  font-size: 1.75rem;
+  color: #333;
+}
+
+/* Reusing a familiar style */
+.user-profile-button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 16px;
+  background-color: #fff;
+  border: 1px solid #E0E0E0;
+  border-radius: 25px;
+  cursor: pointer;
+  font-weight: 500;
+}
+.user-profile-button .user-icon { font-size: 24px; }
+.user-profile-button .dropdown-arrow { font-size: 12px; color: #888; }
+
+/* Summary Cards */
+.summary-cards-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.summary-card {
+  background-color: #fff;
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 1px solid #e9ecef;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+}
+
+.summary-card .card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.summary-card h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #6c757d;
+}
+
+.summary-card .card-icon {
+  font-size: 1.25rem;
+  color: #adb5bd;
+}
+
+.summary-card .card-title {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #495057;
+}
+
+.summary-card .card-value {
+  margin: 0.5rem 0 0;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #343a40;
+}
+
+/* Transaction History Card */
+.transaction-history-card {
+  background-color: #fff;
+  padding: 2rem;
+  border-radius: 12px;
+  border: 1px solid #e9ecef;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+}
+
+.transaction-history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.transaction-history-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.export-button {
+  background-color: #e9ecef;
+  border: 1px solid #dee2e6;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.export-button .export-icon {
+  font-size: 1.5rem;
+  color: #6c757d;
+}
+
+/* Transaction Table Styles */
+.transaction-table {
+  display: flex;
+  flex-direction: column;
+}
+
+.transaction-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 1rem;
+  border-bottom: 1px solid #f1f3f5;
+}
+
+.transaction-row:last-child {
+  border-bottom: none;
+}
+
+.customer-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 2;
+}
+
+.customer-info input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+}
+
+.customer-name {
+  margin: 0;
+  font-weight: 600;
+  color: #343a40;
+}
+
+.transaction-date {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #6c757d;
+}
+
+.transaction-details {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  flex: 3;
+  justify-content: flex-end;
+}
+
+.transaction-amount {
+  margin: 0;
+  font-weight: 600;
+  width: 120px;
+  text-align: right;
+}
+
+.transaction-type {
+  margin: 0;
+  color: #6c757d;
+  width: 80px;
+  text-align: left;
+}
+
+.details-link {
+  color: #0d6efd;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.details-link:hover {
+  text-decoration: underline;
+}

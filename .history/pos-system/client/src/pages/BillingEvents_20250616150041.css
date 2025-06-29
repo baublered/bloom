@@ -1,0 +1,282 @@
+/* BillingRetail.css */
+
+body {
+    background-color: #f8f9fa;
+    font-family: 'Inter', sans-serif;
+    color: #333;
+}
+
+.billing-events-page {
+    padding: 2rem;
+    max-width: 1400px;
+    margin: auto;
+}
+
+.user-profile-header {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 1rem;
+}
+
+.user-profile-dropdown {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 15px;
+    background-color: #fff;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: 500;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.user-icon {
+    font-size: 20px;
+}
+
+.dropdown-arrow {
+    font-size: 12px;
+}
+
+.billing-events-container {
+    display: flex;
+    gap: 2rem;
+}
+
+/* Stepper Styles */
+.stepper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.stepper-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+}
+
+.stepper-dot-container {
+    background-color: #f8f9fa; /* Match body background */
+    padding: 4px;
+}
+
+.stepper-dot {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #fff;
+    border: 2px solid #dee2e6;
+}
+
+.stepper-label {
+    margin-top: 8px;
+    font-weight: 500;
+    color: #6c757d;
+}
+
+.stepper-item.active .stepper-dot {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+.stepper-item.active .stepper-label {
+    color: #000;
+    font-weight: 600;
+}
+
+.stepper-line {
+    width: 2px;
+    flex-grow: 1;
+    background-color: #dee2e6;
+    margin: -4px 0; /* Overlap with padding of dot container */
+    z-index: 1;
+}
+
+/* Main Content */
+.billing-events-content {
+    flex-grow: 1;
+    display: flex;
+    gap: 2rem;
+    align-items: flex-start; /* Align cards to the top */
+}
+
+/* Shared Card Styles */
+.order-details-card,
+.order-summary-card {
+    background-color: #fff;
+    border-radius: 16px;
+    padding: 2rem;
+    border: 1px solid #e9ecef;
+}
+
+/* Order Details (Left Card) */
+.order-details-card {
+    flex: 2; /* Takes up more space */
+}
+
+.order-details-header {
+    margin-bottom: 2rem;
+}
+
+.order-details-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.order-details-header p {
+    margin: 4px 0 0;
+    color: #6c757d;
+}
+
+.details-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+.detail-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.detail-item label {
+    font-size: 0.9rem;
+    color: #6c757d;
+    margin-bottom: 8px;
+}
+
+.detail-value {
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 1rem;
+    min-height: 48px; /* Ensure consistent height */
+    display: flex;
+    align-items: center;
+}
+
+.calendar-value {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.calendar-icon {
+    font-size: 1.2rem;
+}
+
+.full-width {
+    grid-column: span 2;
+}
+
+/* Order Summary (Right Card) */
+.order-summary-card {
+    flex: 1;
+    position: sticky;
+    top: 2rem; /* Sticks to the top on scroll */
+}
+
+.order-summary-card h3 {
+    margin-top: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 2rem;
+}
+
+.summary-header, .summary-item {
+    display: grid;
+    grid-template-columns: 40px 1fr auto;
+    gap: 1rem;
+    align-items: flex-start;
+    padding: 0.75rem 0;
+}
+
+.summary-header {
+    font-weight: 600;
+    color: #6c757d;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    border-bottom: 1px solid #e9ecef;
+    padding-bottom: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.item-name {
+    font-weight: 600;
+    margin: 0;
+}
+
+.item-remark {
+    font-size: 0.85rem;
+    color: #6c757d;
+    margin: 4px 0 0 0;
+}
+
+.align-right {
+    text-align: right;
+    font-weight: 600;
+}
+
+.summary-totals {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e9ecef;
+}
+
+.total-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    font-weight: 500;
+    color: #495057;
+}
+
+.total-row span:last-child {
+  font-weight: 600;
+  color: #333;
+}
+
+.grand-total {
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: #333;
+}
+
+.discount-details {
+    text-align: right;
+}
+
+.discount-code {
+    display: block;
+    font-weight: 600;
+    font-size: 0.9em;
+    color: #dc3545;
+}
+
+.discount-amount {
+    color: #dc3545;
+}
+
+.proceed-button {
+    background-color: #343a40;
+    color: white;
+    border: none;
+    padding: 16px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 1rem;
+    transition: background-color 0.2s;
+}
+
+.proceed-button:hover {
+    background-color: #212529;
+}

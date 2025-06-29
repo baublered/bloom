@@ -1,0 +1,181 @@
+/* ProductRegistration.css */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital@1&display=swap');
+
+.product-registration-page {
+  padding: 2rem 3rem;
+  background-color: #f8f9fa;
+  flex-grow: 1;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.page-header h1 {
+  font-size: 1.75rem;
+  color: #333;
+}
+
+.user-profile-button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 16px;
+  background-color: #fff;
+  border: 1px solid #E0E0E0;
+  border-radius: 25px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.user-profile-button .user-icon { font-size: 24px; }
+.user-profile-button .dropdown-arrow { font-size: 12px; color: #888; }
+
+.registration-card {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 3rem;
+  background-color: #EAEBF0;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+.card-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.card-header h2 {
+  font-size: 2.25rem;
+  font-weight: 600;
+  color: #535978;
+}
+
+.card-header .logo-text {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 1.75rem;
+  color: #6a708e;
+  margin-top: 0.5rem;
+}
+
+.registration-form .form-row {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.registration-form .input-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.registration-form .input-group.full-width {
+  flex-basis: 100%;
+}
+
+.registration-input {
+  width: 100%;
+  padding: 1rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 8px;
+  background-color: #ffffff;
+  box-sizing: border-box;
+}
+
+.registration-input:focus {
+  outline: 2px solid #aeb2e4;
+}
+
+/* Custom Dropdown Styling */
+.dropdown-toggle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    color: #495057;
+}
+
+.dropdown-arrow-input {
+    font-size: 1rem;
+    color: #6c757d;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    z-index: 10;
+    margin-top: 0.25rem;
+    overflow: hidden;
+}
+
+.dropdown-item {
+    padding: 1rem;
+    cursor: pointer;
+}
+
+.dropdown-item:hover {
+    background-color: #f0f2f5;
+}
+
+/* Styles for react-datepicker */
+.react-datepicker-wrapper,
+.react-datepicker__input-container {
+    width: 100%;
+}
+
+.react-datepicker__input-container .registration-input {
+    width: 100%;
+}
+
+.form-actions {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.register-button {
+  padding: 1rem 3rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ffffff;
+  background-color: #535978;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.register-button:hover {
+  background-color: #434760;
+}
+
+.status-message {
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: 500;
+}
+
+.status-message.success {
+    background-color: #d1e7dd;
+    color: #0f5132;
+}
+
+.status-message.error {
+    background-color: #f8d7da;
+    color: #842029;
+}

@@ -1,0 +1,138 @@
+/* ProductSelection.css */
+.product-selection-page {
+  flex-grow: 1;
+  padding: 2rem 3rem;
+  background-color: #f8f9fa;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+.selection-page-header {
+  margin-bottom: 2rem;
+}
+
+.selection-page-header h1 {
+  font-size: 1.75rem;
+  color: #333;
+}
+
+.selection-main-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.back-link {
+  align-self: flex-start;
+  margin-bottom: 1rem;
+  background: none;
+  border: none;
+  color: #6c757d;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.selection-card {
+  width: 100%;
+  max-width: 700px;
+  background-color: #EAEBF0;
+  border-radius: 20px;
+  padding: 2rem 3rem;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.05);
+}
+
+.selection-card h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #343a40;
+  margin: 0 0 2rem 0;
+}
+
+.selection-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.selection-item-row {
+  display: flex;
+  align-items: center;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #d1d3e8;
+}
+
+.selection-item-row:last-child {
+  border-bottom: none;
+}
+
+.selection-item-row input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  margin-right: 1.5rem;
+}
+
+.selection-item-row label {
+  flex-grow: 1;
+  font-size: 1.1rem;
+  color: #495057;
+}
+
+/* Reusing quantity controls style */
+.quantity-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background-color: #fff;
+  border: 1px solid #ced4da;
+  border-radius: 20px;
+  padding: 4px;
+}
+.quantity-controls button {
+  width: 28px;
+  height: 28px;
+  border: none;
+  background-color: #e9ecef;
+  color: #495057;
+  border-radius: 50%;
+  font-weight: bold;
+  cursor: pointer;
+}
+.quantity-controls span {
+  font-weight: 500;
+  min-width: 20px;
+  text-align: center;
+}
+
+.selection-footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 2rem;
+    gap: 1.5rem;
+}
+
+.pagination-dots {
+    display: flex;
+    gap: 8px;
+}
+
+.pagination-dots span {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #ced4da;
+}
+
+.save-button {
+  padding: 0.8rem 3rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ffffff;
+  background-color: #535978;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.save-button:hover {
+  background-color: #434760;
+}

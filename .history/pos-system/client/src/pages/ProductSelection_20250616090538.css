@@ -1,0 +1,191 @@
+/* ProductSelection.css */
+
+/* Overall Page Layout */
+.product-selection-page {
+  background-color: #f0f2f5; /* Light grey background for the whole page */
+  min-height: 100vh;
+  padding: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  font-family: Arial, sans-serif;
+}
+
+/* Main White Container Card */
+.product-selection-container {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  padding: 24px;
+  width: 100%;
+  max-width: 900px;
+}
+
+/* User Profile Header (basic styling) */
+.user-profile-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+}
+
+.user-profile-dropdown {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+/* Products Title */
+.products-title {
+  font-size: 2rem;
+  color: #333;
+  margin-bottom: 1.5rem;
+}
+
+/* Content Card holding the back link and list */
+.content-card {
+  background: #ffffff;
+  padding: 1rem;
+}
+
+.back-link {
+  display: inline-block;
+  margin-bottom: 1.5rem;
+  text-decoration: none;
+  color: #555;
+  font-size: 0.9rem;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+}
+
+/* Lavender List Container */
+.list-container {
+  background-color: #f3f2ff; /* Light lavender background */
+  border-radius: 12px;
+  padding: 24px;
+  text-align: center;
+}
+
+.list-container h3 {
+  font-size: 1.25rem;
+  color: #333;
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.flower-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Individual Flower Item Row */
+.flower-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.flower-item:last-child {
+  border-bottom: none;
+}
+
+.flower-details {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.flower-details label {
+  font-size: 1rem;
+}
+
+input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+/* Quantity Stepper Controls */
+.quantity-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 4px;
+}
+
+.quantity-controls button {
+  background-color: transparent;
+  border: none;
+  color: #555;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  width: 28px;
+  height: 28px;
+  line-height: 28px;
+  text-align: center;
+}
+
+.quantity-controls button:disabled {
+  color: #cccccc;
+  cursor: not-allowed;
+}
+
+.quantity-controls span {
+  font-size: 1rem;
+  font-weight: bold;
+  min-width: 20px;
+  text-align: center;
+}
+
+/* Pagination Dots */
+.pagination-dots {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 2rem;
+}
+
+.pagination-dots span {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #d1d1d1;
+}
+
+/* Save Button */
+.save-button {
+  display: block;
+  margin: 2rem auto 0 auto;
+  padding: 12px 40px;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #fff;
+  background-color: #8a8a8a; /* Dark grey for save button */
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.save-button:hover {
+  background-color: #6e6e6e;
+}
+
+/* Status Message */
+.status-message {
+  color: #d9534f; /* Red for errors */
+  margin-top: 1rem;
+  text-align: left;
+}

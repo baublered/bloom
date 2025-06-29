@@ -1,0 +1,29 @@
+.product-registration-container {
+    padding: 2rem;
+    max-width: 600px;
+    margin: 0 auto;
+    background: #f3f3f3;
+    border-radius: 8px;
+  }
+  
+  .product-form label {
+    display: block;
+    margin-bottom: 1rem;
+  }
+  
+  .product-form input,
+  .product-form textarea {
+    width: 100%;
+    padding: 0.5rem;
+    margin-top: 0.25rem;
+  }
+  
+  .product-form button {
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+  }
+  

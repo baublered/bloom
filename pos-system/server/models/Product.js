@@ -1,20 +1,16 @@
 const mongoose = require('mongoose');
 
 const productSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  category: { type: String, required: true },
-  quantity: { type: Number, default: 0 },
-  unit: { type: String, default: 'pcs' }, // Optional, just a default value for consistency
-  cost: { type: Number, required: false }, // You can keep this field for tracking the cost of items
-  price: { type: Number, required: true },
-  supplier: { type: String, required: false },
-  expiryDate: { type: Date, required: false },
-  description: { type: String, required: false },
-  image: { type: String, required: false }, // Field for storing the image URL
+  productName: { type: String, required: true },
+  productCategory: { type: String, required: true },
+  price: { type: Number, required: false }, // Not required for Accessories
+  quantity: { type: Number, required: true },
+  supplierName: { type: String, required: true },
+  dateReceived: { type: Date, default: Date.now },
+  lifespanInDays: { type: Number, required: false }, // Not required for Accessories
+  image: { type: String, default: 'http://localhost:5000/uploads/default.jpg' }
 }, {
-  timestamps: true // Automatically add createdAt and updatedAt fields
+  timestamps: true 
 });
 
-const Product = mongoose.model('Product', productSchema);
-
-module.exports = Product;
+module.exports = mongoose.model('Product', productSchema);

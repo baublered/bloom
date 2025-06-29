@@ -1,0 +1,217 @@
+/* BillingEvents.css */
+.billing-page-container {
+  padding: 2rem 3rem;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+.billing-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.billing-header h1 {
+  font-size: 1.75rem;
+}
+
+.user-profile-button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 16px;
+  background-color: #fff;
+  border: 1px solid #E0E0E0;
+  border-radius: 25px;
+  cursor: pointer;
+  font-weight: 500;
+}
+.user-profile-button .dropdown-arrow { margin-left: 0.5rem; }
+
+.billing-layout {
+  display: flex;
+  gap: 2rem;
+}
+
+/* --- Stepper Styles (reusable) --- */
+.stepper-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100px;
+}
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #a0a0a0;
+  font-weight: 500;
+}
+.step.active .step-label {
+  color: #0d6efd;
+  font-weight: bold;
+}
+.step-icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: #dee2e6;
+  border: 3px solid #f8f9fa;
+  box-shadow: 0 0 0 2px #dee2e6;
+  margin-bottom: 0.5rem;
+}
+.step.active .step-icon {
+  background-color: #0d6efd;
+  box-shadow: 0 0 0 2px #0d6efd;
+}
+.stepper-line {
+  width: 2px;
+  height: 100px;
+  background-color: #dee2e6;
+  margin: 0.5rem 0;
+}
+
+/* --- Main Content --- */
+.billing-content {
+  display: flex;
+  flex: 1;
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+.billing-panel {
+  padding: 1.5rem 2rem;
+  border-radius: 12px;
+  background-color: #F7F7F7;
+  border: 1px solid #EAEAEA;
+  display: flex;
+  flex-direction: column;
+}
+
+.billing-panel.summary-panel {
+    background-color: #fff;
+    flex: 2;
+}
+
+.billing-panel:not(.summary-panel) {
+    flex: 3;
+}
+
+.panel-header {
+  margin-bottom: 1.5rem;
+}
+.panel-header h3 { margin: 0; font-size: 1.25rem; }
+.panel-header p { margin: 4px 0 0; color: #6c757d; }
+
+/* Event Details Grid */
+.details-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+.detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+.detail-item label {
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+.detail-item .detail-value {
+    background-color: #E8E8E8;
+    border: 1px solid #DCDCDC;
+    padding: 12px;
+    border-radius: 20px;
+    font-weight: 500;
+}
+.detail-item.full-width {
+    grid-column: span 2;
+}
+
+/* Order Summary */
+.summary-panel h3 {
+    font-size: 1.25rem;
+    margin-top: 0;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #e9ecef;
+}
+.order-summary-list {
+    margin: 1.5rem 0;
+    flex-grow: 1;
+}
+.summary-list-header {
+    display: grid;
+    grid-template-columns: 50px 1fr auto;
+    gap: 1rem;
+    font-weight: 600;
+    color: #6c757d;
+    font-size: 0.8rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #e9ecef;
+}
+.summary-list-item {
+    display: grid;
+    grid-template-columns: 50px 1fr auto;
+    gap: 1rem;
+    align-items: center;
+    padding: 0.75rem 0;
+}
+.summary-list-item .price {
+    font-weight: 500;
+}
+
+.summary-calculation {
+    border-top: 1px solid #dee2e6;
+    padding-top: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+}
+.summary-row.total {
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+.discount-text {
+    color: #dc3545;
+}
+
+.discount-section {
+    display: flex;
+    gap: 0.5rem;
+    margin: 1.5rem 0;
+}
+.discount-section input {
+    flex-grow: 1;
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+.apply-button {
+    padding: 0 1.5rem;
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+.error-message { color: red; font-size: 0.9rem; margin-top: 5px; }
+
+.proceed-payment-button {
+    background-color: #535978;
+    color: white;
+    padding: 1rem;
+    border: none;
+    border-radius: 8px;
+    width: 100%;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: auto;
+}

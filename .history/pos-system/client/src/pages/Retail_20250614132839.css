@@ -1,0 +1,161 @@
+.retail-container {
+  padding: 1rem 2rem;
+}
+
+.retail-header {
+  font-size: 24px;
+  margin-bottom: 0.5rem;
+}
+
+.retail-subtitle {
+  font-size: 16px;
+  margin-bottom: 1rem;
+}
+
+.retail-content {
+  display: flex;
+  gap: 1rem;
+}
+
+.retail-sidebar {
+  width: 150px;
+  background-color: #dad7e8;
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.tab {
+  padding: 0.5rem;
+  background-color: transparent;
+  border-radius: 5px;
+  margin-bottom: 0.5rem;
+}
+
+.tab.selected {
+  background-color: white;
+  font-weight: bold;
+}
+
+.retail-main {
+  flex: 1;
+  background-color: #f4f4f4;
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.search-bar input {
+  width: 100%;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.flower-list {
+  background-color: white;
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.flower-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.flower-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #eee;
+}
+
+.flower-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.flower-title {
+  font-weight: bold;
+  font-size: 1rem;
+  color: #333;
+}
+
+.stock-info {
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.price-info {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.checkbox-and-quantity-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.checkbox-container {
+  display: flex;
+  align-items: center;
+}
+
+.flower-checkbox {
+  margin-left: 10px;
+}
+
+.quantity-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 5px;
+}
+
+.quantity-controls button {
+  padding: 0.3rem 0.6rem;
+  font-weight: bold;
+  background-color: #f1f1f1;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.quantity-controls button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.add-ons {
+  margin-top: 2rem;
+}
+
+.add-on-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.add-on-item {
+  display: flex;
+  align-items: center;
+}
+
+.add-on-item input {
+  margin-right: 10px;
+}
+
+.proceed-button {
+  margin-top: 1rem;
+  background-color: #5a4fcf;
+  color: white;
+  padding: 0.6rem 1rem;
+  border: none;
+  border-radius: 6px;
+  float: right;
+  cursor: pointer;
+}

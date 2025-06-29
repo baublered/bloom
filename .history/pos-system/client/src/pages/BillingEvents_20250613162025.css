@@ -1,0 +1,152 @@
+.billing-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  color: #333;
+}
+
+h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #2c3e50;
+}
+
+.order-details {
+  margin-bottom: 30px;
+}
+
+h2 {
+  font-size: 20px;
+  margin-bottom: 15px;
+  color: #2c3e50;
+}
+
+h3 {
+  font-size: 18px;
+  margin-bottom: 15px;
+  color: #7f8c8d;
+}
+
+h4 {
+  font-size: 16px;
+  margin-bottom: 5px;
+  color: #2c3e50;
+}
+
+.details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  margin-bottom: 20px;
+}
+
+.info-row {
+  margin-bottom: 15px;
+}
+
+.label {
+  display: inline-block;
+  width: 120px;
+  font-weight: bold;
+}
+
+.value {
+  display: inline-block;
+}
+
+.calendar {
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 10px;
+  margin-top: 10px;
+}
+
+.month-header {
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.days-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  gap: 5px;
+}
+
+.days-grid span {
+  padding: 5px;
+}
+
+.products-ordered, .remarks {
+  margin-bottom: 15px;
+}
+
+.divider {
+  border: none;
+  border-top: 1px solid #ddd;
+  margin: 20px 0;
+}
+
+.payment-section {
+  margin-bottom: 30px;
+}
+
+.payment-details {
+  margin-bottom: 20px;
+}
+
+.payment-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  padding: 8px 0;
+}
+
+.payment-label {
+  font-weight: bold;
+}
+
+.highlight {
+  background-color: #f8f9fa;
+  padding: 8px;
+  border-radius: 4px;
+}
+
+.total {
+  border-top: 1px solid #ddd;
+  padding-top: 15px;
+  margin-top: 15px;
+  font-size: 18px;
+}
+
+.proceed-button {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  width: 100%;
+  transition: background-color 0.3s;
+}
+
+.proceed-button:hover {
+  background-color: #2980b9;
+}
+
+@media (max-width: 768px) {
+  .details-grid {
+    grid-template-columns: 1fr;
+  }
+}    

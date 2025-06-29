@@ -1,0 +1,129 @@
+/* InventoryReport.css */
+.inventory-report-page {
+  padding: 2rem 3rem;
+  background-color: #f8f9fa;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+.report-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.report-header h1 {
+  font-size: 1.75rem;
+  color: #333;
+}
+
+.back-arrow {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  color: #333;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.print-button {
+  background-color: #0d6efd;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.report-content {
+  background-color: #fff;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.report-section {
+    margin-bottom: 3rem;
+}
+
+.report-section:last-child {
+    margin-bottom: 0;
+}
+
+.section-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0 0 0.25rem 0;
+}
+
+.section-subtitle {
+    margin: 0 0 1.5rem 0;
+    color: #6c757d;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+}
+
+.report-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.report-table th,
+.report-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.report-table th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #495057;
+}
+
+.report-table tr:last-child td {
+    border-bottom: none;
+}
+
+.low-stock-row td {
+    color: #dc3545;
+    font-weight: 500;
+}
+
+/* --- Print-Specific Styles --- */
+@media print {
+  body, .inventory-report-page {
+    background-color: #fff;
+    padding: 0;
+    margin: 0;
+  }
+
+  .report-header, .back-arrow, .print-button {
+    display: none;
+  }
+
+  .report-content {
+    box-shadow: none;
+    border: none;
+    padding: 1rem;
+  }
+
+  .report-table, .report-table th, .report-table td {
+      border: 1px solid #ccc;
+      font-size: 10pt;
+  }
+
+  .table-wrapper {
+      border: none;
+      overflow: visible;
+  }
+}

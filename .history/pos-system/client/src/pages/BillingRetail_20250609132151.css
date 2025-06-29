@@ -1,0 +1,174 @@
+.billing-container {
+  padding: 2rem;
+  background-color: #f8f8f8;
+}
+
+.billing-container h2 {
+  font-size: 28px;
+  margin-bottom: 20px;
+}
+
+.billing-content {
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.billing-panel {
+  width: 48%;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+}
+
+.left-panel {
+  background-color: #f7f7f7;
+}
+
+.right-panel {
+  background-color: #f4f4f4;
+}
+
+.order-details-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.back-button {
+  background-color: #1D154A;
+  color: white;
+  padding: 0.4rem 1rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.order-details-header-row {
+  display: flex;
+  background-color: #1D154A; /* Deep purple color */
+  color: white;
+  font-weight: bold;
+  padding: 0.5rem;
+  border-radius: 8px;
+}
+
+.order-details-cell {
+  flex: 1;
+  text-align: center;
+  padding: 10px;
+  font-weight: bold;
+}
+
+.order-details-box {
+  margin-top: 20px;
+}
+
+.order-details-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+}
+
+/* Order Summary Panel Styling */
+.order-summary-box {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
+}
+
+.order-summary-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.order-summary-item:last-child {
+  border-bottom: none;
+}
+
+.order-summary-item div {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.discount {
+  color: red;
+}
+
+.total {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.total-amount {
+  color: #5a4fcf;
+  font-size: 20px;
+}
+
+.order-summary-details {
+  width: 100%;
+  padding-left: 10px;
+}
+
+.order-summary-item div:first-child {
+  font-weight: 600;
+}
+
+.order-summary-item div:last-child {
+  font-weight: 600;
+  color: #2e8b57; /* Green color for Total Amount */
+}
+
+/* Discount section styling */
+.discount-section {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.discount-section input {
+  padding: 0.6rem;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 16px;
+}
+
+.apply-button {
+  padding: 0.6rem;
+  background-color: #5a4fcf;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.apply-button:hover {
+  background-color: #4732a1;
+}
+
+.error-message {
+  color: red;
+  font-size: 14px;
+}
+
+.proceed-button {
+  background-color: #5a4fcf;
+  color: white;
+  padding: 0.6rem 1rem;
+  border: none;
+  border-radius: 6px;
+  width: 100%;
+  font-size: 16px;
+  margin-top: 20px;
+}
+.proceed-button:hover {
+  background-color: #4732a1;
+}
