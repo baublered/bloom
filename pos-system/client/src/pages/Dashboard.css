@@ -1,0 +1,323 @@
+/* Universal Settings */
+body, h1, h2, h3, p, ul {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+.dashboard-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f8f9fa; /* A neutral light grey for the background */
+}
+
+/* --- NEW SIDEBAR STYLES --- */
+.sidebar {
+  width: 280px;
+  background-color: #EAEBF0; /* The light grey/purple background */
+  padding: 2.5rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-header {
+  padding: 0 1rem;
+  margin-bottom: 2.5rem;
+}
+
+.sidebar-header h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #535978; /* The dark purple-grey color for the title */
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem; /* Spacing between main links/sections */
+}
+
+.sidebar-link {
+  text-decoration: none;
+  color: #6a708e; /* The default text color */
+  font-size: 1.1rem;
+  font-weight: 500;
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  transition: all 0.2s ease-in-out;
+}
+
+.sidebar-link:hover {
+  background-color: #DDDEF0;
+}
+
+/* NavLink will automatically add this class to the active link */
+.sidebar-link.active {
+  color: #333;
+  background-color: #fff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.transactions-section {
+  background-color: #DCDDF0; /* The light purple highlight for the section */
+  border-radius: 8px;
+  padding: 0.8rem 1rem;
+}
+
+.transactions-section .sidebar-link {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  margin: 0;
+  padding: 0;
+  background: none;
+}
+
+.transactions-section .sidebar-link:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+  padding: 0.5rem;
+}
+
+.arrow {
+  font-size: 0.875rem;
+  color: #535978;
+  transition: transform 0.2s ease;
+}
+
+.sidebar-link-header {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #535978;
+}
+
+.sub-links {
+  margin-top: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding-left: 1rem;
+}
+
+.sidebar-sublink {
+  text-decoration: none;
+  color: #6a708e;
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.2s ease-in-out;
+}
+
+.sidebar-sublink:hover {
+  background-color: #d1d3e8;
+}
+
+.sidebar-sublink.active {
+  background-color: #FFFFFF;
+  color: #333;
+  font-weight: 600;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+/* --- YOUR EXISTING DASHBOARD CONTENT STYLES --- */
+.dashboard-main {
+  flex: 1;
+  padding: 2rem 3rem;
+  background-color: #f8f9fa;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px solid #e9ecef;
+}
+
+.dashboard-header h1 {
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+/* Dashboard Content Grid */
+.dashboard-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+/* Card Styles */
+.card {
+  background: white;
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid #f0f0f0;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+}
+
+.card h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #495057;
+  margin: 0 0 1.5rem 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.card p {
+  font-size: 1rem;
+  margin: 0.75rem 0;
+  color: #6c757d;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card strong {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+/* Specific Card Styling */
+.sales-overview::before {
+  background: linear-gradient(90deg, #11998e 0%, #38ef7d 100%);
+}
+
+.inventory-summary::before {
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+}
+
+.product-details::before {
+  background: linear-gradient(90deg, #f093fb 0%, #f5576c 100%);
+}
+
+/* Admin Dashboard Specific */
+.dashboard-title {
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 0.5rem 0;
+}
+
+.dashboard-home-page {
+  padding: 0;
+}
+
+/* User Profile in Header */
+.user-profile {
+  background-color: #eee;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #333;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .dashboard-content {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-container {
+    flex-direction: column;
+  }
+  
+  .sidebar {
+    width: 100%;
+    padding: 1rem;
+  }
+  
+  .dashboard-main {
+    padding: 1.5rem;
+  }
+  
+  .dashboard-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .dashboard-header h1 {
+    font-size: 1.75rem;
+  }
+  
+  .dashboard-content {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .card {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-main {
+    padding: 1rem;
+  }
+  
+  .dashboard-header h1 {
+    font-size: 1.5rem;
+  }
+  
+  .card {
+    padding: 1rem;
+  }
+  
+  .card h3 {
+    font-size: 1rem;
+  }
+  
+  .card strong {
+    font-size: 1.25rem;
+  }
+}
+
+/* Animation for cards loading */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card {
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+.card:nth-child(1) { animation-delay: 0.1s; }
+.card:nth-child(2) { animation-delay: 0.2s; }
+.card:nth-child(3) { animation-delay: 0.3s; }
+.card:nth-child(4) { animation-delay: 0.4s; }
