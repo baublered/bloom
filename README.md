@@ -1,71 +1,171 @@
-# Added this README june 11 - alex
-# Getting Started with Create React App
+# BloomTrack - Point of Sale System for Flower Shops
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A comprehensive POS system designed specifically for flower shops, built with React frontend and Node.js backend.
 
-## Available Scripts
+## 🌺 Project Overview
 
-In the project directory, you can run:
+BloomTrack is a modern point-of-sale system tailored for flower retail businesses. It provides separate interfaces for administrators and employees, with role-based access control and features specific to flower shop operations.
 
-### `npm start`
+## 🏗️ Project Structure
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+```
+bloomtrack/
+├── pos-system/
+│   ├── client/          # React frontend application
+│   │   ├── src/
+│   │   │   ├── pages/   # UI components and pages
+│   │   │   ├── utils/   # Utility functions
+│   │   │   └── components/
+│   │   └── public/
+│   └── server/          # Node.js backend
+│       ├── controllers/ # API controllers
+│       ├── models/      # Database models
+│       ├── routes/      # Express routes
+│       └── middleware/  # Custom middleware
+└── README.md
+```
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 🚀 Features
 
-### `npm test`
+### 👥 Role-Based Access Control
+- **Admin Dashboard**: Full system access including user management, reports, and maintenance
+- **Employee Dashboard**: Limited access focused on sales transactions and inventory viewing
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### 💰 Transaction Management
+- **Retail Transactions**: Individual flower sales with cart functionality
+- **Event Transactions**: Bulk orders for weddings, events, etc.
+- **Percentage-based Discounts**: Flexible discount system (updated today)
+- **Payment Processing**: Complete billing and payment workflow
+- **Receipt Generation**: Automated receipt creation and printing
 
-### `npm run build`
+### 📦 Inventory Management
+- **Stock Tracking**: Real-time inventory monitoring
+- **Low Stock Alerts**: Automated notifications for low inventory
+- **Seasonal Recommendations**: Metro Manila climate-based flower suggestions (added today)
+- **Product Management**: Add, edit, and manage flower inventory
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### 🔐 Security Features
+- **JWT Authentication**: Secure token-based authentication
+- **Role Verification**: Server-side role checking
+- **Protected Routes**: Route-level access control
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## 📅 Recent Updates (June 30, 2025)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### ✅ Navigation System Improvements
+- **Fixed double navigation bar issue** for employees
+- **Implemented role-aware navigation** across all components
+- **Centralized routing logic** for better consistency
 
-### `npm run eject`
+### 🌸 Enhanced Seasonal Recommendations
+- **Metro Manila climate-based flower suggestions**
+- **Holiday-specific recommendations** (Valentine's Day, Mother's Day, etc.)
+- **Color-coded notification system** with emoji indicators
+- **Season-aware inventory suggestions**
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### 💳 Billing System Updates
+- **Replaced discount codes with percentage-based discounts** in retail transactions
+- **Improved discount calculation** with real-time updates
+- **Enhanced payment flow** consistency between retail and events
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### 🔒 Access Control Enhancements
+- **Restricted maintenance access** for employee roles
+- **Removed admin-only features** from employee dashboard
+- **Improved security** for sensitive operations (backup, product editing, restocking)
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### 🐛 Bug Fixes
+- **Fixed employee profile access** - employees can now view their profiles
+- **Resolved transaction completion navigation** - proper redirection after receipts
+- **Fixed role-based sidebar rendering** to prevent admin elements appearing for employees
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## 🛠️ Installation & Setup
 
-## Learn More
+### Prerequisites
+- Node.js (v14 or higher)
+- MongoDB
+- npm or yarn
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Backend Setup
+```bash
+cd pos-system/server
+npm install
+npm start
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Frontend Setup
+```bash
+cd pos-system/client
+npm install
+npm start
+```
 
-### Code Splitting
+### Environment Variables
+Create `.env` files in both client and server directories with appropriate configuration.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## 🎯 User Roles & Access
 
-### Analyzing the Bundle Size
+### Admin Features:
+- ✅ User Registration & Management
+- ✅ Product Registration & Editing
+- ✅ Sales Reports & Analytics
+- ✅ System Maintenance & Backup
+- ✅ Inventory Restocking
+- ✅ Full Transaction Access
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+### Employee Features:
+- ✅ Retail & Event Transactions
+- ✅ Inventory Viewing (read-only)
+- ✅ Cart Management
+- ✅ Payment Processing
+- ✅ Receipt Generation
+- ❌ User Management
+- ❌ Product Editing
+- ❌ System Maintenance
+- ❌ Reports Access
 
-### Making a Progressive Web App
+## 🌍 Localization
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+The system is specifically designed for:
+- **Location**: Metro Manila, Philippines
+- **Currency**: Philippine Peso (₱)
+- **Climate Considerations**: Tropical climate with wet/dry seasons
+- **Local Holidays**: Philippine holidays and celebrations
 
-### Advanced Configuration
+## 💡 Technical Architecture
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+### Frontend (React)
+- **State Management**: Local state with sessionStorage persistence
+- **Routing**: React Router with role-based protection
+- **Styling**: CSS modules with responsive design
+- **Authentication**: JWT token handling
 
-### Deployment
+### Backend (Node.js/Express)
+- **Database**: MongoDB with Mongoose ODM
+- **Authentication**: JWT with bcrypt password hashing
+- **API**: RESTful endpoints
+- **Validation**: Input validation and sanitization
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+## 🤝 Contributing
 
-### `npm run build` fails to minify
+This project was developed as a comprehensive POS solution for flower shops. The codebase follows React and Node.js best practices with emphasis on security and user experience.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## 📝 Development Notes
+
+- **Last Updated**: June 30, 2025
+- **Version**: 1.0.0
+- **Status**: Production Ready
+- **Contributors**: Development team focusing on small business POS solutions
+
+## 🔧 Known Improvements Needed
+
+Based on recent code review:
+- [ ] Implement comprehensive input validation
+- [ ] Add unit and integration tests
+- [ ] Implement proper error boundaries
+- [ ] Add TypeScript for type safety
+- [ ] Optimize bundle size with code splitting
+- [ ] Enhance mobile responsiveness
+- [ ] Add comprehensive logging and monitoring
+
+---
+
+*BloomTrack - Making flower shop management bloom! 🌸*
