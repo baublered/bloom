@@ -6,6 +6,21 @@ const nodemailer = require('nodemailer');
 const fs = require('fs');
 const path = require('path');
 
+// --- Read RSA Keys ---
+// The keys are in the root of the project, three levels above this file
+const privateKeyPath = path.join(__dirname, '..', '..', '..', 'private.pem');
+
+let privateKey;
+
+try {
+    privateKey = fs.readFileSync(privateKeyPath, 'utf8');
+    console.log('Successfully loaded RSA private key.');
+} catch (error) {
+    console.error('Error loading RSA private key:', error);
+    // Exit the process if the key is essential for the application to start.
+    process.exit(1);
+}
+
 // --- Nodemailer Transporter Setup ---
 const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -50,15 +65,18 @@ const login = async (req, res) => {
         }
         
         const payload = { user: { id: user.id, name: user.name, role: user.role } };
-        const jwtSecret = process.env.JWT_SECRET || 'your_default_secret_key';
-        console.log('[DEBUG] Creating token with secret:', jwtSecret.substring(0, 5) + '...');
+        
+        console.log('[DEBUG] Creating token with RS256 algorithm.');
         
         jwt.sign(
             payload,
-            jwtSecret,
-            { expiresIn: '24h' }, // Extended to 24 hours for better user experience
+            privateKey,
+            { algorithm: 'RS256', expiresIn: '24h' }, // Use private key and RS256
             (err, token) => {
-                if (err) throw err;
+                if (err) {
+                    console.error('[JWT_SIGN_ERROR]', err);
+                    return res.status(500).json({ success: false, message: 'Error signing token.' });
+                }
                 console.log('[DEBUG] Token created successfully');
                 res.status(200).json({ success: true, token });
             }

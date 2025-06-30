@@ -1,4 +1,20 @@
 const jwt = require('jsonwebtoken');
+const fs = require('fs');
+const path = require('path');
+
+// --- Read RSA Public Key ---
+// The key is in the root of the project, three levels above this file
+const publicKeyPath = path.join(__dirname, '..', '..', '..', 'public.pem');
+let publicKey;
+
+try {
+    publicKey = fs.readFileSync(publicKeyPath, 'utf8');
+    console.log('Successfully loaded RSA public key.');
+} catch (error) {
+    console.error('Error loading RSA public key:', error);
+    // Exit the process if the key is essential for the application to start.
+    process.exit(1);
+}
 
 // This function checks for a valid token in the request
 const authenticate = (req, res, next) => {
@@ -17,11 +33,10 @@ const authenticate = (req, res, next) => {
         return res.status(401).json({ message: 'No token provided, authorization denied.' });
     }
 
-    // Verify the token using the secret key from your .env file
-    const jwtSecret = process.env.JWT_SECRET || 'your_default_secret_key';
-    console.log('[DEBUG] Using JWT Secret:', jwtSecret.substring(0, 5) + '...');
+    // Verify the token using the public key and RS256 algorithm
+    console.log('[DEBUG] Verifying token with RS256 algorithm.');
     
-    jwt.verify(token, jwtSecret, (err, decoded) => {
+    jwt.verify(token, publicKey, { algorithms: ['RS256'] }, (err, decoded) => {
         if (err) {
             // --- DEBUGGING STEP 3: Log the specific verification error ---
             console.error('[DEBUG] JWT Verification Error:', err);
