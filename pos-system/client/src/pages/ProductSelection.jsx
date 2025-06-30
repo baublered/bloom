@@ -72,7 +72,13 @@ const ProductSelection = () => {
   const handleSaveAndProceed = () => {
     const productsForBilling = Object.entries(selectedProducts).map(([id, quantity]) => {
         const product = products.find(p => p._id === id);
-        return { ...product, quantity };
+        // --- FIX: Explicitly map the fields to ensure correctness ---
+        return { 
+            productId: product._id, // Use a separate field for the original product ID
+            productName: product.productName,
+            price: product.price,
+            quantity: quantity 
+        };
     });
 
     navigate('/billing-events', { 

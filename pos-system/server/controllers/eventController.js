@@ -72,6 +72,7 @@ exports.updateEvent = async (req, res) => {
         } = req.body;
 
         console.log('🔍 updateEvent received:', {
+            eventId: id,
             products,
             newPayment,
             totalAmount,
@@ -120,26 +121,72 @@ exports.updateEvent = async (req, res) => {
             eventToUpdate.discountPercentage = discountPercentage || 0;
         }
         
+        // Store the previous status before saving
+        const previousStatus = eventToUpdate.status;
+        
         // Save the event - the pre-save hook will handle all calculations
         const updatedEvent = await eventToUpdate.save();
 
         console.log('🚀 Updated event AFTER save:', {
+            previousStatus: previousStatus,
+            newStatus: updatedEvent.status,
             totalAmount: updatedEvent.totalAmount,
             totalPaid: updatedEvent.totalPaid,
             remainingBalance: updatedEvent.remainingBalance,
-            status: updatedEvent.status,
             paymentHistory: updatedEvent.paymentHistory
         });
 
-        // After saving, deduct stock for the selected products if they were updated
-        if (products && products.length > 0) {
-             const operations = products.map(item => ({
-                updateOne: {
-                    filter: { _id: item.productId, quantity: { $gte: item.quantity } },
-                    update: { $inc: { quantity: -item.quantity } }
+        // ONLY deduct inventory when status changes from 'Pending' to 'Fully Paid'
+        if (previousStatus === 'Pending' && updatedEvent.status === 'Fully Paid' && updatedEvent.products.length > 0) {
+            console.log('💰 Event is now fully paid! Deducting inventory for products:', updatedEvent.products);
+            console.log('💰 Previous status:', previousStatus, '-> New status:', updatedEvent.status);
+            
+            try {
+                // Log each product before deduction
+                for (const product of updatedEvent.products) {
+                    const inventoryItem = await Product.findById(product.productId);
+                    if (inventoryItem) {
+                        console.log(`📦 BEFORE: ${inventoryItem.productName} = ${inventoryItem.quantity} units`);
+                    }
                 }
-            }));
-            await Product.bulkWrite(operations);
+                
+                const operations = updatedEvent.products.map(item => ({
+                    updateOne: {
+                        filter: { _id: item.productId, quantity: { $gte: item.quantity } },
+                        update: { $inc: { quantity: -item.quantity } }
+                    }
+                }));
+                
+                const bulkResult = await Product.bulkWrite(operations);
+                console.log('📦 Inventory deduction result:', bulkResult);
+                
+                // Log each product after deduction
+                for (const product of updatedEvent.products) {
+                    const inventoryItem = await Product.findById(product.productId);
+                    if (inventoryItem) {
+                        console.log(`📦 AFTER: ${inventoryItem.productName} = ${inventoryItem.quantity} units`);
+                    }
+                }
+                
+                // Check if any products couldn't be deducted (insufficient stock)
+                if (bulkResult.modifiedCount < updatedEvent.products.length) {
+                    console.warn('⚠️ Some products may have insufficient stock');
+                } else {
+                    console.log('✅ All products successfully deducted from inventory');
+                }
+            } catch (inventoryError) {
+                console.error('❌ Error deducting inventory:', inventoryError);
+                // Note: We don't fail the payment if inventory deduction fails
+                // This is a business decision - you might want to handle this differently
+            }
+        } else if (products && products.length > 0 && updatedEvent.status !== 'Fully Paid') {
+            console.log('📝 Products updated but event not fully paid yet. Inventory will be deducted when fully paid.');
+        } else {
+            console.log('🔍 No inventory deduction needed:', {
+                previousStatus,
+                newStatus: updatedEvent.status,
+                hasProducts: updatedEvent.products.length > 0
+            });
         }
 
         res.status(200).json({
@@ -174,16 +221,49 @@ exports.deleteEvent = async (req, res) => {
 exports.cancelEvent = async (req, res) => {
   try {
     const { id } = req.params;
+    
+    // Find the event first to check its current status
+    const eventToCancel = await Event.findById(id);
+    if (!eventToCancel) {
+      return res.status(404).json({ message: "Event not found." });
+    }
+    
+    // If the event was fully paid, restore the inventory
+    if (eventToCancel.status === 'Fully Paid' && eventToCancel.products.length > 0) {
+      console.log('🔄 Restoring inventory for cancelled fully paid event:', eventToCancel.products);
+      
+      try {
+        const operations = eventToCancel.products.map(item => ({
+          updateOne: {
+            filter: { _id: item.productId },
+            update: { $inc: { quantity: item.quantity } } // Add back the quantity
+          }
+        }));
+        
+        const bulkResult = await Product.bulkWrite(operations);
+        console.log('📦 Inventory restoration result:', bulkResult);
+      } catch (inventoryError) {
+        console.error('❌ Error restoring inventory:', inventoryError);
+        // Continue with cancellation even if inventory restoration fails
+      }
+    }
+    
+    // Update the event status to 'Cancelled'
     const updatedEvent = await Event.findByIdAndUpdate(
       id,
       { status: 'Cancelled' },
       { new: true }
     );
-    if (!updatedEvent) {
-      return res.status(404).json({ message: "Event not found." });
-    }
+    
+    console.log('🚫 Event cancelled:', {
+      eventId: id,
+      previousStatus: eventToCancel.status,
+      newStatus: updatedEvent.status
+    });
+    
     res.status(200).json({ success: true, event: updatedEvent });
   } catch (error) {
+    console.error('Error cancelling event:', error);
     res.status(500).json({ message: "Failed to cancel event." });
   }
 };

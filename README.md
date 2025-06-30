@@ -67,6 +67,12 @@ bloomtrack/
 - **Improved discount calculation** with real-time updates
 - **Enhanced payment flow** consistency between retail and events
 
+### 📦 Smart Inventory Management
+- **Fixed inventory deduction logic** for events (NEW)
+- **Products are only deducted when events are fully paid** (not on creation or downpayment)
+- **Automatic inventory restoration** when fully paid events are cancelled
+- **Prevents inventory overselling** for pending events
+
 ### 🔒 Access Control Enhancements
 - **Restricted maintenance access** for employee roles
 - **Removed admin-only features** from employee dashboard
