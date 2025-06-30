@@ -11,21 +11,21 @@ const developers = [
         name: 'Jilliana Abogado',
         role: '> Main Programmer',
         major: '> BSCS Student',
-        email: '@jcabogado@tip.edu.ph',
+        email: '@qjycabogado@tip.edu.ph',
         imageUrl: 'https://placehold.co/150x150/F8D7DA/495057?text=JA'
     },
     {
         name: 'Eljeanne Casero',
         role: '> System Designer',
         major: '> BSCS Student',
-        email: '@gatcasero.tip.edu.ph',
+        email: '@qelcasero.tip.edu.ph',
         imageUrl: 'https://placehold.co/150x150/D1E7DD/495057?text=EC'
     },
     {
         name: 'Alexine Maloping',
-        role: '> System Analyst, Developer',
+        role: '> System Analyst, Programmer',
         major: '> BSCS Student',
-        email: '@alex.maloping@gmail.com',
+        email: '@qacmaloping@tip.edu.ph',
         imageUrl: 'https://placehold.co/150x150/CFE2FF/495057?text=AM'
     }
 ];
@@ -51,7 +51,12 @@ const AboutUs = () => {
                     <div className="app-intro">
                         <h2>BLOOMTRACK</h2>
                         <p className="app-description">
-                            BloomTrack is a comprehensive product management system designed specifically for the floral industry. With seamless Point of Sale (POS) and advanced inventory management features, BloomTrack helps flower shops streamline their operations, track inventory, and manage sales effortlessly. Tailored to the unique needs of florists, BloomTrack ensures that managing flowers, orders, and supplies is always efficient and organized.
+                            BloomTrack is a comprehensive product management system designed specifically for the floral 
+                            industry. With seamless Transactions module for both Retail and Events and advanced inventory management 
+                            features, BloomTrack helps flower shops streamline their operations, 
+                            track inventory, and manage sales effortlessly. Tailored to the unique needs 
+                            of florists, BloomTrack ensures that managing flowers, orders, and supplies is 
+                            always efficient and organized.
                         </p>
                     </div>
 
@@ -71,7 +76,8 @@ const AboutUs = () => {
                     </section>
 
                     <footer className="contact-footer">
-                        <p>CONTACT US: (+63) xxx xxxx or BloomTrackSupport@gmail.com</p>
+                        <p>CONTACT US: (+63) 966 539 5977 or 
+                            BloomTrackSupport@gmail.com</p>
                     </footer>
                 </div>
             </main>

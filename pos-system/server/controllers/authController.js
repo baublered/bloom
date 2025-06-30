@@ -71,30 +71,39 @@ const login = async (req, res) => {
 
 // --- User Registration Function ---
 const registerUser = async (req, res) => {
+    console.log('[REGISTER_USER] Received request');
     try {
+        console.log('[REGISTER_USER] Request body:', req.body);
         const { name, username, phone, password, role, email } = req.body;
+
         if (!name || !username || !phone || !password || !role || !email) {
+            console.log('[REGISTER_USER] Validation failed: Missing required fields.');
             return res.status(400).json({ message: 'Please provide all required fields.' });
         }
         
+        console.log('[REGISTER_USER] Checking for existing user...');
         // Check for existing username
         const existingUser = await User.findOne({ username });
         if (existingUser) {
-            return res.status(400).json({ message: 'A user with this username already exists.' });
+            console.log('[REGISTER_USER] Conflict: Username already exists.');
+            return res.status(409).json({ message: 'A user with this username already exists.' });
         }
         
         // Check for existing email
         const existingEmail = await User.findOne({ email });
         if (existingEmail) {
-            return res.status(400).json({ message: 'A user with this email already exists.' });
+            console.log('[REGISTER_USER] Conflict: Email already exists.');
+            return res.status(409).json({ message: 'A user with this email already exists.' });
         }
         
         // Check for existing phone
         const existingPhone = await User.findOne({ phone });
         if (existingPhone) {
-            return res.status(400).json({ message: 'A user with this phone number already exists.' });
+            console.log('[REGISTER_USER] Conflict: Phone number already exists.');
+            return res.status(409).json({ message: 'A user with this phone number already exists.' });
         }
         
+        console.log('[REGISTER_USER] Creating new user instance...');
         // Create new user
         const newUser = new User({ 
             name, 
@@ -104,14 +113,38 @@ const registerUser = async (req, res) => {
             role, 
             email 
         });
+
+        console.log('[REGISTER_USER] Saving new user to database...');
         await newUser.save();
+        console.log('[REGISTER_USER] User saved successfully!');
+
         res.status(201).json({ 
             success: true, 
             message: 'User registered successfully!',
             user: { id: newUser._id, name: newUser.name, role: newUser.role }
         });
     } catch (error) {
-        console.error('Error in registerUser:', error);
+        console.error('[REGISTER_USER] CATCH BLOCK: An error occurred.');
+        console.error('[REGISTER_USER] Error Name:', error.name);
+        console.error('[REGISTER_USER] Error Code:', error.code);
+        console.error('[REGISTER_USER] Error Message:', error.message);
+        console.error('[REGISTER_USER] Full Error Object:', error);
+
+        // Detailed error handling for duplicate key errors
+        if (error.code === 11000) {
+            const field = Object.keys(error.keyValue)[0];
+            console.log(`[REGISTER_USER] Duplicate key error for field: ${field}`);
+            return res.status(409).json({ message: `An account with this ${field} already exists.` });
+        }
+        
+        // Handle Mongoose validation errors
+        if (error.name === 'ValidationError') {
+            console.log('[REGISTER_USER] Mongoose validation error.');
+            const messages = Object.values(error.errors).map(val => val.message);
+            return res.status(400).json({ message: messages.join(' ') });
+        }
+
+        console.error('Error in registerUser (unhandled):', error);
         res.status(500).json({ message: 'Server error during user registration.' });
     }
 };

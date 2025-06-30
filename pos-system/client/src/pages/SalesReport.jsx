@@ -280,6 +280,18 @@ const SalesReport = () => {
             </div>
           ))}
         </div>
+
+        <div className="sales-report-footer">
+          <div className="footer-summary-item">
+            <span className="footer-summary-label">
+              {dateFilterApplied
+                ? `Total Sales for ${startDate ? new Date(startDate).toLocaleDateString() : 'Beginning'} to ${endDate ? new Date(endDate).toLocaleDateString() : 'Present'}:`
+                : 'Total Sales for All Dates:'}
+            </span>
+            <span className="footer-summary-value">₱{calculateTotalRevenue().toFixed(2)}</span>
+          </div>
+        </div>
+
       </main>
     </div>
   );

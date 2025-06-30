@@ -37,6 +37,9 @@ const ForgotPassword = () => {
 
   return (
     <div className="forgot-password-page">
+      <button className="back-to-login-btn" type="button" onClick={() => navigate('/')}>
+        &larr; Back to Login
+      </button>
       <h1 className="page-title">Forgot Password</h1>
       <div className="form-card">
         <h2 className="card-title">Reset Password</h2>

@@ -480,8 +480,8 @@ const UserRegistration = () => {
                     required
                   >
                     <option value="" disabled>Select a Role</option>
-                    <option value="admin">Admin</option>
-                    <option value="employee">Employee</option>
+                    <option value="admin">admin</option>
+                    <option value="employee">employee</option>
                   </select>
                   {validationErrors.role && (
                     <span className="error-text">{validationErrors.role}</span>
