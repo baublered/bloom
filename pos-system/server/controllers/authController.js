@@ -18,16 +18,16 @@ const transporter = nodemailer.createTransport({
 // --- User Login Function ---
 const login = async (req, res) => {
     try {
-        const { employeeId, password, role } = req.body;
+        const { username, password, role } = req.body;
         
         // Add debugging
         console.log('Login attempt:');
-        console.log('- employeeId:', employeeId);
+        console.log('- username:', username);
         console.log('- role:', role);
         
-        // First check if user exists with just employeeId
-        const userCheck = await User.findOne({ employeeId });
-        console.log('User found with employeeId only:', userCheck ? 'YES' : 'NO');
+        // First check if user exists with just username
+        const userCheck = await User.findOne({ username });
+        console.log('User found with username only:', userCheck ? 'YES' : 'NO');
         if (userCheck) {
             console.log('User role in DB:', userCheck.role);
             console.log('Requested role:', role);
@@ -35,8 +35,8 @@ const login = async (req, res) => {
         }
         
         // Original query
-        const user = await User.findOne({ employeeId, role });
-        console.log('User found with both employeeId and role:', user ? 'YES' : 'NO');
+        const user = await User.findOne({ username, role });
+        console.log('User found with both username and role:', user ? 'YES' : 'NO');
         
         if (!user) {
             return res.status(401).json({ success: false, message: 'Invalid credentials or role.' });
@@ -72,20 +72,14 @@ const login = async (req, res) => {
 // --- User Registration Function ---
 const registerUser = async (req, res) => {
     try {
-        const { name, employeeId, phone, password, role, email } = req.body;
-        if (!name || !employeeId || !phone || !password || !role || !email) {
+        const { name, username, phone, password, role, email } = req.body;
+        if (!name || !username || !phone || !password || !role || !email) {
             return res.status(400).json({ message: 'Please provide all required fields.' });
         }
         
-        // Check for existing employeeId
-        const existingUser = await User.findOne({ employeeId });
+        // Check for existing username
+        const existingUser = await User.findOne({ username });
         if (existingUser) {
-            return res.status(400).json({ message: 'A user with this Employee ID already exists.' });
-        }
-        
-        // Check for existing username (in case frontend sends different values)
-        const existingUsername = await User.findOne({ username: employeeId });
-        if (existingUsername) {
             return res.status(400).json({ message: 'A user with this username already exists.' });
         }
         
@@ -101,11 +95,10 @@ const registerUser = async (req, res) => {
             return res.status(400).json({ message: 'A user with this phone number already exists.' });
         }
         
-        // Create new user with both username and employeeId
+        // Create new user
         const newUser = new User({ 
             name, 
-            employeeId, 
-            username: employeeId, // Set username = employeeId for login
+            username,
             phone, 
             password, 
             role, 

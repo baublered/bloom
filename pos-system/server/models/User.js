@@ -9,7 +9,7 @@ const userSchema = new mongoose.Schema({
     required: true,
   },
   // This will serve as the login username.
-  employeeId: {
+  username: {
     type: String,
     required: true,
     unique: true,

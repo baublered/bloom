@@ -17,7 +17,7 @@ const Login = () => {
 
     try {
       const response = await axios.post('/api/auth/login', {
-        employeeId: username,
+        username: username,
         password,
         role: 'admin' // Specify that this is an admin login attempt
       });

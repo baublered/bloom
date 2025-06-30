@@ -231,7 +231,7 @@ const UserRegistration = () => {
 
       const submissionData = {
         name: `${formData.firstName.trim()} ${formData.middleInitial.trim()} ${formData.lastName.trim()}`.replace(/\s+/g, ' ').trim(),
-        employeeId: formData.username.trim(), // This will be used as both employeeId and username
+        username: formData.username.trim(),
         phone: formData.contactNumber.trim(),
         password: formData.password,
         role: formData.role,
@@ -285,7 +285,7 @@ const UserRegistration = () => {
         switch (status) {
           case 400:
             if (data.message.includes('already exists')) {
-              if (data.message.includes('Employee ID')) {
+              if (data.message.includes('username')) {
                 setValidationErrors({ username: 'This username is already taken' });
                 errorMessage = "Username already exists. Please choose a different username.";
               } else if (data.message.includes('email')) {

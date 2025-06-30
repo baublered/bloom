@@ -17,7 +17,7 @@ const EmployeeLogin = () => {
 
     try {
       const response = await axios.post('/api/auth/login', {
-        employeeId: username,
+        username: username,
         password,
         role: 'employee' // Specify that this is an employee login attempt
       });
