@@ -1,20 +1,17 @@
 const jwt = require('jsonwebtoken');
-const fs = require('fs');
-const path = require('path');
 
-// --- Read RSA Public Key ---
-// The key is in the root of the project, three levels above this file
-const publicKeyPath = path.join(__dirname, '..', '..', '..', 'public.pem');
-let publicKey;
+// --- Load RSA Public Key from Environment Variables ---
+let publicKey = process.env.RSA_PUBLIC_KEY;
 
-try {
-    publicKey = fs.readFileSync(publicKeyPath, 'utf8');
-    console.log('Successfully loaded RSA public key.');
-} catch (error) {
-    console.error('Error loading RSA public key:', error);
-    // Exit the process if the key is essential for the application to start.
+if (!publicKey) {
+    console.error('Error: RSA_PUBLIC_KEY must be set in environment variables');
     process.exit(1);
 }
+
+// Clean up the key - remove extra quotes and handle escaped newlines
+publicKey = publicKey.replace(/^["']|["']$/g, '').replace(/\\n/g, '\n');
+
+console.log('Successfully loaded RSA public key from environment variables.');
 
 // This function checks for a valid token in the request
 const authenticate = (req, res, next) => {

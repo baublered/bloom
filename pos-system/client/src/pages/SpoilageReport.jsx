@@ -59,6 +59,11 @@ const SpoilageReport = () => {
       </header>
 
       <main className="report-content" id="printable-spoilage-report">
+        {/* Print Title - only visible when printing */}
+        <div className="print-title print-only">
+          <h1>Spoilage Report</h1>
+        </div>
+
         {/* Section to manually trigger the spoilage process */}
         <div className="process-section no-print">
             <h2>Process Expired Stock</h2>
@@ -69,8 +74,26 @@ const SpoilageReport = () => {
             {processMessage && <p className="process-message">{processMessage}</p>}
         </div>
 
-        {loading && <p>Loading report...</p>}
-        {error && <p className="error-message">{error}</p>}
+        {loading && <p className="no-print">Loading report...</p>}
+        {error && <p className="error-message no-print">{error}</p>}
+        
+        {/* Summary Section */}
+        <div className="report-summary">
+            <div className="summary-item">
+                <span className="summary-label">Total Spoiled Items:</span>
+                <span className="summary-value">{spoiledProducts.length}</span>
+            </div>
+            <div className="summary-item">
+                <span className="summary-label">Total Quantity Spoiled:</span>
+                <span className="summary-value">
+                    {spoiledProducts.reduce((total, item) => total + item.quantitySpoiled, 0)} units
+                </span>
+            </div>
+            <div className="summary-item">
+                <span className="summary-label">Report Generated:</span>
+                <span className="summary-value">{new Date().toLocaleDateString()}</span>
+            </div>
+        </div>
         
         {/* Table of spoiled products */}
         <div className="report-section">
@@ -88,16 +111,24 @@ const SpoilageReport = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {spoiledProducts.map(p => (
-                            <tr key={p._id}>
-                                <td>{p.productName}</td>
-                                <td>{p.productCategory}</td>
-                                <td>{p.quantitySpoiled}</td>
-                                <td>{p.supplierName}</td>
-                                <td>{new Date(p.dateReceived).toLocaleDateString()}</td>
-                                <td>{new Date(p.dateSpoiled).toLocaleDateString()}</td>
+                        {spoiledProducts.length > 0 ? (
+                            spoiledProducts.map(p => (
+                                <tr key={p._id}>
+                                    <td>{p.productName}</td>
+                                    <td>{p.productCategory}</td>
+                                    <td>{p.quantitySpoiled}</td>
+                                    <td>{p.supplierName}</td>
+                                    <td>{new Date(p.dateReceived).toLocaleDateString()}</td>
+                                    <td>{new Date(p.dateSpoiled).toLocaleDateString()}</td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan="6" style={{ textAlign: 'center', fontStyle: 'italic', padding: '2rem' }}>
+                                    No spoiled products recorded yet.
+                                </td>
                             </tr>
-                        ))}
+                        )}
                     </tbody>
                 </table>
             </div>

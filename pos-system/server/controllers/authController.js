@@ -3,23 +3,31 @@ const Otp = require('../models/Otp');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
-const fs = require('fs');
-const path = require('path');
 
 // --- Read RSA Keys ---
-// The keys are in the root of the project, three levels above this file
-const privateKeyPath = path.join(__dirname, '..', '..', '..', 'private.pem');
+// Load RSA keys from environment variables and properly format them
+let privateKey = process.env.RSA_PRIVATE_KEY;
+let publicKey = process.env.RSA_PUBLIC_KEY;
 
-let privateKey;
-
-try {
-    privateKey = fs.readFileSync(privateKeyPath, 'utf8');
-    console.log('Successfully loaded RSA private key.');
-} catch (error) {
-    console.error('Error loading RSA private key:', error);
-    // Exit the process if the key is essential for the application to start.
+if (!privateKey || !publicKey) {
+    console.error('Error: RSA_PRIVATE_KEY and RSA_PUBLIC_KEY must be set in environment variables');
     process.exit(1);
 }
+
+// Clean up the keys - remove extra quotes and handle escaped newlines
+privateKey = privateKey.replace(/^["']|["']$/g, '').replace(/\\n/g, '\n');
+publicKey = publicKey.replace(/^["']|["']$/g, '').replace(/\\n/g, '\n');
+
+// Debug: Check if keys are properly formatted
+console.log('[DEBUG] Private key starts with:', privateKey.substring(0, 50));
+console.log('[DEBUG] Private key ends with:', privateKey.substring(privateKey.length - 50));
+console.log('[DEBUG] Private key length:', privateKey.length);
+console.log('[DEBUG] Has proper BEGIN/END markers:', 
+    privateKey.includes('-----BEGIN PRIVATE KEY-----') && 
+    privateKey.includes('-----END PRIVATE KEY-----'));
+console.log('Private key length:', privateKey.length);
+
+console.log('Successfully loaded RSA keys from environment variables.');
 
 // --- Nodemailer Transporter Setup ---
 const transporter = nodemailer.createTransport({

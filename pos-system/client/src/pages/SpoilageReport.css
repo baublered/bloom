@@ -46,6 +46,37 @@
   box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
 
+/* Summary Section */
+.report-summary {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+  flex-wrap: wrap;
+}
+
+.summary-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 200px;
+}
+
+.summary-label {
+  font-weight: 500;
+  color: #6c757d;
+  font-size: 0.875rem;
+}
+
+.summary-value {
+  font-weight: 600;
+  color: #212529;
+  font-size: 1.125rem;
+}
+
 .process-section {
     padding: 1.5rem;
     background-color: #e7f1ff;
@@ -119,32 +150,151 @@
     border-bottom: none;
 }
 
-/* --- Print-Specific Styles --- */
+/* Hide print-only elements on screen */
+.print-only {
+  display: none;
+}
+
+/* --- Print-Specific Styles for A4 Paper --- */
 @media print {
-  body, .spoilage-report-page {
-    background-color: #fff;
-    padding: 0;
-    margin: 0;
+  /* Set page size and margins for A4 */
+  @page {
+    size: A4;
+    margin: 15mm 10mm 15mm 10mm;
   }
 
-  /* Hide all non-report elements */
-  .report-header, .back-arrow, .print-button, .process-section {
+  /* Hide everything on the page by default */
+  body * {
+    visibility: hidden;
+  }
+
+  /* Make the report container and everything inside it visible */
+  .spoilage-report-page, .spoilage-report-page * {
+    visibility: visible;
+  }
+
+  /* Position the report to fill the page */
+  .spoilage-report-page {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    padding: 10px;
+    margin: 0;
+    font-size: 12px;
+    line-height: 1.3;
+  }
+
+  /* Hide elements we don't want to print */
+  .report-header .back-arrow,
+  .report-header .print-button,
+  .process-section {
     display: none;
   }
 
-  .report-content {
-    box-shadow: none;
-    border: none;
-    padding: 1rem;
+  /* General print styling */
+  body {
+    background: white;
+    font-size: 12px;
   }
 
-  .report-table, .report-table th, .report-table td {
-      border: 1px solid #ccc;
-      font-size: 10pt;
+  .report-header h1 {
+    text-align: center;
+    width: 100%;
+    font-size: 18px;
+    margin: 0 0 15px 0;
+    padding: 0;
   }
 
+  /* Compact summary section */
+  .report-summary {
+    visibility: visible;
+    width: 100%;
+    margin-bottom: 15px;
+    page-break-inside: avoid;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    background-color: #f8f9fa;
+  }
+
+  .summary-item {
+    display: flex;
+    flex-direction: column;
+    min-width: 120px;
+    text-align: center;
+  }
+
+  .summary-label {
+    font-size: 10px;
+    font-weight: normal;
+    color: #666;
+    margin-bottom: 2px;
+  }
+
+  .summary-value {
+    font-size: 12px;
+    font-weight: bold;
+    color: #000;
+  }
+
+  /* Section title */
+  .section-title {
+    font-size: 14px;
+    font-weight: bold;
+    margin: 10px 0 8px 0;
+    text-align: center;
+  }
+
+  /* Compact table styling */
+  .report-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 5px;
+    font-size: 9px;
+  }
+
+  .report-table th,
+  .report-table td {
+    border: 1px solid #666;
+    padding: 4px 3px;
+    text-align: left;
+    vertical-align: top;
+  }
+
+  .report-table th {
+    background-color: #e9ecef;
+    font-weight: bold;
+    font-size: 8px;
+    text-align: center;
+  }
+
+  .report-table tr {
+    page-break-inside: avoid;
+  }
+
+  /* Ensure table fits on page */
   .table-wrapper {
-      border: none;
-      overflow: visible;
+    overflow: visible;
+  }
+
+  /* Print-only title */
+  .print-only {
+    display: block;
+  }
+
+  .no-print {
+    display: none;
+  }
+
+  /* Adjust content area */
+  .report-content {
+    padding: 5px;
+    box-shadow: none;
+    border-radius: 0;
+    background: white;
   }
 }

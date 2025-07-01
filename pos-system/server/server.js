@@ -21,6 +21,7 @@ app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/api/transactions', require('./routes/transactionRoutes'));
 app.use('/api/spoilage', require('./routes/spoilageRoutes'));
+app.use('/api/dashboard', require('./routes/dashboardRoutes'));
 
 
 // Database Connection

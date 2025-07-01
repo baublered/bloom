@@ -14,6 +14,7 @@ const Inventory = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
+  const [sortOption, setSortOption] = useState('fifo'); // Default to FIFO sorting
   
   const [notifications, setNotifications] = useState([]);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
@@ -182,13 +183,61 @@ const Inventory = () => {
     fetchAndProcessData();
   }, []);
 
-  // Search logic
+  // FIFO and other sorting algorithms
+  const sortProducts = (products, sortType) => {
+    const sortedProducts = [...products];
+    
+    switch (sortType) {
+      case 'fifo':
+        // FIFO: Sort by dateReceived (oldest first)
+        return sortedProducts.sort((a, b) => new Date(a.dateReceived) - new Date(b.dateReceived));
+      
+      case 'expiry':
+        // Sort by expiration date (soonest to expire first)
+        return sortedProducts.sort((a, b) => {
+          const expiryA = new Date(a.dateReceived);
+          expiryA.setDate(expiryA.getDate() + (a.lifespanInDays || 0));
+          const expiryB = new Date(b.dateReceived);
+          expiryB.setDate(expiryB.getDate() + (b.lifespanInDays || 0));
+          return expiryA - expiryB;
+        });
+      
+      case 'quantity-low':
+        // Sort by quantity (lowest first) - good for identifying low stock
+        return sortedProducts.sort((a, b) => a.quantity - b.quantity);
+      
+      case 'quantity-high':
+        // Sort by quantity (highest first)
+        return sortedProducts.sort((a, b) => b.quantity - a.quantity);
+      
+      case 'alphabetical':
+        // Sort alphabetically by product name
+        return sortedProducts.sort((a, b) => a.productName.localeCompare(b.productName));
+      
+      case 'price-low':
+        // Sort by price (lowest first)
+        return sortedProducts.sort((a, b) => (a.price || 0) - (b.price || 0));
+      
+      case 'price-high':
+        // Sort by price (highest first)
+        return sortedProducts.sort((a, b) => (b.price || 0) - (a.price || 0));
+      
+      default:
+        return sortedProducts;
+    }
+  };
+
+  // Search and sort logic
   useEffect(() => {
-    const results = products.filter(product =>
+    let results = products.filter(product =>
       product.productName.toLowerCase().includes(searchTerm.toLowerCase())
     );
+    
+    // Apply sorting after filtering
+    results = sortProducts(results, sortOption);
+    
     setFilteredProducts(results);
-  }, [searchTerm, products]);
+  }, [searchTerm, products, sortOption]);
   
   const calculateRemainingLifespan = (dateReceived, lifespanInDays) => {
     if (!dateReceived || !lifespanInDays) return 'N/A';
@@ -207,84 +256,132 @@ const Inventory = () => {
       {!isEmployeeDashboard && <Sidebar />}
       
       <main className="dashboard-main">
-        {/* Only render header when not in employee dashboard */}
-        {!isEmployeeDashboard && (
-          <header className="dashboard-header">
-            <h1>Inventory</h1>
-            <div className="header-right">
-              <div className="notification-bell-container">
-                <button className="notification-bell" onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}>
-                  🔔
-                  {notifications.length > 0 && <span className="notification-badge">{notifications.length}</span>}
-                </button>
-                {isNotificationsOpen && (
-                  <div className="notification-dropdown">
-                    {notifications.length > 0 ? (
-                      <>
-                        <div className="notification-header">
-                          <h4>Notifications ({notifications.length})</h4>
-                        </div>
-                        {notifications.map(notif => (
-                          <div key={notif.id} className={`notification-item ${notif.type}`}>
-                            <span className={`notification-icon ${notif.type}`}>
-                              {notif.type === 'alert' ? '⚠️' : 
-                               notif.type === 'recommendation' ? '🌺' : 
-                               notif.type === 'holiday' ? '🎉' : '!'}
-                            </span>
-                            <div className="notification-text">
-                              <p className="notification-title">{notif.title}</p>
-                              <p className="notification-message">{notif.message}</p>
-                              {notif.season && <span className="notification-season">Season: {notif.season}</span>}
-                              {notif.holiday && <span className="notification-holiday">Event: {notif.holiday}</span>}
-                            </div>
-                            <span className="notification-time">{notif.time}</span>
-                          </div>
-                        ))}
-                      </>
-                    ) : (
-                      <p className="no-notifications">No new notifications.</p>
-                    )}
-                  </div>
-                )}
-              </div>
-              <UserProfile />
-            </div>
-          </header>
-        )}
-
         <div className="inventory-content">
-          <div className="search-bar">
-            <span>Products</span>
-            <input 
-              type="text" 
-              placeholder="Search by product name..." 
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
+          <div className="inventory-controls">
+            <div className="search-bar">
+              <span>Products</span>
+              <input 
+                type="text" 
+                placeholder="Search by product name..." 
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+            
+            <div className="sort-controls">
+              <label htmlFor="sortOption">Sort by:</label>
+              <select 
+                id="sortOption"
+                value={sortOption} 
+                onChange={(e) => setSortOption(e.target.value)}
+                className="sort-dropdown"
+              >
+                <option value="fifo">🕐 FIFO (Oldest First)</option>
+                <option value="expiry">⏰ Expiry Date (Urgent First)</option>
+                <option value="quantity-low">📦 Low Stock First</option>
+                <option value="quantity-high">📦 High Stock First</option>
+                <option value="alphabetical">🔤 Name (A-Z)</option>
+                <option value="price-low">💰 Price (Low to High)</option>
+                <option value="price-high">💰 Price (High to Low)</option>
+              </select>
+            </div>
+            
+            <div className="inventory-summary">
+              <span className="total-products">Total: {filteredProducts.length} products</span>
+              {sortOption === 'fifo' && (
+                <span className="fifo-indicator">
+                  🔄 FIFO Active - Showing oldest stock first
+                </span>
+              )}
+            </div>
           </div>
           <div className="table-wrapper">
             <table className="inventory-table">
               <thead>
                 <tr>
-                  <th>Product ID</th><th>Product Name</th><th>Category</th><th>Qty</th><th>Price</th><th>Supplier Name</th><th>Date Received</th><th>Remaining Lifespan</th><th>Status</th>
+                  <th>
+                    {sortOption === 'fifo' && <span className="fifo-header">🔄 </span>}
+                    Product ID
+                  </th>
+                  <th>Product Name</th>
+                  <th>Category</th>
+                  <th>Qty</th>
+                  <th>Price</th>
+                  <th>Supplier Name</th>
+                  <th>
+                    Date Received
+                    {sortOption === 'fifo' && <span className="sort-indicator"> ↑ OLDEST FIRST</span>}
+                  </th>
+                  <th>
+                    Remaining Lifespan
+                    {sortOption === 'expiry' && <span className="sort-indicator"> ⚠️</span>}
+                  </th>
+                  <th>Status</th>
+                  <th>Priority</th>
                 </tr>
               </thead>
               <tbody>
-                {filteredProducts.map((p) => (
-                  <tr key={p._id}>
-                    <td>{p._id.slice(-6).toUpperCase()}</td>
-                    <td>{p.productName}</td>
-                    <td>{p.productCategory}</td>
-                    <td>{p.quantity}</td>
-                    <td>₱{(p.price || 0).toFixed(2)}</td>
-                    <td>{p.supplierName}</td>
-                    <td>{new Date(p.dateReceived).toLocaleDateString()}</td>
-                    <td>{calculateRemainingLifespan(p.dateReceived, p.lifespanInDays)}</td>
-                    <td>
-                      <span className={`status-dot ${p.quantity > 10 ? 'good' : 'low'}`}></span>
-                    </td>
-                  </tr>
-                ))}
+                {filteredProducts.map((p, index) => {
+                  const remainingLifespan = calculateRemainingLifespan(p.dateReceived, p.lifespanInDays);
+                  const isExpired = remainingLifespan === 'Expired';
+                  const isExpiringSoon = remainingLifespan.includes('days') && parseInt(remainingLifespan) <= 3;
+                  const isLowStock = p.quantity <= 10;
+                  
+                  // Calculate FIFO priority (for FIFO sorting, earlier items have higher priority)
+                  const getFifoPriority = () => {
+                    if (sortOption === 'fifo') {
+                      if (index < 3) return 'high';
+                      if (index < 6) return 'medium';
+                      return 'low';
+                    }
+                    return 'normal';
+                  };
+                  
+                  const fifoPriority = getFifoPriority();
+                  
+                  return (
+                    <tr key={p._id} className={`
+                      ${isExpired ? 'expired-row' : ''} 
+                      ${isExpiringSoon ? 'expiring-soon-row' : ''} 
+                      ${isLowStock ? 'low-stock-row' : ''}
+                      ${fifoPriority !== 'normal' ? `fifo-priority-${fifoPriority}` : ''}
+                    `}>
+                      <td>
+                        {sortOption === 'fifo' && index < 3 && <span className="fifo-indicator">🎯 </span>}
+                        {p._id.slice(-6).toUpperCase()}
+                      </td>
+                      <td>{p.productName}</td>
+                      <td>{p.productCategory}</td>
+                      <td>
+                        {p.quantity}
+                        {isLowStock && <span className="low-stock-warning"> ⚠️</span>}
+                      </td>
+                      <td>₱{(p.price || 0).toFixed(2)}</td>
+                      <td>{p.supplierName}</td>
+                      <td>
+                        {new Date(p.dateReceived).toLocaleDateString()}
+                        {sortOption === 'fifo' && index === 0 && <span className="oldest-badge"> OLDEST</span>}
+                      </td>
+                      <td>
+                        <span className={`lifespan ${isExpired ? 'expired' : isExpiringSoon ? 'expiring-soon' : ''}`}>
+                          {remainingLifespan}
+                        </span>
+                      </td>
+                      <td>
+                        <span className={`status-dot ${p.quantity > 10 ? 'good' : 'low'}`}></span>
+                      </td>
+                      <td>
+                        <span className={`priority-badge ${fifoPriority}`}>
+                          {fifoPriority === 'high' && sortOption === 'fifo' ? 'USE FIRST' :
+                           fifoPriority === 'medium' && sortOption === 'fifo' ? 'USE NEXT' :
+                           isExpired ? 'SPOILED' :
+                           isExpiringSoon ? 'URGENT' :
+                           isLowStock ? 'RESTOCK' : 'NORMAL'}
+                        </span>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
