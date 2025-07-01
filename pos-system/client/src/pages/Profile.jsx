@@ -142,7 +142,7 @@ const Profile = () => {
         try {
             // We can reuse the login endpoint to verify the password
             await axios.post('/api/auth/login', { 
-                employeeId: user.employeeId, 
+                username: user.username, 
                 password: passwordToVerify,
                 role: user.role
             });
@@ -154,6 +154,7 @@ const Profile = () => {
             setSuccessMessage('Email field unlocked! You can now edit your email address.');
             setTimeout(() => setSuccessMessage(''), 3000);
         } catch (err) {
+            console.error('Password verification error:', err);
             alert("Incorrect password. Please try again.");
         }
     };
@@ -292,7 +293,7 @@ const Profile = () => {
                             </div>
                         </div>
 
-                        <div className="input-group"><label>Username:</label><input type="text" value={user.employeeId || ''} disabled /></div>
+                        <div className="input-group"><label>Username:</label><input type="text" value={user.username || ''} disabled /></div>
                         <div className="input-group"><label>Phone Number:</label><input type="tel" name="phone" value={formData.phone} onChange={handleInputChange} disabled={!isEditing} /></div>
                         <div className="input-group"><label>Role:</label><input type="text" value={user.role || ''} disabled /></div>
                         

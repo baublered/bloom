@@ -73,7 +73,7 @@ const EmployeeDashboardHome = () => {
         <div className="dashboard-home-page">
             {user && (
                 <div className="welcome-section">
-                    <h2>Welcome back, {user.username}!</h2>
+                    <h2>Welcome back</h2>
                     <p>Here's what's happening with your store today.</p>
                 </div>
             )}

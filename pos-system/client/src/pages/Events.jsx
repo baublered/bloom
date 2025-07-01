@@ -8,7 +8,7 @@ import UserProfile from './UserProfile';
 import { useRoleBasedNavigation } from '../utils/navigation';
 
 // --- Event Popover Component ---
-const EventPopover = ({ events, position, onClose, onView, onCancel }) => {
+const EventPopover = ({ events, position, onClose, onView, onCancel, onAddNew }) => {
     const popoverRef = useRef();
 
     useEffect(() => {
@@ -27,11 +27,12 @@ const EventPopover = ({ events, position, onClose, onView, onCancel }) => {
         <div className="event-popover" ref={popoverRef} style={{ top: position.y, left: position.x }}>
             <div className="popover-header">
                 Schedule for: {new Date(events[0].eventDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                <button className="add-event-btn-popover" onClick={onAddNew} title="Add another event">+ Add Event</button>
             </div>
             <div className="popover-content">
                 {events.map(event => (
                     <div key={event._id} className="popover-event-item">
-                        <span className="event-name">{event.customerName}</span>
+                        <span className="event-name">{event.eventType} - {event.customerName}</span>
                         <div className="popover-actions">
                             <button className="popover-btn view" onClick={() => onView(event)}>View Details</button>
                             <button className="popover-btn cancel" onClick={() => onCancel(event)}>Cancel Event</button>
@@ -117,9 +118,14 @@ const Events = () => {
           events: eventsOnDate
       });
     } else {
-      setForm({ customerName: '', address: '', phone: '', eventType: '', notes: '' });
-      setIsFormModalOpen(true);
+      openNewEventForm();
     }
+  };
+
+  const openNewEventForm = () => {
+    setForm({ customerName: '', address: '', phone: '', eventType: '', notes: '' });
+    setIsFormModalOpen(true);
+    setPopover({ visible: false }); // Close popover if open
   };
 
   const handleInputChange = (e) => {
@@ -232,7 +238,10 @@ const Events = () => {
         <div className="content-card">
           <div className="card-header">
             <h2>Events Transaction</h2>
-            <button className="add-event-button" onClick={(e) => handleDateClick(new Date().getDate(), e)}>
+            <button className="add-event-button" onClick={() => {
+              setSelectedDate(new Date().toISOString().split('T')[0]);
+              openNewEventForm();
+            }}>
               <span className="plus-icon">+</span> Add an Event
             </button>
           </div>
@@ -275,7 +284,12 @@ const Events = () => {
       {isFormModalOpen && (
         <div className="event-form-modal">
           <form className="modal-form" onSubmit={handleFormSubmit}>
-            <h3>Schedule for {selectedDate}</h3>
+            <h3>
+              {selectedDate ? 
+                `Schedule for ${new Date(selectedDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}` : 
+                'Schedule New Event'
+              }
+            </h3>
             <input type="text" name="customerName" value={form.customerName} onChange={handleInputChange} placeholder="Customer Name" required />
             <input type="text" name="address" value={form.address} onChange={handleInputChange} placeholder="Address" required />
             <input type="text" name="phone" value={form.phone} onChange={handleInputChange} placeholder="Phone Number" required />
@@ -283,7 +297,7 @@ const Events = () => {
               <option value="">Type of Event</option>
               <option value="Wedding">Wedding</option><option value="Debut">Debut</option><option value="Birthday">Birthday</option><option value="Other">Other</option>
             </select>
-            <textarea name="notes" value={form.notes} onChange={handleInputChange} placeholder="Notes" />
+            <textarea name="notes" value={form.notes} onChange={handleInputChange} placeholder="Notes (optional)" />
             <div className="form-actions">
               <button type="submit">Save & Proceed</button>
               <button type="button" className="cancel-button" onClick={() => setIsFormModalOpen(false)}>Discard</button>
@@ -299,6 +313,7 @@ const Events = () => {
           onClose={() => setPopover({ visible: false })}
           onView={handleViewEventDetails}
           onCancel={handleCancelEvent}
+          onAddNew={openNewEventForm}
         />
       )}
 
@@ -352,6 +367,12 @@ const Events = () => {
                 <span className="detail-label">Event:</span>
                 <span className="detail-value">{selectedEventDetails.eventType}</span>
               </div>
+              {selectedEventDetails.notes && (
+                <div className="detail-row">
+                  <span className="detail-label">Notes:</span>
+                  <span className="detail-value">{selectedEventDetails.notes}</span>
+                </div>
+              )}
               <div className="detail-row">
                 <span className="detail-label">Amount of Down Payment:</span>
                 <span className="detail-value">₱{

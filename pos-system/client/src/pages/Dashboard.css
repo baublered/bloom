@@ -191,9 +191,19 @@ body, h1, h2, h3, p, ul {
   font-size: 1rem;
   margin: 0.75rem 0;
   color: #6c757d;
+  line-height: 1.6;
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.card p .label {
+  flex: 1;
+}
+
+.card p strong {
+  flex-shrink: 0;
+  text-align: right;
 }
 
 .card strong {

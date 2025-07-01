@@ -87,27 +87,27 @@ function Dashboard() {
         <section className="dashboard-content">
           <div className="card sales-overview">
             <h3>Sales Overview</h3>
-            <p>Total Sales: <strong>{dashboardData.sales.totalSales}</strong></p>
-            <p>Total Revenue: <strong>{formatCurrency(dashboardData.sales.totalRevenue)}</strong></p>
-            <p>Today's Sales: <strong>{dashboardData.sales.todaySales}</strong></p>
-            <p>Today's Revenue: <strong>{formatCurrency(dashboardData.sales.todayRevenue)}</strong></p>
-            <p>Avg. Order Value: <strong>{formatCurrency(dashboardData.sales.averageOrderValue)}</strong></p>
+            <p><span className="label">Total Sales:</span> <strong>{dashboardData.sales.totalSales}</strong></p>
+            <p><span className="label">Total Revenue:</span> <strong>{formatCurrency(dashboardData.sales.totalRevenue)}</strong></p>
+            <p><span className="label">Today's Sales:</span> <strong>{dashboardData.sales.todaySales}</strong></p>
+            <p><span className="label">Today's Revenue:</span> <strong>{formatCurrency(dashboardData.sales.todayRevenue)}</strong></p>
+            <p><span className="label">Avg. Order Value:</span> <strong>{formatCurrency(dashboardData.sales.averageOrderValue)}</strong></p>
           </div>
 
           <div className="card inventory-summary">
             <h3>Inventory Summary</h3>
-            <p>Quantity in Hand: <strong>{dashboardData.inventory.totalQuantityInHand}</strong></p>
-            <p>Total Items: <strong>{dashboardData.inventory.totalItems}</strong></p>
-            <p>Inventory Value: <strong>{formatCurrency(dashboardData.inventory.inventoryValue)}</strong></p>
-            <p>Near Expiry: <strong>{dashboardData.inventory.nearExpiryProducts}</strong></p>
+            <p><span className="label">Quantity in Hand:</span> <strong>{dashboardData.inventory.totalQuantityInHand}</strong></p>
+            <p><span className="label">Total Items:</span> <strong>{dashboardData.inventory.totalItems}</strong></p>
+            <p><span className="label">Inventory Value:</span> <strong>{formatCurrency(dashboardData.inventory.inventoryValue)}</strong></p>
+            <p><span className="label">Near Expiry:</span> <strong>{dashboardData.inventory.nearExpiryProducts}</strong></p>
           </div>
 
           <div className="card product-details">
             <h3>Product Details</h3>
-            <p>Low Stock Items: <strong>{dashboardData.products.lowStockItems.toString().padStart(2, '0')}</strong></p>
-            <p>Total Products: <strong>{dashboardData.products.totalProducts}</strong></p>
-            <p>Spoiled Products: <strong>{dashboardData.products.spoiledProducts.toString().padStart(2, '0')}</strong></p>
-            <p>Near Expiry: <strong>{dashboardData.products.nearExpiryProducts.toString().padStart(2, '0')}</strong></p>
+            <p><span className="label">Low Stock Items:</span> <strong>{dashboardData.products.lowStockItems.toString().padStart(2, '0')}</strong></p>
+            <p><span className="label">Total Products:</span> <strong>{dashboardData.products.totalProducts}</strong></p>
+            <p><span className="label">Spoiled Products:</span> <strong>{dashboardData.products.spoiledProducts.toString().padStart(2, '0')}</strong></p>
+            <p><span className="label">Near Expiry:</span> <strong>{dashboardData.products.nearExpiryProducts.toString().padStart(2, '0')}</strong></p>
           </div>
 
           {/* Additional insights section */}

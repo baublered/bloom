@@ -51,8 +51,27 @@ const Receipt = () => {
         initialDownpayment = 0,
         finalRemainingBalance = 0,
         // Legacy props for retail
-        amountPaid = 0
+        amountPaid = 0,
+        // Receipt details
+        invoiceId,
+        transactionId,
+        eventId
     } = location.state || {};
+
+    // Generate dynamic invoice ID if not provided
+    const getInvoiceId = () => {
+        if (invoiceId) return invoiceId;
+        if (transactionId) return `TXN-${transactionId}`;
+        if (eventId) return `EVT-${eventId}`;
+        // Fallback: generate based on timestamp
+        return `INV-${Date.now().toString().slice(-6)}`;
+    };
+
+    // Get cashier name from user token
+    const getCashierName = () => {
+        if (user?.name) return user.name;
+        return 'Unknown Cashier';
+    };
     
     // Fallback for direct navigation
     if (orderSummary.length === 0) {
@@ -101,8 +120,8 @@ const Receipt = () => {
                         </div>
                         <div className="receipt-info">
                             <div className="info-left">
-                                <p>Invoice ID: 001</p>
-                                <p>Cashier Name: Employee 1</p>
+                                <p>Invoice ID: {getInvoiceId()}</p>
+                                <p>Cashier Name: {getCashierName()}</p>
                             </div>
                             <div className="info-right">
                                 <p>{new Date().toLocaleDateString()}</p>

@@ -226,21 +226,21 @@ const sendOtp = async (req, res) => {
 
         // Prepare email content
         const mailOptions = {
-            from: `"BloomTrack POS" <${process.env.EMAIL_USER}>`,
+            from: `"BloomTrack" <${process.env.EMAIL_USER}>`,
             to: email,
-            subject: 'Password Reset OTP - BloomTrack POS',
+            subject: 'Password Reset OTP - BloomTrack',
             html: `
                 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f8f9fa;">
                     <div style="background-color: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
                         <div style="text-align: center; margin-bottom: 30px;">
-                            <h1 style="color: #333; margin: 0; font-size: 28px;">🌸 BloomTrack POS</h1>
+                            <h1 style="color: #333; margin: 0; font-size: 28px;">🌸 BloomTrack</h1>
                         </div>
                         
                         <h2 style="color: #333; margin-bottom: 20px; text-align: center;">Password Reset Request</h2>
                         
                         <p style="color: #666; font-size: 16px; line-height: 1.6; margin-bottom: 25px;">
                             Hello,<br><br>
-                            You have requested to reset your password for your BloomTrack POS account. 
+                            You have requested to reset your password for your BloomTrack account. 
                             Please use the following One-Time Password (OTP) to continue:
                         </p>
                         
@@ -260,7 +260,7 @@ const sendOtp = async (req, res) => {
                         </div>
                         
                         <p style="color: #666; font-size: 14px; text-align: center; margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px;">
-                            <strong>BloomTrack POS System</strong><br>
+                            <strong>BloomTrack System</strong><br>
                             This is an automated message, please do not reply.
                         </p>
                     </div>
