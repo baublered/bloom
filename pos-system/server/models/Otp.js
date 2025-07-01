@@ -10,6 +10,15 @@ const otpSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  isVerified: {
+    type: Boolean,
+    default: false,
+  },
+  attempts: {
+    type: Number,
+    default: 0,
+    max: 5, // Maximum 5 attempts before blocking
+  },
   createdAt: {
     type: Date,
     default: Date.now,

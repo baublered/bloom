@@ -36,6 +36,10 @@ const userSchema = new mongoose.Schema({
   },
   resetPasswordOtp: String,
   resetPasswordExpires: Date,
+  passwordResetAt: {
+    type: Date,
+    default: null,
+  },
   role: {
     type: String,
     required: true,
@@ -55,7 +59,7 @@ userSchema.pre('save', async function(next) {
         return next();
     }
     try {
-        const salt = await bcrypt.genSalt(10);
+        const salt = await bcrypt.genSalt(12); // Increased salt rounds for better security
         this.password = await bcrypt.hash(this.password, salt);
         next();
     } catch (error) {

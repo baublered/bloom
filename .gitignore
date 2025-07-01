@@ -100,3 +100,29 @@ Thumbs.db
 # Uploads
 uploads/
 */uploads/
+
+# Ignore private keys and sensitive files
+*.pem
+*.key
+.env
+.env.*
+!.env.template
+
+# Server-specific key files
+pos-system/server/private.pem
+pos-system/server/public.pem
+
+# Email configuration files
+*gmail.config.js
+*email.config.js
+
+# Test files with sensitive data
+test_email.js
+test_credentials.js
+
+# Backup files
+*.backup
+*.bak
+
+# Temporary OTP test files
+temp_otp_*

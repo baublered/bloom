@@ -167,19 +167,318 @@ const registerUser = async (req, res) => {
     }
 };
 
-// --- OTP Sending Function ---
+// --- Send OTP Function ---
 const sendOtp = async (req, res) => {
-    // ... (Your existing sendOtp logic)
+    try {
+        const { email } = req.body;
+
+        if (!email) {
+            return res.status(400).json({ success: false, message: 'Email is required.' });
+        }
+
+        // Validate email format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            return res.status(400).json({ success: false, message: 'Invalid email format.' });
+        }
+
+        // Check if user exists with this email
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'No user found with this email address.' });
+        }
+
+        // Check for existing OTP requests (rate limiting)
+        const existingOtp = await Otp.findOne({ email });
+        if (existingOtp) {
+            const timeSinceCreation = Date.now() - existingOtp.createdAt.getTime();
+            const minWaitTime = 60000; // 1 minute between requests
+            
+            if (timeSinceCreation < minWaitTime) {
+                const remainingTime = Math.ceil((minWaitTime - timeSinceCreation) / 1000);
+                return res.status(429).json({ 
+                    success: false, 
+                    message: `Please wait ${remainingTime} seconds before requesting another OTP.` 
+                });
+            }
+        }
+
+        // Generate a secure 6-digit OTP
+        const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+        // Save OTP to database (will auto-expire after 10 minutes)
+        await Otp.findOneAndDelete({ email }); // Remove any existing OTP for this email
+        const otpDoc = new Otp({ 
+            email, 
+            otp, 
+            isVerified: false, 
+            attempts: 0 
+        });
+        await otpDoc.save();
+
+        // Prepare email content
+        const mailOptions = {
+            from: `"BloomTrack POS" <${process.env.EMAIL_USER}>`,
+            to: email,
+            subject: 'Password Reset OTP - BloomTrack POS',
+            html: `
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f8f9fa;">
+                    <div style="background-color: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                        <div style="text-align: center; margin-bottom: 30px;">
+                            <h1 style="color: #333; margin: 0; font-size: 28px;">🌸 BloomTrack POS</h1>
+                        </div>
+                        
+                        <h2 style="color: #333; margin-bottom: 20px; text-align: center;">Password Reset Request</h2>
+                        
+                        <p style="color: #666; font-size: 16px; line-height: 1.6; margin-bottom: 25px;">
+                            Hello,<br><br>
+                            You have requested to reset your password for your BloomTrack POS account. 
+                            Please use the following One-Time Password (OTP) to continue:
+                        </p>
+                        
+                        <div style="text-align: center; margin: 30px 0;">
+                            <div style="background: linear-gradient(135deg, #007bff, #0056b3); color: white; padding: 20px 30px; border-radius: 8px; display: inline-block; font-size: 32px; font-weight: bold; letter-spacing: 4px; box-shadow: 0 4px 15px rgba(0,123,255,0.3);">
+                                ${otp}
+                            </div>
+                        </div>
+                        
+                        <div style="background-color: #fff3cd; border: 1px solid #ffeaa7; border-radius: 6px; padding: 15px; margin: 25px 0;">
+                            <p style="color: #856404; margin: 0; font-size: 14px;">
+                                <strong>⚠️ Security Notice:</strong><br>
+                                • This OTP will expire in <strong>10 minutes</strong><br>
+                                • Do not share this code with anyone<br>
+                                • If you didn't request this, please ignore this email
+                            </p>
+                        </div>
+                        
+                        <p style="color: #666; font-size: 14px; text-align: center; margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px;">
+                            <strong>BloomTrack POS System</strong><br>
+                            This is an automated message, please do not reply.
+                        </p>
+                    </div>
+                </div>
+            `
+        };
+
+        // Send email
+        await transporter.sendMail(mailOptions);
+
+        console.log(`OTP sent to ${email}: ${otp}`); // For debugging (remove in production)
+
+        res.status(200).json({ 
+            success: true, 
+            message: 'OTP has been sent to your email address. Please check your inbox and spam folder.',
+            expiresIn: '10 minutes'
+        });
+
+    } catch (error) {
+        console.error('Send OTP Error:', error);
+        
+        // Handle specific email errors
+        if (error.code === 'EAUTH') {
+            res.status(500).json({ 
+                success: false, 
+                message: 'Email service authentication failed. Please contact administrator.' 
+            });
+        } else if (error.code === 'ENOTFOUND') {
+            res.status(500).json({ 
+                success: false, 
+                message: 'Email service is currently unavailable. Please try again later.' 
+            });
+        } else {
+            res.status(500).json({ 
+                success: false, 
+                message: 'Failed to send OTP. Please try again later.' 
+            });
+        }
+    }
 };
 
-// --- OTP Verification Function ---
+// --- Verify OTP Function ---
 const verifyOtp = async (req, res) => {
-    // ... (Your existing verifyOtp logic)
+    try {
+        const { email, otp } = req.body;
+
+        if (!email || !otp) {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'Email and OTP are required.' 
+            });
+        }
+
+        // Validate email format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            return res.status(400).json({ success: false, message: 'Invalid email format.' });
+        }
+
+        // Validate OTP format (6 digits)
+        if (!/^\d{6}$/.test(otp)) {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'OTP must be a 6-digit number.' 
+            });
+        }
+
+        // Find OTP in database
+        const otpDoc = await Otp.findOne({ email });
+
+        if (!otpDoc) {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'No OTP found for this email or OTP has expired.' 
+            });
+        }
+
+        // Check if OTP has already been verified
+        if (otpDoc.isVerified) {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'OTP has already been used. Please request a new one.' 
+            });
+        }
+
+        // Check if too many attempts have been made
+        if (otpDoc.attempts >= 5) {
+            await Otp.findOneAndDelete({ email }); // Delete OTP after max attempts
+            return res.status(429).json({ 
+                success: false, 
+                message: 'Too many invalid attempts. Please request a new OTP.' 
+            });
+        }
+
+        // Check if OTP matches
+        if (otpDoc.otp !== otp) {
+            // Increment attempts
+            otpDoc.attempts += 1;
+            await otpDoc.save();
+            
+            const remainingAttempts = 5 - otpDoc.attempts;
+            return res.status(400).json({ 
+                success: false, 
+                message: `Invalid OTP. ${remainingAttempts} attempts remaining.` 
+            });
+        }
+
+        // OTP is valid - mark as verified but don't delete yet
+        otpDoc.isVerified = true;
+        await otpDoc.save();
+
+        res.status(200).json({ 
+            success: true, 
+            message: 'OTP verified successfully. You can now reset your password.' 
+        });
+
+    } catch (error) {
+        console.error('Verify OTP Error:', error);
+        res.status(500).json({ 
+            success: false, 
+            message: 'Failed to verify OTP. Please try again.' 
+        });
+    }
 };
 
-// --- Password Reset Function ---
+// --- Reset Password Function ---
 const resetPassword = async (req, res) => {
-    // ... (Your existing resetPassword logic)
+    try {
+        const { email, otp, newPassword } = req.body;
+
+        if (!email || !otp || !newPassword) {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'Email, OTP, and new password are required.' 
+            });
+        }
+
+        // Validate email format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            return res.status(400).json({ success: false, message: 'Invalid email format.' });
+        }
+
+        // Validate password strength
+        if (newPassword.length < 6) {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'Password must be at least 6 characters long.' 
+            });
+        }
+
+        if (newPassword.length > 128) {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'Password must be less than 128 characters long.' 
+            });
+        }
+
+        // Check for basic password requirements
+        const hasUpperCase = /[A-Z]/.test(newPassword);
+        const hasLowerCase = /[a-z]/.test(newPassword);
+        const hasNumbers = /\d/.test(newPassword);
+        
+        if (!hasUpperCase || !hasLowerCase || !hasNumbers) {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'Password must contain at least one uppercase letter, one lowercase letter, and one number.' 
+            });
+        }
+
+        // Verify OTP is valid and has been verified
+        const otpDoc = await Otp.findOne({ email, otp });
+        if (!otpDoc) {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'Invalid or expired OTP. Please request a new one.' 
+            });
+        }
+
+        if (!otpDoc.isVerified) {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'OTP has not been verified. Please verify your OTP first.' 
+            });
+        }
+
+        // Find user
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(404).json({ 
+                success: false, 
+                message: 'User not found.' 
+            });
+        }
+
+        // Check if new password is different from current password
+        const isSamePassword = await bcrypt.compare(newPassword, user.password);
+        if (isSamePassword) {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'New password must be different from your current password.' 
+            });
+        }
+
+        // Set new password - the User model's pre('save') hook will handle hashing
+        user.password = newPassword;
+        user.passwordResetAt = new Date(); // Track when password was reset
+        await user.save();
+
+        // Delete the OTP after successful password reset
+        await Otp.findOneAndDelete({ email, otp });
+
+        console.log(`Password reset successful for user: ${email}`);
+
+        res.status(200).json({ 
+            success: true, 
+            message: 'Password has been reset successfully. You can now log in with your new password.' 
+        });
+
+    } catch (error) {
+        console.error('Reset Password Error:', error);
+        res.status(500).json({ 
+            success: false, 
+            message: 'Failed to reset password. Please try again.' 
+        });
+    }
 };
 
 // --- NEW: Get Logged-In User's Profile ---

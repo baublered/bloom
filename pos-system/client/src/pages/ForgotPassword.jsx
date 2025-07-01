@@ -17,9 +17,17 @@ const ForgotPassword = () => {
     setError('');
     setSuccessMessage('');
 
+    // Add a timeout to prevent the button from being stuck indefinitely
+    const timeoutId = setTimeout(() => {
+      setIsLoading(false);
+      setError('Request timed out. Please check your connection and try again.');
+    }, 30000); // 30 second timeout
+
     try {
       // --- UPDATED: Sending email to the backend ---
       const response = await axios.post('/api/auth/send-otp', { email });
+
+      clearTimeout(timeoutId);
 
       if (response.data.success) {
         setSuccessMessage('OTP has been sent to your email. Redirecting...');
@@ -27,9 +35,24 @@ const ForgotPassword = () => {
         setTimeout(() => {
             navigate('/verify-otp', { state: { email } });
         }, 2000);
+      } else {
+        setError(response.data.message || 'Failed to send OTP.');
       }
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to send OTP.');
+      clearTimeout(timeoutId);
+      console.error('Send OTP error:', err);
+      
+      if (err.code === 'ECONNABORTED') {
+        setError('Request timed out. Please check your connection and try again.');
+      } else if (err.response) {
+        // Server responded with an error
+        setError(err.response.data?.message || 'Failed to send OTP.');
+      } else if (err.request) {
+        // Network error
+        setError('Network error. Please check your connection and try again.');
+      } else {
+        setError('An unexpected error occurred. Please try again.');
+      }
     } finally {
       setIsLoading(false);
     }
