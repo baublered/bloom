@@ -8,7 +8,7 @@ import UserProfile from './UserProfile';
 import { useRoleBasedNavigation } from '../utils/navigation';
 
 // --- Event Popover Component ---
-const EventPopover = ({ events, position, onClose, onView, onCancel, onAddNew }) => {
+const EventPopover = ({ events, position, onClose, onView, onCancel, onDelete, onAddNew }) => {
     const popoverRef = useRef();
 
     useEffect(() => {
@@ -35,7 +35,11 @@ const EventPopover = ({ events, position, onClose, onView, onCancel, onAddNew })
                         <span className="event-name">{event.eventType} - {event.customerName}</span>
                         <div className="popover-actions">
                             <button className="popover-btn view" onClick={() => onView(event)}>View Details</button>
-                            <button className="popover-btn cancel" onClick={() => onCancel(event)}>Cancel Event</button>
+                            {event.status === 'Cancelled' ? (
+                                <button className="popover-btn delete" onClick={() => onDelete(event)}>Delete Event</button>
+                            ) : (
+                                <button className="popover-btn cancel" onClick={() => onCancel(event)}>Cancel Event</button>
+                            )}
                         </div>
                     </div>
                 ))}
@@ -62,6 +66,10 @@ const Events = () => {
   // --- NEW: State for the cancel confirmation modal ---
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
   const [eventToCancel, setEventToCancel] = useState(null);
+
+  // --- NEW: State for the delete confirmation modal ---
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [eventToDelete, setEventToDelete] = useState(null);
 
   // Add this to your existing state variables
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
@@ -218,6 +226,34 @@ const Events = () => {
     }
   };
 
+  // --- NEW: Delete event handler ---
+  const handleDeleteEvent = (event) => {
+    setEventToDelete(event);
+    setIsDeleteModalOpen(true);
+    setPopover({ visible: false }); // Close popover
+  };
+
+  // --- NEW: Confirm delete event ---
+  const confirmDeleteEvent = async () => {
+    try {
+      const response = await fetch(`/api/events/${eventToDelete._id}`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+      });
+      const data = await response.json();
+      if (data.success) {
+        // Remove the event from local state
+        setEvents(events => events.filter(ev => ev._id !== eventToDelete._id));
+        setIsDeleteModalOpen(false);
+        setEventToDelete(null);
+      } else {
+        alert('Failed to delete event. Please try again.');
+      }
+    } catch (err) {
+      alert('Error deleting event. Please try again.');
+    }
+  };
+
   const getEventStatusClass = (status) => {
       switch(status) {
           case 'Fully Paid': return 'status-green';
@@ -313,6 +349,7 @@ const Events = () => {
           onClose={() => setPopover({ visible: false })}
           onView={handleViewEventDetails}
           onCancel={handleCancelEvent}
+          onDelete={handleDeleteEvent}
           onAddNew={openNewEventForm}
         />
       )}
@@ -325,6 +362,20 @@ const Events = () => {
                 <div className="modal-actions">
                     <button className="modal-btn no" type="button" onClick={() => setIsCancelModalOpen(false)}>No</button>
                     <button className="modal-btn yes-cancel" type="button" onClick={confirmCancelEvent}>YES</button>
+                </div>
+            </div>
+        </div>
+      )}
+
+      {/* --- Delete Confirmation Modal --- */}
+      {isDeleteModalOpen && (
+        <div className="confirmation-modal-overlay">
+            <div className="confirmation-modal delete-confirmation">
+                <p>Are you sure you want to permanently delete this cancelled event?</p>
+                <p className="warning-text">This action cannot be undone.</p>
+                <div className="modal-actions">
+                    <button className="modal-btn no" type="button" onClick={() => setIsDeleteModalOpen(false)}>No</button>
+                    <button className="modal-btn yes-delete" type="button" onClick={confirmDeleteEvent}>YES, DELETE</button>
                 </div>
             </div>
         </div>

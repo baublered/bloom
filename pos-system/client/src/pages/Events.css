@@ -462,6 +462,29 @@
     color: white;
 }
 
+/* --- NEW: Styles for Delete Confirmation Modal --- */
+.modal-btn.yes-delete {
+    background-color: #dc3545; /* Red color for delete action */
+    color: white;
+}
+
+.delete-confirmation .warning-text {
+    color: #dc3545;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+    font-weight: 500;
+}
+
+/* --- NEW: Styles for Delete Button in Popover --- */
+.popover-btn.delete {
+    background-color: #dc3545;
+    color: white;
+}
+
+.popover-btn.delete:hover {
+    background-color: #c82333;
+}
+
 /* --- NEW: Styles for Cancelled Events --- */
 .event-item.cancelled {
     background-color: #6c757d; /* Grey color for cancelled events */
