@@ -98,8 +98,8 @@ function Dashboard() {
             <h3>Inventory Summary</h3>
             <p><span className="label">Quantity in Hand:</span> <strong>{dashboardData.inventory.totalQuantityInHand}</strong></p>
             <p><span className="label">Total Items:</span> <strong>{dashboardData.inventory.totalItems}</strong></p>
-            <p><span className="label">Inventory Value:</span> <strong>{formatCurrency(dashboardData.inventory.inventoryValue)}</strong></p>
             <p><span className="label">Near Expiry:</span> <strong>{dashboardData.inventory.nearExpiryProducts}</strong></p>
+            <div className="spacing-filler"></div>
           </div>
 
           <div className="card product-details">

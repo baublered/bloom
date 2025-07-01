@@ -404,6 +404,12 @@ body, h1, h2, h3, p, ul {
   padding: 0;
 }
 
+/* Spacing filler for inventory summary card */
+.spacing-filler {
+  height: 24px; /* Equivalent to one line height to maintain visual balance */
+  margin-bottom: 0;
+}
+
 /* Responsive Design */
 @media (max-width: 1200px) {
   .dashboard-content {

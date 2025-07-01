@@ -109,6 +109,28 @@
   font-weight: 600;
 }
 
+.transaction-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.toggle-all-button {
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  color: #495057;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.toggle-all-button:hover {
+  background-color: #e9ecef;
+  border-color: #adb5bd;
+}
+
 .export-button {
   background-color: #e9ecef;
   border: 1px solid #dee2e6;
@@ -119,10 +141,15 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.export-button:hover {
+  background-color: #dee2e6;
 }
 
 .export-button .export-icon {
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   color: #6c757d;
 }
 
@@ -130,6 +157,38 @@
 .transaction-table {
   display: flex;
   flex-direction: column;
+}
+
+.transaction-table.scrollable {
+  max-height: 400px;
+  overflow-y: auto;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+}
+
+.transaction-table.scrollable::-webkit-scrollbar {
+  width: 8px;
+}
+
+.transaction-table.scrollable::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.transaction-table.scrollable::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+.transaction-table.scrollable::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+.no-transactions {
+  text-align: center;
+  padding: 3rem;
+  color: #6c757d;
+  font-style: italic;
 }
 
 .transaction-row {
@@ -294,4 +353,116 @@
 
 .receipt-summary-line.total span {
     color: #343a40;
+}
+
+/* Export Modal Styles */
+.export-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.export-modal-content {
+  background-color: #fff;
+  width: 100%;
+  max-width: 400px;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  overflow: hidden;
+}
+
+.export-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.export-modal-header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: #343a40;
+}
+
+.export-modal-body {
+  padding: 1.5rem;
+}
+
+.export-modal-body p {
+  margin: 0 0 1.5rem 0;
+  color: #6c757d;
+  font-size: 0.95rem;
+}
+
+.export-options {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.export-option-btn {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  background-color: #fff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+  font-size: 1rem;
+}
+
+.export-option-btn:hover {
+  border-color: #007bff;
+  background-color: #f8f9ff;
+}
+
+.export-option-btn.pdf:hover {
+  border-color: #dc3545;
+  background-color: #fff5f5;
+}
+
+.export-option-btn.excel:hover {
+  border-color: #28a745;
+  background-color: #f8fff9;
+}
+
+.export-option-icon {
+  font-size: 1.5rem;
+}
+
+.export-option-btn span:last-child {
+  font-weight: 500;
+  color: #343a40;
+}
+
+/* Print Styles for Transaction History */
+@media print {
+  .transaction-actions,
+  .export-button,
+  .toggle-all-button {
+    display: none !important;
+  }
+  
+  .transaction-history-card {
+    box-shadow: none;
+    border: none;
+  }
+  
+  .transaction-table.scrollable {
+    max-height: none;
+    overflow: visible;
+    border: none;
+  }
 }
