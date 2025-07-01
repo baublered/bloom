@@ -3,6 +3,7 @@ const Otp = require('../models/Otp');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
+const { logUserAction } = require('../utils/userLogger');
 
 // --- Read RSA Keys ---
 // Load RSA keys from environment variables and properly format them
@@ -80,12 +81,23 @@ const login = async (req, res) => {
             payload,
             privateKey,
             { algorithm: 'RS256', expiresIn: '24h' }, // Use private key and RS256
-            (err, token) => {
+            async (err, token) => {
                 if (err) {
                     console.error('[JWT_SIGN_ERROR]', err);
                     return res.status(500).json({ success: false, message: 'Error signing token.' });
                 }
                 console.log('[DEBUG] Token created successfully');
+                
+                // Log successful login
+                await logUserAction(
+                    user.id, 
+                    user.name, 
+                    'LOGIN', 
+                    `User logged in with role: ${user.role}`,
+                    null,
+                    req
+                );
+                
                 res.status(200).json({ success: true, token });
             }
         );
@@ -143,6 +155,18 @@ const registerUser = async (req, res) => {
         console.log('[REGISTER_USER] Saving new user to database...');
         await newUser.save();
         console.log('[REGISTER_USER] User saved successfully!');
+
+        // Log user creation
+        if (req.user) {
+            await logUserAction(
+                req.user.id,
+                req.user.name,
+                'CREATE_USER',
+                `Created new user: ${newUser.name} (${newUser.username}) with role: ${newUser.role}`,
+                newUser.name,
+                req
+            );
+        }
 
         res.status(201).json({ 
             success: true, 

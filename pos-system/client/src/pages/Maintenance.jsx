@@ -5,10 +5,15 @@ import UserProfile from './UserProfile';
 import Sidebar from './Sidebar'; // Add sidebar import
 import EmployeeSidebar from './EmployeeSidebar';
 import { useRoleBasedNavigation } from '../utils/navigation';
+import { useAppContext } from '../context/AppContext';
 
 const Maintenance = () => {
   const navigate = useNavigate();
   const { getNavigationPath, isEmployeeDashboard } = useRoleBasedNavigation();
+  const { state } = useAppContext();
+  
+  // Check if current user is admin
+  const isAdmin = state.user?.role === 'admin';
 
   return (
     <div className="dashboard-container">
@@ -39,6 +44,13 @@ const Maintenance = () => {
                 <span>Backup</span>
                 <span className="description">Create a backup of your system data.</span>
               </button>
+              {isAdmin && (
+                <button className="maintenance-btn" onClick={() => navigate(getNavigationPath('/user-management'))}>
+                  <span className="icon">👥</span>
+                  <span>User Management</span>
+                  <span className="description">Manage employee accounts and view user activity logs.</span>
+                </button>
+              )}
             </div>
           </div>
         </div>

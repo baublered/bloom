@@ -36,6 +36,7 @@ import Retail from '../pages/Retail';
 import RetailPayment from '../pages/RetailPayment';
 import SalesReport from '../pages/SalesReport';
 import SpoilageReport from '../pages/SpoilageReport';
+import UserManagement from '../pages/UserManagement';
 import UserRegistration from '../pages/UserRegistration';
 import VerifyOtp from '../pages/VerifyOtp';
 
@@ -188,6 +189,14 @@ export const RouteManager = () => {
         <RoleProtectedRoute allowedRoles={['admin']}>
           <AdminLayout title="Maintenance">
             <Maintenance />
+          </AdminLayout>
+        </RoleProtectedRoute>
+      } />
+
+      <Route path="/user-management" element={
+        <RoleProtectedRoute allowedRoles={['admin']}>
+          <AdminLayout title="User Management">
+            <UserManagement />
           </AdminLayout>
         </RoleProtectedRoute>
       } />

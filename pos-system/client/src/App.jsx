@@ -31,6 +31,7 @@ import SalesReport from './pages/SalesReport';
 import SpoilageReport from './pages/SpoilageReport';
 import UserProfile from './pages/UserProfile';
 import UserRegistration from './pages/UserRegistration';
+import UserManagement from './pages/UserManagement';
 import VerifyOtp from './pages/VerifyOtp';
 import RoleProtectedRoute from './components/RoleProtectedRoute';
 
@@ -100,6 +101,11 @@ function App() {
           <Route path="/maintenance" element={
             <RoleProtectedRoute restrictedForRoles={['employee']}>
               <Maintenance />
+            </RoleProtectedRoute>
+          } />
+          <Route path="/user-management" element={
+            <RoleProtectedRoute restrictedForRoles={['employee']}>
+              <UserManagement />
             </RoleProtectedRoute>
           } />
           <Route path="/restock" element={
