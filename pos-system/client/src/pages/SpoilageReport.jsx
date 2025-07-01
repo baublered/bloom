@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import * as XLSX from 'xlsx';
 import './SpoilageReport.css'; // We'll create this CSS file
 
 const SpoilageReport = () => {
@@ -9,6 +10,7 @@ const SpoilageReport = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [processMessage, setProcessMessage] = useState('');
+  const [isExportModalOpen, setIsExportModalOpen] = useState(false);
 
   // Function to fetch the spoilage report data
   const fetchSpoilageReport = async () => {
@@ -47,7 +49,130 @@ const SpoilageReport = () => {
   };
 
   const handlePrint = () => {
-    window.print();
+    setIsExportModalOpen(true);
+  };
+  
+  const handleExportPDF = () => {
+    setIsExportModalOpen(false);
+    
+    // Create a new window for printing without dialog
+    const printWindow = window.open('', '_blank');
+    
+    // Get only the report content, excluding process section and loading messages
+    const reportSummary = document.querySelector('.report-summary').outerHTML;
+    const reportSection = document.querySelector('.report-section').outerHTML;
+    
+    const totalQuantitySpoiled = spoiledProducts.reduce((total, item) => total + item.quantitySpoiled, 0);
+    
+    printWindow.document.write(`
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Spoilage Report</title>
+          <style>
+            body { font-family: Arial, sans-serif; margin: 20px; }
+            table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+            th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+            th { background-color: #f2f2f2; }
+            .report-summary { margin-bottom: 20px; }
+            .summary-item { margin: 5px 0; }
+            .section-title { margin-top: 30px; margin-bottom: 10px; }
+            .print-header { 
+              text-align: center; 
+              margin-bottom: 30px; 
+              border-bottom: 2px solid #333; 
+              padding-bottom: 15px; 
+            }
+            .print-summary { 
+              font-size: 14px; 
+              color: #333; 
+              margin: 10px 0; 
+            }
+          </style>
+        </head>
+        <body>
+          <div class="print-header">
+            <h1>Spoilage Report</h1>
+            <p class="print-summary">Total Spoiled Items: ${spoiledProducts.length} | Total Quantity Spoiled: ${totalQuantitySpoiled} units | Generated: ${new Date().toLocaleDateString()}</p>
+          </div>
+          ${reportSummary}
+          ${reportSection}
+          <script>
+            window.onload = function() {
+              window.print();
+              window.onafterprint = function() {
+                window.close();
+              };
+            };
+          </script>
+        </body>
+      </html>
+    `);
+    
+    printWindow.document.close();
+  };
+  
+  const handleExportExcel = () => {
+    setIsExportModalOpen(false);
+    
+    // Prepare data for Excel export
+    const excelData = [];
+    
+    // Add header information
+    excelData.push(['BloomTrack - Spoilage Report']);
+    excelData.push(['Generated on:', new Date().toLocaleDateString()]);
+    excelData.push([]); // Empty row
+    
+    // Add summary information
+    excelData.push(['SUMMARY']);
+    excelData.push(['Total Spoiled Items:', spoiledProducts.length]);
+    excelData.push(['Total Quantity Spoiled:', `${spoiledProducts.reduce((total, item) => total + item.quantitySpoiled, 0)} units`]);
+    excelData.push(['Report Generated:', new Date().toLocaleDateString()]);
+    excelData.push([]); // Empty row
+    
+    // Add spoiled products section
+    if (spoiledProducts.length > 0) {
+      excelData.push(['SPOILED PRODUCT HISTORY']);
+      excelData.push(['Product Name', 'Category', 'Qty. Spoiled', 'Supplier', 'Date Received', 'Date Spoiled']);
+      
+      spoiledProducts.forEach(product => {
+        excelData.push([
+          product.productName,
+          product.productCategory,
+          product.quantitySpoiled,
+          product.supplierName,
+          new Date(product.dateReceived).toLocaleDateString(),
+          new Date(product.dateSpoiled).toLocaleDateString()
+        ]);
+      });
+    } else {
+      excelData.push(['SPOILED PRODUCT HISTORY']);
+      excelData.push(['No spoiled products recorded yet.']);
+    }
+    
+    // Create workbook and worksheet
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.aoa_to_sheet(excelData);
+    
+    // Set column widths for better formatting
+    const colWidths = [
+      { wch: 25 }, // Product Name
+      { wch: 15 }, // Category
+      { wch: 12 }, // Qty. Spoiled
+      { wch: 20 }, // Supplier
+      { wch: 15 }, // Date Received
+      { wch: 15 }  // Date Spoiled
+    ];
+    ws['!cols'] = colWidths;
+    
+    // Add worksheet to workbook
+    XLSX.utils.book_append_sheet(wb, ws, 'Spoilage Report');
+    
+    // Generate filename with current date
+    const filename = `BloomTrack_Spoilage_Report_${new Date().toISOString().split('T')[0]}.xlsx`;
+    
+    // Save the file
+    XLSX.writeFile(wb, filename);
   };
 
   return (
@@ -59,11 +184,6 @@ const SpoilageReport = () => {
       </header>
 
       <main className="report-content" id="printable-spoilage-report">
-        {/* Print Title - only visible when printing */}
-        <div className="print-title print-only">
-          <h1>Spoilage Report</h1>
-        </div>
-
         {/* Section to manually trigger the spoilage process */}
         <div className="process-section no-print">
             <h2>Process Expired Stock</h2>
@@ -133,6 +253,29 @@ const SpoilageReport = () => {
                 </table>
             </div>
         </div>
+        
+        {/* Export Modal */}
+        {isExportModalOpen && (
+          <div className="export-modal-overlay">
+            <div className="export-modal">
+              <h3>Export Report</h3>
+              <p>Choose your preferred export format:</p>
+              <div className="export-options">
+                <button className="export-option-btn pdf" onClick={handleExportPDF}>
+                  <span className="export-icon">📄</span>
+                  Export as PDF
+                </button>
+                <button className="export-option-btn excel" onClick={handleExportExcel}>
+                  <span className="export-icon">📊</span>
+                  Export as Excel
+                </button>
+              </div>
+              <button className="cancel-export-btn" onClick={() => setIsExportModalOpen(false)}>
+                Cancel
+              </button>
+            </div>
+          </div>
+        )}
       </main>
     </div>
   );

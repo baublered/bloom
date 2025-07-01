@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import * as XLSX from 'xlsx';
 import './SalesReport.css'; // We'll create this new CSS file
 
 const SalesReport = () => {
@@ -18,6 +19,9 @@ const SalesReport = () => {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [dateFilterApplied, setDateFilterApplied] = useState(false);
+  
+  // Export modal state
+  const [isExportModalOpen, setIsExportModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchSalesData = async () => {
@@ -151,12 +155,158 @@ const SalesReport = () => {
   };
   
   const handlePrint = () => {
-    // Add some debug content to test if print is working
-    console.log('Print button clicked');
-    console.log('Grouped sales data:', groupedSalesData);
-    console.log('Filtered sales data:', filteredSalesData.length);
-    window.print();
-  }
+    setIsExportModalOpen(true);
+  };
+  
+  const handleExportPDF = () => {
+    setIsExportModalOpen(false);
+    
+    // Create a new window for printing without dialog
+    const printWindow = window.open('', '_blank');
+    const printContent = document.getElementById('printable-report').outerHTML;
+    
+    // Get the summary footer content
+    const summaryFooter = document.querySelector('.sales-report-footer').outerHTML;
+    
+    printWindow.document.write(`
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Sales Report</title>
+          <style>
+            body { font-family: Arial, sans-serif; margin: 20px; }
+            table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+            th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+            th { background-color: #f2f2f2; }
+            .accordion-header h2, .accordion-header h3 { margin: 10px 0; }
+            .accordion-icon { display: none; }
+            .report-summary { margin-bottom: 20px; }
+            .summary-item { margin: 5px 0; }
+            .sales-report-footer { 
+              margin-top: 30px; 
+              padding-top: 20px; 
+              border-top: 2px solid #333; 
+              text-align: center; 
+            }
+            .footer-summary-item { 
+              font-size: 18px; 
+              font-weight: bold; 
+              color: #333; 
+            }
+            .footer-summary-label { 
+              display: block; 
+              margin-bottom: 10px; 
+            }
+            .footer-summary-value { 
+              font-size: 24px; 
+              color: #2e7d32; 
+            }
+            @media print {
+              body { margin: 0; }
+              .no-print { display: none !important; }
+            }
+          </style>
+        </head>
+        <body>
+          <h1>Sales Report</h1>
+          ${printContent}
+          ${summaryFooter}
+          <script>
+            window.onload = function() {
+              window.print();
+              window.onafterprint = function() {
+                window.close();
+              };
+            };
+          </script>
+        </body>
+      </html>
+    `);
+    
+    printWindow.document.close();
+  };
+  
+  const handleExportExcel = () => {
+    setIsExportModalOpen(false);
+    
+    // Prepare data for Excel export
+    const excelData = [];
+    
+    // Add header information
+    excelData.push(['BloomTrack - Sales Report']);
+    excelData.push(['Generated on:', new Date().toLocaleDateString()]);
+    excelData.push(['Period:', dateFilterApplied 
+      ? `${startDate ? new Date(startDate).toLocaleDateString() : 'Beginning'} to ${endDate ? new Date(endDate).toLocaleDateString() : 'Present'}`
+      : 'All Dates'
+    ]);
+    excelData.push([]); // Empty row
+    
+    // Add summary information
+    excelData.push(['SUMMARY']);
+    excelData.push(['Total Sales:', filteredSalesData.length]);
+    excelData.push(['Total Revenue:', `₱${calculateTotalRevenue().toFixed(2)}`]);
+    excelData.push(['Total Discounts:', `₱${calculateTotalDiscount().toFixed(2)}`]);
+    excelData.push([]); // Empty row
+    
+    // Add table headers
+    excelData.push(['Date', 'Transaction ID', 'Type', 'Customer', 'Amount', 'Discount']);
+    
+    // Group data by year and month for organized export
+    Object.entries(groupedSalesData).forEach(([year, months]) => {
+      excelData.push([]); // Empty row
+      excelData.push([`YEAR ${year}`]); // Year header
+      
+      Object.entries(months).forEach(([month, sales]) => {
+        excelData.push([`${month} ${year}`]); // Month header
+        
+        // Add sales data for this month
+        sales.forEach(sale => {
+          excelData.push([
+            new Date(sale.saleDate).toLocaleDateString(),
+            sale._id.slice(-8).toUpperCase(),
+            sale.saleType + (sale.eventType ? ` (${sale.eventType})` : ''),
+            sale.customerName,
+            sale.totalAmount,
+            sale.discountAmount || 0
+          ]);
+        });
+      });
+    });
+    
+    // Add final summary at the bottom
+    excelData.push([]); // Empty row
+    excelData.push(['TOTAL SALES SUMMARY']);
+    excelData.push([
+      dateFilterApplied
+        ? `Total Sales for ${startDate ? new Date(startDate).toLocaleDateString() : 'Beginning'} to ${endDate ? new Date(endDate).toLocaleDateString() : 'Present'}:`
+        : 'Total Sales for All Dates:',
+      `₱${calculateTotalRevenue().toFixed(2)}`
+    ]);
+    
+    // Create workbook and worksheet
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.aoa_to_sheet(excelData);
+    
+    // Set column widths for better formatting
+    const colWidths = [
+      { wch: 12 }, // Date
+      { wch: 15 }, // Transaction ID
+      { wch: 20 }, // Type
+      { wch: 25 }, // Customer
+      { wch: 12 }, // Amount
+      { wch: 12 }  // Discount
+    ];
+    ws['!cols'] = colWidths;
+    
+    // Add worksheet to workbook
+    XLSX.utils.book_append_sheet(wb, ws, 'Sales Report');
+    
+    // Generate filename with current date
+    const filename = `BloomTrack_Sales_Report_${new Date().toISOString().split('T')[0]}.xlsx`;
+    
+    // Save the file
+    XLSX.writeFile(wb, filename);
+  };
 
   return (
     <div className="sales-report-page">
@@ -291,6 +441,29 @@ const SalesReport = () => {
             <span className="footer-summary-value">₱{calculateTotalRevenue().toFixed(2)}</span>
           </div>
         </div>
+
+        {/* Export Modal */}
+        {isExportModalOpen && (
+          <div className="export-modal-overlay">
+            <div className="export-modal">
+              <h3>Export Report</h3>
+              <p>Choose your preferred export format:</p>
+              <div className="export-options">
+                <button className="export-option-btn pdf" onClick={handleExportPDF}>
+                  <span className="export-icon">📄</span>
+                  Export as PDF
+                </button>
+                <button className="export-option-btn excel" onClick={handleExportExcel}>
+                  <span className="export-icon">📊</span>
+                  Export as Excel
+                </button>
+              </div>
+              <button className="cancel-export-btn" onClick={() => setIsExportModalOpen(false)}>
+                Cancel
+              </button>
+            </div>
+          </div>
+        )}
 
       </main>
     </div>
