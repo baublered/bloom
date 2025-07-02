@@ -32,7 +32,7 @@ const faqData = [
   {
     icon: '🔑',
     question: 'How do I reset my password?',
-    answer: 'If you forget your password, you can use the "Forgot Password" feature. An OTP will be sent to your registered phone number, allowing you to reset your password.'
+    answer: 'If you forget your password, you can use the "Forgot Password" feature. An OTP will be sent to your registered email address, allowing you to reset your password.'
   },
   {
     icon: '📋',
