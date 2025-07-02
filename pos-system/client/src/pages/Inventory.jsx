@@ -257,6 +257,37 @@ const Inventory = () => {
       
       <main className="dashboard-main">
         <div className="inventory-content">
+          <div className="inventory-header">
+            <h1>Inventory Management</h1>
+            <div className="notification-bell" onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}>
+              <span className="bell-icon">🔔</span>
+              {notifications.length > 0 && (
+                <span className="notification-count">{notifications.length}</span>
+              )}
+              
+              {isNotificationsOpen && (
+                <div className="notification-dropdown">
+                  <div className="notification-header">
+                    <h3>Notifications</h3>
+                  </div>
+                  {notifications.length === 0 ? (
+                    <div className="no-notifications">No notifications</div>
+                  ) : (
+                    <div className="notification-list">
+                      {notifications.map(notification => (
+                        <div key={notification.id} className={`notification-item ${notification.type}`}>
+                          <div className="notification-title">{notification.title}</div>
+                          <div className="notification-message">{notification.message}</div>
+                          <div className="notification-time">{notification.time}</div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+          
           <div className="inventory-controls">
             <div className="search-bar">
               <span>Products</span>
