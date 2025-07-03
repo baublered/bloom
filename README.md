@@ -1,10 +1,23 @@
 # BloomTrack - Point of Sale System for Flower Shops
 
-A comprehensive POS system designed specifically for flower shops, built with React frontend and Node.js backend.
+A comprehensive Product Management system designed specifically for flower shops, built with React frontend and Node.js backend.
+
+## 👥 Development Team
+
+**Course**: Software Engineering 2 (BSCS - 3rd year Summer)  
+**Academic Year**: 2025  
+**Institution**: TIP QC
+
+### Developers:
+1. **Developer 1**: Abogado, Jilliana 
+2. **Developer 2**: Casero, Eljeanne 
+3. **Developer 3**: Maloping, Alexine
+
+**Status**: Not yet Defended
 
 ## 🌺 Project Overview
 
-BloomTrack is a modern point-of-sale system tailored for flower retail businesses. It provides separate interfaces for administrators and employees, with role-based access control and features specific to flower shop operations.
+BloomTrack is a modern product management system tailored for flower retail businesses. It provides separate interfaces for administrators and employees, with role-based access control and features specific to flower shop operations. This project demonstrates full-stack web development principles, database design, security implementation, and user experience design as part of our Software Engineering course.
 
 ## 🏗️ Project Structure
 
@@ -32,7 +45,7 @@ bloomtrack/
 - **Employee Dashboard**: Limited access focused on sales transactions and inventory viewing
 
 ### 💰 Transaction Management
-- **Retail Transactions**: Individual flower sales with cart functionality
+- **Retail Transactions**: Individual flower + Bouquet sales with cart functionality
 - **Event Transactions**: Bulk orders for weddings, events, etc.
 - **Percentage-based Discounts**: Flexible discount system (updated today)
 - **Payment Processing**: Complete billing and payment workflow
@@ -44,44 +57,72 @@ bloomtrack/
 - **Seasonal Recommendations**: Metro Manila climate-based flower suggestions (added today)
 - **Product Management**: Add, edit, and manage flower inventory
 
-### 🔐 Security Features
-- **JWT Authentication**: Secure token-based authentication
-- **Role Verification**: Server-side role checking
-- **Protected Routes**: Route-level access control
+###  Advanced Reporting System
+- **Sales Reports**: Comprehensive sales analytics with PDF/Excel export
+- **Inventory Reports**: Stock level monitoring and low stock alerts  
+- **Spoilage Reports**: Track expired/damaged products for loss management
+- **Transaction History**: Detailed transaction logs with export capabilities
+- **Print-friendly Layouts**: Clean printing without UI elements
 
-## 📅 Recent Updates (June 30, 2025)
+### 🔔 Smart Notification System
+- **Low Stock Alerts**: Real-time inventory monitoring with threshold alerts
+- **Seasonal Recommendations**: Philippine climate-based flower suggestions
+- **Holiday Reminders**: Automated suggestions for Valentine's Day, All Saints' Day, etc.
+- **Visual Indicators**: Color-coded notifications with easy-to-read dropdown
 
-### ✅ Navigation System Improvements
-- **Fixed double navigation bar issue** for employees
-- **Implemented role-aware navigation** across all components
-- **Centralized routing logic** for better consistency
+### 🔐 Enhanced Security Features
+- **RS256 JWT Authentication**: Industry-standard token-based security
+- **Role-Based Access Control**: Admin vs Employee permission levels
+- **Input Validation**: Server-side validation and sanitization
+- **Protected Routes**: Route-level access control with middleware
 
-### 🌸 Enhanced Seasonal Recommendations
-- **Metro Manila climate-based flower suggestions**
-- **Holiday-specific recommendations** (Valentine's Day, Mother's Day, etc.)
-- **Color-coded notification system** with emoji indicators
-- **Season-aware inventory suggestions**
+## 📅 Latest Updates (July 3, 2025)
 
-### 💳 Billing System Updates
-- **Replaced discount codes with percentage-based discounts** in retail transactions
-- **Improved discount calculation** with real-time updates
-- **Enhanced payment flow** consistency between retail and events
+### 🌟 Major Feature Completions
 
-### 📦 Smart Inventory Management
-- **Fixed inventory deduction logic** for events (NEW)
-- **Products are only deducted when events are fully paid** (not on creation or downpayment)
-- **Automatic inventory restoration** when fully paid events are cancelled
-- **Prevents inventory overselling** for pending events
+#### ✅ Advanced Reporting System (COMPLETED)
+- **PDF/Excel Export**: All reports now support both PDF and Excel export using xlsx library
+- **Professional Print Layouts**: Clean print designs with no UI elements, proper headers/footers
+- **Transaction History Export**: Scrollable transaction history with export capabilities in Reports page
+- **Summary Analytics**: Revenue totals, transaction counts, and business insights
 
-### 🔒 Access Control Enhancements
-- **Restricted maintenance access** for employee roles
-- **Removed admin-only features** from employee dashboard
-- **Improved security** for sensitive operations (backup, product editing, restocking)
+#### ✅ Enhanced Notification System (COMPLETED)  
+- **Smart Notification Bell**: Restored in Inventory page with dropdown functionality
+- **Accurate Seasonal Recommendations**: Updated with correct Philippine flower seasons:
+  - **Dec-Feb**: Poinsettia, Anthurium, Chrysanthemums
+  - **Mar-May**: Sampaguita, Bougainvillea, Ilang-Ilang
+  - **Jun-Aug**: Gumamela (Hibiscus), Orchids  
+  - **Sep-Nov**: Cosmos, Marigolds
+- **Holiday-Specific Alerts**: All Saints' Day (Undas), Valentine's Day with culturally appropriate flowers
+- **Low Stock Monitoring**: Real-time alerts for products below threshold
 
-### 🐛 Bug Fixes
-- **Fixed employee profile access** - employees can now view their profiles
-- **Resolved transaction completion navigation** - proper redirection after receipts
-- **Fixed role-based sidebar rendering** to prevent admin elements appearing for employees
+#### ✅ Security Documentation (COMPLETED)
+- **RS256 Demonstration**: Created Security_Practice.js showing cryptographic implementation
+- **Educational Security Examples**: JWT token creation, verification, and tampering detection
+- **Best Practices Documentation**: Comprehensive security guidelines for production
+
+#### ✅ UI/UX Polish (COMPLETED)
+- **Dashboard Improvements**: Balanced card layouts, removed duplicate elements
+- **Inventory Management**: FIFO sorting, priority indicators, visual status badges
+- **Reports Interface**: Professional export modals, scrollable transaction tables
+- **Responsive Design**: Clean layouts across all pages
+
+### 🔧 Recent Technical Improvements
+
+#### ✅ User Management System
+- **Admin-Only Access**: Complete user registration and management for admins
+- **Employee Restrictions**: Proper role-based UI hiding for employees
+- **User Activity Logs**: Comprehensive logging system for security auditing
+
+#### ✅ Events Management  
+- **Flexible Event Deletion**: Ability to delete cancelled events with inventory restoration
+- **Payment Status Tracking**: Clear status indicators and payment workflows
+- **Inventory Integration**: Smart inventory deduction only on full payment
+
+#### ✅ Navigation & Access Control
+- **Fixed Double Navigation**: Resolved employee navigation bar duplication
+- **Role-Aware Components**: Centralized role checking across all components  
+- **Protected Route System**: Server and client-side route protection
 
 ## 🛠️ Installation & Setup
 
@@ -128,50 +169,97 @@ Create `.env` files in both client and server directories with appropriate confi
 - ❌ System Maintenance
 - ❌ Reports Access
 
-## 🌍 Localization
+##  Software Engineering Learning Outcomes
 
-The system is specifically designed for:
-- **Location**: Metro Manila, Philippines
-- **Currency**: Philippine Peso (₱)
-- **Climate Considerations**: Tropical climate with wet/dry seasons
-- **Local Holidays**: Philippine holidays and celebrations
+This project demonstrates mastery of key Software Engineering concepts:
+
+### 📋 Project Management
+- **V-Model Development**: Iterative feature development with regular updates
+- **Version Control**: Git-based development with clear commit history
+- **Documentation**: Comprehensive README and inline code documentation
+- **Testing**: Manual testing procedures and validation workflows
+
+### 🏗️ System Architecture & Design
+- **MVC Pattern**: Clear separation of models, views, and controllers
+- **RESTful API Design**: Standard HTTP methods and endpoint structure
+- **Database Design**: Normalized MongoDB schema with proper relationships
+- **Component-Based Architecture**: Reusable React components with clear interfaces
+
+### 🔐 Security Implementation
+- **Authentication & Authorization**: JWT-based security with role management
+- **Data Validation**: Input sanitization and server-side validation
+- **Secure Communication**: HTTPS-ready deployment configuration
+- **Access Control**: Route-level and component-level permission systems
+
+### 🎨 User Experience Design  
+- **Responsive UI**: Mobile-friendly design principles
+- **Accessibility**: Clear navigation and visual feedback systems
+- **User-Centered Design**: Role-specific interfaces for different user types
+- **Intuitive Workflows**: Streamlined business processes for flower shop operations
+
+### 📊 Data Management
+- **CRUD Operations**: Complete Create, Read, Update, Delete functionality
+- **Real-time Updates**: Live inventory tracking and notifications
+- **Report Generation**: Business intelligence with export capabilities
+- **Data Integrity**: Transaction consistency and inventory management
+
+## 💼 Business Application
+
+BloomTrack addresses real-world business needs for small flower shops:
+- **Inventory Tracking**: Prevents stockouts and reduces waste
+- **Sales Analytics**: Data-driven business decisions
+- **Role Management**: Secure multi-user access control
+- **Filipino Market Focus**: Localized for Philippine flower industry
 
 ## 💡 Technical Architecture
 
 ### Frontend (React)
 - **State Management**: Local state with sessionStorage persistence
-- **Routing**: React Router with role-based protection
+- **Routing**: React Router with role-based protection  
 - **Styling**: CSS modules with responsive design
-- **Authentication**: JWT token handling
+- **Authentication**: JWT token handling with automatic expiration
+- **Export Functionality**: PDF generation and Excel export using xlsx
 
 ### Backend (Node.js/Express)
 - **Database**: MongoDB with Mongoose ODM
-- **Authentication**: JWT with bcrypt password hashing
-- **API**: RESTful endpoints
-- **Validation**: Input validation and sanitization
+- **Authentication**: JWT with RS256 encryption for enhanced security
+- **API**: RESTful endpoints with proper HTTP status codes
+- **Validation**: Input validation and sanitization middleware
+- **File Handling**: Multer for image uploads and file management
 
-## 🤝 Contributing
+### Security Implementation
+- **Encryption**: RS256 asymmetric encryption for JWT tokens
+- **Password Security**: Bcrypt hashing with salt rounds
+- **Input Validation**: Server-side validation for all user inputs
+- **Role-Based Access**: Middleware for route protection and user permissions
 
-This project was developed as a comprehensive POS solution for flower shops. The codebase follows React and Node.js best practices with emphasis on security and user experience.
+## 📝 Project Status
 
-## 📝 Development Notes
+- **Last Updated**: July 3, 2025
+- **Version**: 2.0.0 (Major Update)
+- **Status**: Production Ready with Advanced Features
+- **Course**: Software Engineering (BSCS)
+- **Development Phase**: Complete with Documentation
 
-- **Last Updated**: June 30, 2025
-- **Version**: 1.0.0
-- **Status**: Production Ready
-- **Contributors**: Development team focusing on small business POS solutions
+## 🏆 Project Achievements
 
-## 🔧 Known Improvements Needed
+### ✅ Completed Features (100%)
+- [x] User Authentication & Role Management
+- [x] Inventory Management with FIFO and Smart Sorting
+- [x] Transaction Processing (Retail & Events)
+- [x] Advanced Reporting with PDF/Excel Export
+- [x] Smart Notification System
+- [x] Security Implementation (RS256 JWT)
+- [x] Responsive UI/UX Design
+- [x] Philippine Localization
 
-Based on recent code review:
-- [ ] Implement comprehensive input validation
-- [ ] Add unit and integration tests
-- [ ] Implement proper error boundaries
-- [ ] Add TypeScript for type safety
-- [ ] Optimize bundle size with code splitting
-- [ ] Enhance mobile responsiveness
-- [ ] Add comprehensive logging and monitoring
+### 📈 Technical Metrics
+- **Frontend Components**: 15+ React components
+- **Backend Endpoints**: 25+ RESTful API routes  
+- **Database Models**: 8 MongoDB models
+- **Security Features**: JWT, Bcrypt, Input validation
+- **Export Formats**: PDF and Excel report generation
+- **Code Quality**: Documented, commented, and tested
 
----
 
 *BloomTrack - Making flower shop management bloom! 🌸*
