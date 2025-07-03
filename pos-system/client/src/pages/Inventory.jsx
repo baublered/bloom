@@ -44,56 +44,47 @@ const Inventory = () => {
           });
         });
 
-        // 2. Generate Seasonal Flower Recommendations for Metro Manila, Philippines
+        // 2. Generate Seasonal Flower Recommendations for Philippines
         const getSeasonalRecommendations = () => {
           const currentMonth = new Date().getMonth(); // 0-11 (Jan-Dec)
           const recommendations = [];
 
           console.log('Current month:', currentMonth, 'Month name:', new Date().toLocaleString('default', { month: 'long' })); // Debug log
 
-          // Dry Season (December to May) - Hot and humid
-          if (currentMonth === 11 || (currentMonth >= 0 && currentMonth <= 4)) {
-            if (currentMonth >= 0 && currentMonth <= 2) {
-              // January to March - Cool dry season
-              recommendations.push({
-                flowers: ['Roses', 'Carnations', 'Chrysanthemums', 'Gerberas'],
-                reason: 'Cool dry season is perfect for these hardy flowers that thrive in moderate temperatures.',
-                season: 'Cool Dry Season'
-              });
-            } else if (currentMonth >= 3 && currentMonth <= 4) {
-              // April to May - Hot dry season
-              recommendations.push({
-                flowers: ['Sunflowers', 'Marigolds', 'Sampaguita', 'Bougainvillea'],
-                reason: 'Hot dry season calls for heat-resistant flowers that can withstand intense sunlight.',
-                season: 'Hot Dry Season'
-              });
-            } else if (currentMonth === 11) {
-              // December - Cool dry season starts
-              recommendations.push({
-                flowers: ['Roses', 'Carnations', 'Chrysanthemums', 'Gerberas'],
-                reason: 'Cool dry season is starting. Perfect time for hardy flowers that thrive in moderate temperatures.',
-                season: 'Cool Dry Season'
-              });
-            }
+          // December to February
+          if (currentMonth === 11 || currentMonth === 0 || currentMonth === 1) {
+            recommendations.push({
+              flowers: ['Poinsettia', 'Anthurium', 'Chrysanthemums'],
+              reason: 'Cool season flowers that bloom beautifully during the holiday months and New Year celebrations.',
+              season: 'Cool Season (Dec-Feb)'
+            });
           }
-
-          // Wet Season (June to November) - Rainy and humid
-          else if (currentMonth >= 5 && currentMonth <= 10) {
-            if (currentMonth >= 5 && currentMonth <= 7) {
-              // June to August - Heavy rain season
-              recommendations.push({
-                flowers: ['Orchids', 'Anthuriums', 'Lilies', 'Gingers'],
-                reason: 'Rainy season is ideal for tropical flowers that love humidity and indirect sunlight.',
-                season: 'Heavy Rain Season'
-              });
-            } else {
-              // September to November - Light rain season
-              recommendations.push({
-                flowers: ['Tulips', 'Daisies', 'Baby\'s Breath', 'Asters'],
-                reason: 'Light rain season provides perfect conditions for delicate flowers.',
-                season: 'Light Rain Season'
-              });
-            }
+          
+          // March to May
+          else if (currentMonth >= 2 && currentMonth <= 4) {
+            recommendations.push({
+              flowers: ['Sampaguita', 'Bougainvillea', 'Ilang-Ilang'],
+              reason: 'Native Filipino flowers that thrive in the warm dry season and represent our cultural heritage.',
+              season: 'Warm Season (Mar-May)'
+            });
+          }
+          
+          // June to August
+          else if (currentMonth >= 5 && currentMonth <= 7) {
+            recommendations.push({
+              flowers: ['Gumamela (Hibiscus)', 'Orchids'],
+              reason: 'Tropical flowers that flourish during the rainy season with high humidity and cooler temperatures.',
+              season: 'Rainy Season (Jun-Aug)'
+            });
+          }
+          
+          // September to November
+          else if (currentMonth >= 8 && currentMonth <= 10) {
+            recommendations.push({
+              flowers: ['Cosmos', 'Marigolds'],
+              reason: 'Vibrant flowers that bloom during the transition from rainy to dry season, perfect for autumn arrangements.',
+              season: 'Transition Season (Sep-Nov)'
+            });
           }
 
           console.log('Generated recommendations:', recommendations); // Debug log
@@ -123,8 +114,8 @@ const Inventory = () => {
           if (currentMonth === 1 && currentDate >= 1 && currentDate <= 14) {
             holidayRecommendations.push({
               holiday: 'Valentine\'s Day',
-              flowers: ['Red Roses', 'Pink Roses', 'White Roses', 'Mixed Rose Bouquets'],
-              message: 'Valentine\'s Day is approaching! Stock up on romantic flowers.'
+              flowers: ['Roses', 'Tulips', 'Carnations', 'Sunflowers', 'Lilies'],
+              message: 'Valentine\'s Day is approaching! Stock up on romantic flowers for love celebrations.'
             });
           }
 
@@ -137,21 +128,21 @@ const Inventory = () => {
             });
           }
 
+          // All Saints' Day / Undas (November 1)
+          if (currentMonth === 10 && currentDate >= 25) {
+            holidayRecommendations.push({
+              holiday: 'All Saints\' Day (Undas)',
+              flowers: ['Chrysanthemums', 'Roses', 'Marigolds', 'Cosmos'],
+              message: 'All Saints\' Day is near. Prepare traditional flowers for memorial arrangements and cemetery visits.'
+            });
+          }
+
           // Christmas Season (December)
           if (currentMonth === 11) {
             holidayRecommendations.push({
               holiday: 'Christmas',
               flowers: ['Poinsettias', 'Red Roses', 'White Lilies', 'Christmas Arrangements'],
-              message: 'Christmas season! Focus on festive red and white flower arrangements.'
-            });
-          }
-
-          // All Saints' Day / Undas (November 1)
-          if (currentMonth === 10 && currentDate >= 25) {
-            holidayRecommendations.push({
-              holiday: 'All Saints\' Day',
-              flowers: ['White Chrysanthemums', 'White Lilies', 'White Roses', 'Memorial Arrangements'],
-              message: 'All Saints\' Day is near. Prepare white flowers for memorial arrangements.'
+              message: 'Christmas season! Focus on festive red and white flower arrangements for holiday celebrations.'
             });
           }
 
@@ -307,13 +298,13 @@ const Inventory = () => {
                 onChange={(e) => setSortOption(e.target.value)}
                 className="sort-dropdown"
               >
-                <option value="fifo">🕐 FIFO (Oldest First)</option>
-                <option value="expiry">⏰ Expiry Date (Urgent First)</option>
-                <option value="quantity-low">📦 Low Stock First</option>
-                <option value="quantity-high">📦 High Stock First</option>
-                <option value="alphabetical">🔤 Name (A-Z)</option>
-                <option value="price-low">💰 Price (Low to High)</option>
-                <option value="price-high">💰 Price (High to Low)</option>
+                <option value="fifo"> Oldest Stock First </option>
+                <option value="expiry"> Expiry Date (Urgent First)</option>
+                <option value="quantity-low"> Low Stock First</option>
+                <option value="quantity-high"> High Stock First</option>
+                <option value="alphabetical"> Name (A-Z)</option>
+                <option value="price-low"> Price (Low to High)</option>
+                <option value="price-high"> Price (High to Low)</option>
               </select>
             </div>
             
