@@ -99,7 +99,20 @@ const Profile = () => {
                 setLoading(false);
             }
         };
+        
         fetchUserProfile();
+
+        // Listen for profile photo updates from UserProfile component
+        const handleProfilePhotoUpdate = (event) => {
+            setProfilePhoto(event.detail.photoUrl);
+        };
+
+        window.addEventListener('profilePhotoUpdated', handleProfilePhotoUpdate);
+
+        // Cleanup listener on unmount
+        return () => {
+            window.removeEventListener('profilePhotoUpdated', handleProfilePhotoUpdate);
+        };
     }, [navigate]);
 
     const handleInputChange = (e) => {
@@ -192,8 +205,16 @@ const Profile = () => {
             if (response.data.success) {
                 const photoUrl = response.data.photoUrl;
                 setProfilePhoto(photoUrl);
-                // Save to localStorage for quick access
-                localStorage.setItem(`profilePhoto_${user._id}`, photoUrl);
+                // Save to localStorage for quick access - using consistent key format
+                const token = localStorage.getItem('token');
+                const decodedToken = jwtDecode(token);
+                localStorage.setItem(`profilePhoto_${decodedToken.user.id}`, photoUrl);
+                
+                // Trigger a custom event to notify other components
+                window.dispatchEvent(new CustomEvent('profilePhotoUpdated', { 
+                    detail: { photoUrl } 
+                }));
+                
                 setError(''); // Clear any previous errors
                 setSuccessMessage('Profile picture uploaded successfully!');
                 setTimeout(() => setSuccessMessage(''), 3000);
@@ -205,7 +226,16 @@ const Profile = () => {
             reader.onload = (e) => {
                 const base64Photo = e.target.result;
                 setProfilePhoto(base64Photo);
-                localStorage.setItem(`profilePhoto_${user._id}`, base64Photo);
+                // Use consistent key format with UserProfile component
+                const token = localStorage.getItem('token');
+                const decodedToken = jwtDecode(token);
+                localStorage.setItem(`profilePhoto_${decodedToken.user.id}`, base64Photo);
+                
+                // Trigger a custom event to notify other components
+                window.dispatchEvent(new CustomEvent('profilePhotoUpdated', { 
+                    detail: { photoUrl: base64Photo } 
+                }));
+                
                 setError(''); // Clear any previous errors
                 setSuccessMessage('Profile picture saved locally!');
                 setTimeout(() => setSuccessMessage(''), 3000);
@@ -257,11 +287,9 @@ const Profile = () => {
                                 className="profile-picture"
                             />
                         ) : (
-                            <img 
-                                src={`https://placehold.co/150x150/535978/FFFFFF?text=${user.name?.charAt(0).toUpperCase() || 'U'}`} 
-                                alt="User Avatar" 
-                                className="profile-picture"
-                            />
+                            <div className="profile-picture-placeholder">
+                                <span className="user-icon-large">👤</span>
+                            </div>
                         )}
                         {isUploading && <div className="upload-overlay-profile">⏳</div>}
                     </div>

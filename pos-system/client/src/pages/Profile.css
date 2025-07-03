@@ -75,6 +75,17 @@
     border: 5px solid #fff;
 }
 
+.profile-picture-placeholder {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background-color: #f0f0f0;
+    border: 5px solid #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .upload-overlay-profile {
     position: absolute;
     top: 0;

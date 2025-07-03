@@ -1,16 +1,20 @@
 import { jwtDecode } from 'jwt-decode';
 import { useEffect, useState, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import './UserProfile.css';
 
 const UserProfile = () => {
     const navigate = useNavigate();
+    const location = useLocation();
     const fileInputRef = useRef(null);
     const [isOpen, setIsOpen] = useState(false);
     const [user, setUser] = useState(null);
     const [profilePhoto, setProfilePhoto] = useState(null);
     const [isUploading, setIsUploading] = useState(false);
+
+    // Determine if we're in employee dashboard context
+    const isInEmployeeDashboard = location.pathname.startsWith('/employee-dashboard');
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -27,14 +31,28 @@ const UserProfile = () => {
                 console.error("Error decoding token:", error);
             }
         }
+
+        // Listen for profile photo updates from Profile component
+        const handleProfilePhotoUpdate = (event) => {
+            setProfilePhoto(event.detail.photoUrl);
+        };
+
+        window.addEventListener('profilePhotoUpdated', handleProfilePhotoUpdate);
+
+        // Cleanup listener on unmount
+        return () => {
+            window.removeEventListener('profilePhotoUpdated', handleProfilePhotoUpdate);
+        };
     }, []);
 
     const handleProfileClick = () => {
         setIsOpen(false); // Close dropdown when navigating
-        if (user?.role === 'admin') {
-            navigate('/profile'); // Correct path for nested admin profile
-        } else if (user?.role === 'employee') {
-            navigate('/employee-dashboard/profile'); // Correct path for nested employee profile
+        
+        // Navigate based on current context, not just user role
+        if (isInEmployeeDashboard) {
+            navigate('profile'); // Relative navigation within employee dashboard
+        } else {
+            navigate('/profile'); // Absolute navigation for admin dashboard
         }
     };
 
@@ -79,6 +97,11 @@ const UserProfile = () => {
                 setProfilePhoto(photoUrl);
                 // Save to localStorage for quick access
                 localStorage.setItem(`profilePhoto_${user.id}`, photoUrl);
+                
+                // Trigger a custom event to notify other components
+                window.dispatchEvent(new CustomEvent('profilePhotoUpdated', { 
+                    detail: { photoUrl } 
+                }));
             }
         } catch (error) {
             console.error('Error uploading photo:', error);
@@ -88,6 +111,11 @@ const UserProfile = () => {
                 const base64Photo = e.target.result;
                 setProfilePhoto(base64Photo);
                 localStorage.setItem(`profilePhoto_${user.id}`, base64Photo);
+                
+                // Trigger a custom event to notify other components
+                window.dispatchEvent(new CustomEvent('profilePhotoUpdated', { 
+                    detail: { photoUrl: base64Photo } 
+                }));
             };
             reader.readAsDataURL(file);
         } finally {
