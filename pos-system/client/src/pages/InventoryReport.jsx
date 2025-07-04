@@ -78,66 +78,137 @@ const InventoryReport = () => {
   const handleExportPDF = () => {
     setIsExportModalOpen(false);
     
-    // Create a new window for printing without dialog
     const printWindow = window.open('', '_blank');
     
-    // Get only the report content, excluding filter controls and buttons
-    const reportSummary = document.querySelector('.report-summary').outerHTML;
-    const lowStockSection = document.querySelector('.report-section').outerHTML;
-    const fullInventorySection = document.querySelectorAll('.report-section')[1].outerHTML;
+    const dateRangeText = `From: ${startDate ? new Date(startDate).toLocaleDateString() : 'Beginning'}\nTo: ${endDate ? new Date(endDate).toLocaleDateString() : 'Present'}`;
     
-    const periodText = dateFilterApplied 
-      ? `Period: ${startDate ? new Date(startDate).toLocaleDateString() : 'Beginning'} - ${endDate ? new Date(endDate).toLocaleDateString() : 'Present'}`
-      : 'Period: All Dates';
+    // Generate Low Stock Items table rows
+    const lowStockTableRows = lowStockProducts.map(product => `
+      <tr class="low-stock-row">
+        <td>${product.productName}</td>
+        <td>${product.productCategory}</td>
+        <td>${product.quantity}</td>
+      </tr>
+    `).join('');
     
+    // Generate Full Inventory table rows
+    const fullInventoryTableRows = filteredProducts.map(product => `
+      <tr>
+        <td>${product.productName}</td>
+        <td>${product.productCategory}</td>
+        <td>${product.quantity}</td>
+        <td>₱${(product.price || 0).toFixed(2)}</td>
+        <td>${product.supplierName || 'N/A'}</td>
+      </tr>
+    `).join('');
+
     printWindow.document.write(`
       <!DOCTYPE html>
       <html>
         <head>
           <title>Inventory Report</title>
           <style>
-            body { font-family: Arial, sans-serif; margin: 20px; }
-            table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-            th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-            th { background-color: #f2f2f2; }
-            .report-summary { margin-bottom: 20px; }
+            body { font-family: Arial, sans-serif; margin: 0; padding: 20px; }
+            .header-container {
+              display: flex;
+              justify-content: space-between;
+              align-items: flex-start;
+              margin-bottom: 30px;
+              padding-bottom: 15px;
+              border-bottom: 2px solid #333;
+            }
+            .company-info {
+              flex: 1;
+              text-align: left;
+            }
+            .company-name { font-size: 16px; font-weight: bold; margin: 0; }
+            .company-address { font-size: 12px; margin: 2px 0; }
+            .company-email { font-size: 12px; margin: 2px 0; }
+            .report-title {
+              flex: 1;
+              text-align: center;
+            }
+            .report-title h1 { font-size: 24px; margin: 0; }
+            .date-info {
+              flex: 1;
+              text-align: right;
+              font-size: 12px;
+            }
+            .date-info div { margin: 2px 0; }
+            .summary-section {
+              margin: 20px 0;
+              padding: 15px;
+              background-color: #f9f9f9;
+              border: 1px solid #ddd;
+            }
+            .summary-title { font-size: 16px; font-weight: bold; margin-bottom: 10px; }
             .summary-item { margin: 5px 0; }
+            table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+            th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+            th { background-color: #f2f2f2; font-weight: bold; }
             .low-stock-row { background-color: #fff3cd; }
-            .section-title { margin-top: 30px; margin-bottom: 10px; }
-            .section-subtitle { margin-bottom: 15px; color: #666; }
-            .print-header { 
-              text-align: center; 
-              margin-bottom: 30px; 
-              border-bottom: 2px solid #333; 
-              padding-bottom: 15px; 
-            }
-            .print-period { 
-              font-size: 14px; 
-              color: #666; 
-              margin: 10px 0; 
-            }
-            .print-summary { 
-              font-size: 14px; 
-              color: #333; 
-              margin: 10px 0; 
-            }
+            h3 { margin: 30px 0 15px 0; font-size: 18px; }
           </style>
         </head>
         <body>
-          <div class="print-header">
-            <h1>Inventory Report</h1>
-            <p class="print-period">${periodText}</p>
-            <p class="print-summary">Total Products: ${totalProducts} | Products In Stock: ${productsInStock} | Low Stock Items: ${lowStockProducts.length}</p>
+          <div class="header-container">
+            <div class="company-info">
+              <p class="company-name">Flowers by Edmar</p>
+              <p class="company-address">H31 New Public Market Antipolo City</p>
+              <p class="company-address">Antipolo City, Rizal</p>
+              <p class="company-email">Email: admin@bloomtrack.com</p>
+            </div>
+            <div class="report-title">
+              <h1>Inventory Report</h1>
+            </div>
+            <div class="date-info">
+              <div><strong>Date Range:</strong></div>
+              <div style="white-space: pre-line;">${dateRangeText}</div>
+              <div><strong>Generated Report on:</strong> ${new Date().toLocaleDateString()}</div>
+            </div>
           </div>
-          ${reportSummary}
-          ${lowStockSection}
-          ${fullInventorySection}
+          
+          <div class="summary-section">
+            <div class="summary-title">SUMMARY</div>
+            <div class="summary-item"><strong>Total Unique Products:</strong> ${totalProducts}</div>
+            <div class="summary-item"><strong>Products In Stock:</strong> ${productsInStock}</div>
+            <div class="summary-item"><strong>Low Stock Items:</strong> ${lowStockProducts.length}</div>
+          </div>
+          
+          <h3>LOW STOCK ITEMS (10 or less)</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Product Name</th>
+                <th>Category</th>
+                <th>Current Quantity</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${lowStockTableRows}
+            </tbody>
+          </table>
+
+          <h3>FULL INVENTORY LIST</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Product Name</th>
+                <th>Category</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Supplier</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${fullInventoryTableRows}
+            </tbody>
+          </table>
+
           <script>
             window.onload = function() {
               window.print();
-              window.onafterprint = function() {
-                window.close();
-              };
+              window.onafterprint = function() { window.close(); };
             };
           </script>
         </body>

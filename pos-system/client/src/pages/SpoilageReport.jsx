@@ -79,11 +79,21 @@ const SpoilageReport = () => {
     // Create a new window for printing without dialog
     const printWindow = window.open('', '_blank');
     
-    // Get only the report content, excluding process section and loading messages
-    const reportSummary = document.querySelector('.report-summary').outerHTML;
-    const reportSection = document.querySelector('.report-section').outerHTML;
-    
     const totalQuantitySpoiled = spoiledProducts.reduce((total, item) => total + item.quantitySpoiled, 0);
+    
+    // Generate spoiled products table rows
+    const spoiledProductRows = spoiledProducts.length > 0 
+      ? spoiledProducts.map(product => `
+          <tr>
+            <td>${product.productName}</td>
+            <td>${product.productCategory}</td>
+            <td>${product.quantitySpoiled}</td>
+            <td>${product.supplierName}</td>
+            <td>${new Date(product.dateReceived).toLocaleDateString()}</td>
+            <td>${new Date(product.dateSpoiled).toLocaleDateString()}</td>
+          </tr>
+        `).join('')
+      : '<tr><td colspan="6" style="text-align: center; font-style: italic; padding: 2rem;">No spoiled products recorded yet.</td></tr>';
     
     printWindow.document.write(`
       <!DOCTYPE html>
@@ -91,33 +101,90 @@ const SpoilageReport = () => {
         <head>
           <title>Spoilage Report</title>
           <style>
-            body { font-family: Arial, sans-serif; margin: 20px; }
-            table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-            th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-            th { background-color: #f2f2f2; }
-            .report-summary { margin-bottom: 20px; }
+            body { font-family: Arial, sans-serif; margin: 0; padding: 20px; }
+            .header-container {
+              display: flex;
+              justify-content: space-between;
+              align-items: flex-start;
+              margin-bottom: 30px;
+              padding-bottom: 15px;
+              border-bottom: 2px solid #333;
+            }
+            .company-info {
+              flex: 1;
+              text-align: left;
+            }
+            .company-name { font-size: 16px; font-weight: bold; margin: 0; }
+            .company-address { font-size: 12px; margin: 2px 0; }
+            .company-email { font-size: 12px; margin: 2px 0; }
+            .report-title {
+              flex: 1;
+              text-align: center;
+            }
+            .report-title h1 { font-size: 24px; margin: 0; }
+            .date-info {
+              flex: 1;
+              text-align: right;
+              font-size: 12px;
+            }
+            .date-info div { margin: 2px 0; }
+            .summary-section {
+              margin: 20px 0;
+              padding: 15px;
+              background-color: #f9f9f9;
+              border: 1px solid #ddd;
+            }
+            .summary-title { font-size: 16px; font-weight: bold; margin-bottom: 10px; }
             .summary-item { margin: 5px 0; }
-            .section-title { margin-top: 30px; margin-bottom: 10px; }
-            .print-header { 
-              text-align: center; 
-              margin-bottom: 30px; 
-              border-bottom: 2px solid #333; 
-              padding-bottom: 15px; 
-            }
-            .print-summary { 
-              font-size: 14px; 
-              color: #333; 
-              margin: 10px 0; 
-            }
+            table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+            th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+            th { background-color: #f2f2f2; font-weight: bold; }
+            h3 { margin: 30px 0 15px 0; font-size: 18px; }
           </style>
         </head>
         <body>
-          <div class="print-header">
-            <h1>Spoilage Report</h1>
-            <p class="print-summary">Total Spoiled Items: ${spoiledProducts.length} | Total Quantity Spoiled: ${totalQuantitySpoiled} units | Generated: ${new Date().toLocaleDateString()}</p>
+          <div class="header-container">
+            <div class="company-info">
+              <p class="company-name">Flowers by Edmar</p>
+              <p class="company-address">H31 New Public Market Antipolo City</p>
+              <p class="company-address">Antipolo City, Rizal</p>
+              <p class="company-email">Email: admin@bloomtrack.com</p>
+            </div>
+            <div class="report-title">
+              <h1>Spoilage Report</h1>
+            </div>
+            <div class="date-info">
+              <div><strong>Date Range:</strong></div>
+              <div>From: Beginning</div>
+              <div>To: Present</div>
+              <div><strong>Generated Report on:</strong> ${new Date().toLocaleDateString()}</div>
+            </div>
           </div>
-          ${reportSummary}
-          ${reportSection}
+          
+          <div class="summary-section">
+            <div class="summary-title">SUMMARY</div>
+            <div class="summary-item"><strong>Total Spoiled Items:</strong> ${spoiledProducts.length}</div>
+            <div class="summary-item"><strong>Total Quantity Spoiled:</strong> ${totalQuantitySpoiled} units</div>
+            <div class="summary-item"><strong>Report Generated:</strong> ${new Date().toLocaleDateString()}</div>
+          </div>
+          
+          <h3>SPOILED PRODUCT HISTORY</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Product Name</th>
+                <th>Category</th>
+                <th>Qty. Spoiled</th>
+                <th>Supplier</th>
+                <th>Date Received</th>
+                <th>Date Spoiled</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${spoiledProductRows}
+            </tbody>
+          </table>
+
           <script>
             window.onload = function() {
               window.print();
