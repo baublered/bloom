@@ -145,6 +145,98 @@ const PurchaseOrders = () => {
         setSelectedPO(null);
     };
 
+    const handlePrintPO = async (po) => {
+        try {
+            console.log('=== PDF Generation Debug Info ===');
+            console.log('Full PO object:', po);
+            console.log('PO ID:', po._id);
+            console.log('PO Number:', po.poNumber);
+            console.log('PO Object keys:', Object.keys(po));
+            console.log('ID type:', typeof po._id);
+            console.log('ID length:', po._id ? po._id.length : 'N/A');
+            
+            const token = localStorage.getItem('token');
+            if (!token) {
+                alert('Please log in to generate PDF');
+                return;
+            }
+
+            const config = {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                responseType: 'blob' // Important for downloading files
+            };
+
+            // Make request to get PDF
+            const requestUrl = `/api/purchase-orders/${po._id}/pdf`;
+            console.log(`Making request to: ${requestUrl}`);
+            const response = await axios.get(requestUrl, config);
+            
+            // Create blob link to download
+            const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
+            const link = document.createElement('a');
+            link.href = url;
+            
+            // Set the download filename
+            const filename = `PO-${po.poNumber}.pdf`;
+            link.setAttribute('download', filename);
+            
+            // Trigger download
+            document.body.appendChild(link);
+            link.click();
+            
+            // Clean up
+            link.remove();
+            window.URL.revokeObjectURL(url);
+            
+            // Show success message
+            alert(`PDF for ${po.poNumber} has been downloaded successfully!`);
+            
+        } catch (err) {
+            console.error('Error generating PDF:', err);
+            
+            let errorMessage = 'Failed to generate PDF. ';
+            
+            // Handle blob error response
+            if (err.response?.data instanceof Blob) {
+                try {
+                    const errorText = await err.response.data.text();
+                    const errorData = JSON.parse(errorText);
+                    console.log('Parsed error data:', errorData);
+                    errorMessage += errorData.message || 'Unknown error occurred.';
+                } catch (parseError) {
+                    console.error('Could not parse error blob:', parseError);
+                    if (err.response?.status === 404) {
+                        errorMessage += 'Purchase order not found.';
+                    } else if (err.response?.status === 401) {
+                        errorMessage += 'Please log in again.';
+                    } else if (err.response?.status === 500) {
+                        errorMessage += 'Server error. Please try again later.';
+                    } else {
+                        errorMessage += 'Please check your connection and try again.';
+                    }
+                }
+            } else {
+                // Non-blob error response
+                console.log('Non-blob error response:', err.response?.data);
+                if (err.response?.data?.message) {
+                    errorMessage += err.response.data.message;
+                } else if (err.response?.status === 404) {
+                    errorMessage += 'Purchase order not found.';
+                } else if (err.response?.status === 401) {
+                    errorMessage += 'Please log in again.';
+                } else if (err.response?.status === 500) {
+                    errorMessage += 'Server error. Please try again later.';
+                } else {
+                    errorMessage += 'Please check your connection and try again.';
+                }
+            }
+            
+            alert(errorMessage);
+        }
+    };
+
     useEffect(() => {
         fetchPurchaseOrders();
     }, []);
@@ -358,6 +450,12 @@ const PurchaseOrders = () => {
                         </div>
 
                         <div className="modal-actions">
+                            <button 
+                                className="print-po-btn"
+                                onClick={() => handlePrintPO(selectedPOForDetails)}
+                            >
+                                📄 Print Purchase Order
+                            </button>
                             <button 
                                 className="close-details-btn"
                                 onClick={closeDetailsModal}

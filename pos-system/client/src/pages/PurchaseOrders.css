@@ -180,6 +180,40 @@
     background-color: #218838;
 }
 
+/* Action buttons container in table */
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Small print button for table rows */
+.print-po-btn-small {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 0.4rem 0.6rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.2s;
+    font-size: 0.8rem;
+    min-width: 70px;
+}
+
+.print-po-btn-small:hover {
+    background-color: #0056b3;
+}
+
+/* Ensure table action buttons are properly spaced */
+.view-po-btn,
+.receive-po-btn {
+    margin-right: 0.5rem;
+    margin-bottom: 0.25rem;
+}
+
 /* Modal Styles */
 .modal-overlay {
     position: fixed;
@@ -242,6 +276,9 @@
     display: flex;
     gap: 1rem;
     justify-content: flex-end;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid #dee2e6;
 }
 
 .confirm-receive-btn {
@@ -435,6 +472,45 @@
 
 .close-details-btn:hover {
     background-color: #5a6268;
+}
+
+/* Print Purchase Order Button */
+.print-po-btn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.print-po-btn:hover {
+    background-color: #0056b3;
+    transform: translateY(-1px);
+}
+
+.print-po-btn:active {
+    transform: translateY(0);
+}
+
+/* Loading state for print buttons */
+.print-po-btn:disabled,
+.print-po-btn-small:disabled {
+    background-color: #6c757d;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.print-po-btn:disabled:hover,
+.print-po-btn-small:disabled:hover {
+    background-color: #6c757d;
+    transform: none;
 }
 
 /* Responsive Design */

@@ -77,11 +77,14 @@
   flex: 1.5;
   max-height: calc(100vh - 140px); /* Adjust based on header and margins */
   overflow-y: auto; /* Enable vertical scrolling */
+  overflow-x: visible; /* Prevent horizontal clipping */
   /* Smooth scrolling */
   scroll-behavior: smooth;
   /* Custom scrollbar styling for WebKit browsers */
   scrollbar-width: thin;
   scrollbar-color: #cbd5e0 #f7fafc;
+  /* Add padding to prevent content clipping */
+  padding-right: 8px;
 }
 
 .po-details-section::-webkit-scrollbar {
@@ -104,37 +107,33 @@
 
 /* Ensure form content doesn't get cut off */
 .po-form {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  margin-bottom: 1rem;
-  padding-right: 4px; /* Account for scrollbar */
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem 1.5rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
 }
 
-/* Improve spacing for scrollable content */
-.po-details-section h2 {
-  position: sticky;
-  top: 0;
-  background-color: white;
-  z-index: 10;
-  padding: 0.5rem 0;
-  margin-top: 0;
-  margin-bottom: 0.75rem;
-  border-bottom: 1px solid #dee2e6;
-  font-size: 1.2rem;
-  color: #495057;
+/* Make notes field span full width */
+.po-form .po-form-row:last-child {
+  grid-column: 1 / -1;
 }
 
+/* Selected Products Header */
 .po-details-section h3 {
   position: sticky;
-  top: 60px; /* Adjust based on h2 height */
+  top: 95px; /* Adjust based on header section height */
   background-color: white;
   z-index: 9;
-  padding: 0.5rem 0;
-  margin-top: 0;
-  margin-bottom: 0.5rem;
+  padding: 0.75rem 0;
+  margin: 1.5rem 0 1rem 0;
   font-size: 1.1rem;
   color: #495057;
+  border-bottom: 1px solid #e9ecef;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
 }
 
 /* General header styles (excluding po-details-section) */
@@ -295,51 +294,55 @@
 }
 
 .po-items-list {
-  overflow-y: auto; /* Enable vertical scrolling */
-  flex-grow: 1;
-  border: 1px solid #e9ecef;
-  border-radius: 4px;
-  padding: 0.25rem;
   margin-bottom: 1rem;
+  min-height: 200px; /* Ensure minimum height for visibility */
 }
 
-.po-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.5rem;
-  border-bottom: 1px solid #f1f3f5;
-  font-size: 0.95rem;
-}
 
-.po-item:last-child {
-  border-bottom: none;
-}
-
-.po-item span {
-  flex-grow: 1;
-}
 
 .po-item-quantity-input {
-  width: 60px;
-  padding: 0.4rem;
+  width: 100%;
+  max-width: 80px;
+  padding: 0.5rem;
   text-align: center;
-  margin: 0 0.75rem;
   border: 1px solid #ced4da;
   border-radius: 4px;
+  justify-self: center;
+  font-size: 0.9rem;
 }
 
-.po-item button {
-  padding: 0.3rem 0.6rem;
+.po-item-price-input {
+  width: 100%;
+  max-width: 90px;
+  padding: 0.5rem;
+  text-align: center;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  justify-self: center;
+  font-size: 0.9rem;
+}
+
+.po-item-quantity-input:focus,
+.po-item-price-input:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.remove-item-btn {
+  padding: 0.4rem 0.8rem;
   background-color: #dc3545;
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.2s;
+  font-size: 0.8rem;
+  justify-self: center;
+  white-space: nowrap;
 }
 
-.po-item button:hover {
+.remove-item-btn:hover {
   background-color: #c82333;
 }
 
@@ -501,13 +504,20 @@
 .po-number-input.error,
 .supplier-name-input.error,
 .po-date-input.error,
-.po-item-quantity-input.error {
+.po-notes-textarea.error {
   border-color: #dc3545;
-  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+  box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.25);
 }
 
 .po-item-quantity-input.error {
   background-color: #fff5f5;
+}
+
+/* Error states for the table inputs */
+.po-item-quantity-input.error,
+.po-item-price-input.error {
+  border-color: #dc3545;
+  box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.25);
 }
 
 /* Loading and Error States */
@@ -528,6 +538,19 @@
     .po-form-grid {
         grid-template-columns: 1.5fr 1fr;
     }
+  
+    .po-items-header,
+    .po-item {
+      grid-template-columns: 1.5fr 1fr 0.7fr 0.8fr 0.8fr 0.8fr;
+      gap: 0.3rem;
+      font-size: 0.85rem;
+    }
+    
+    .po-item-quantity-input,
+    .po-item-price-input {
+      max-width: 70px;
+      padding: 0.4rem;
+    }
 }
 
 @media (max-width: 992px) {
@@ -538,6 +561,24 @@
         position: static;
         top: auto;
     }
+}
+
+@media (max-width: 900px) {
+  .po-items-header,
+  .po-item {
+    grid-template-columns: 2fr 1fr 0.6fr 0.7fr 0.7fr 0.6fr;
+    gap: 0.2rem;
+    font-size: 0.8rem;
+  }
+  
+  .po-item .item-supplier {
+    font-size: 0.75rem;
+  }
+  
+  .remove-item-btn {
+    font-size: 0.7rem;
+    padding: 0.3rem 0.5rem;
+  }
 }
 
 @media (max-width: 768px) {
@@ -574,80 +615,138 @@
     }
 }
 
-/* Product item styling */
-.product-item {
+/* Responsive design for smaller screens */
+@media (max-width: 768px) {
+  .po-header-section {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+  
+  .company-info {
+    align-items: flex-start;
+    text-align: left;
+  }
+  
+  .po-form {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .po-form .po-form-row:last-child {
+    grid-column: 1;
+  }
+}
+
+@media (max-width: 1024px) {
+  .po-form {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .po-form .po-form-row:last-child {
+    grid-column: 1;
+  }
+}
+
+/* Purchase Order Items Table Styles */
+.po-items-table {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem;
-  margin-bottom: 0.75rem;
-  background-color: white;
-  border: 1px solid #e9ecef;
-  border-radius: 8px;
-  transition: all 0.2s ease;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.product-item:hover {
-  border-color: #007bff;
-  box-shadow: 0 2px 8px rgba(0, 123, 255, 0.1);
-}
-
-.product-info {
-  flex: 1;
-  margin-right: 1rem;
-}
-
-/* No products message styling */
-.no-products-message {
-  text-align: center;
-  padding: 2rem;
-  background-color: #f8f9fa;
+  flex-direction: column;
   border: 1px solid #dee2e6;
   border-radius: 8px;
-  color: #6c757d;
+  overflow: hidden;
+  background-color: white;
+  margin-bottom: 1rem;
 }
 
-.no-products-message .note {
-  font-size: 0.85rem;
-  color: #868e96;
-  margin-top: 0.5rem;
-  font-style: italic;
-}
-
-/* Required field indicator */
-.required-asterisk {
-  color: #dc3545;
-  font-weight: bold;
-  margin-left: 2px;
-}
-
-.po-form-row label {
-  font-weight: 500;
-  margin-bottom: 0.5rem;
-  display: block;
-  color: #495057;
-}
-
-/* Company and address input styling */
-.po-company-input,
-.po-address-input {
-  width: 100%;
-  padding: 0.5rem;
-  border: 1px solid #e9ecef;
-  border-radius: 4px;
+.po-items-header {
+  display: grid;
+  grid-template-columns: 2fr 1.5fr 0.8fr 1fr 1fr 1fr;
+  gap: 0.5rem;
   background-color: #f8f9fa;
-  color: #495057;
-  font-size: 0.9rem;
-  font-weight: 500;
-}
-
-.po-company-input {
-  color: #28a745;
+  padding: 0.75rem;
   font-weight: 600;
+  font-size: 0.9rem;
+  color: #495057;
+  border-bottom: 2px solid #dee2e6;
 }
 
-.po-address-input {
-  color: #6c757d;
+.po-items-header span {
+  text-align: center;
+}
+
+.po-item {
+  display: grid;
+  grid-template-columns: 2fr 1.5fr 0.8fr 1fr 1fr 1fr;
+  gap: 0.5rem;
+  align-items: center;
+  padding: 0.75rem;
+  border-bottom: 1px solid #f1f3f5;
+  font-size: 0.9rem;
+  transition: background-color 0.2s;
+}
+
+.po-item:hover {
+  background-color: #f8f9fa;
+}
+
+.po-item:last-child {
+  border-bottom: none;
+}
+
+.po-item .item-name {
+  font-weight: 500;
+  color: #2d3748;
+}
+
+.po-item .item-supplier {
+  color: #718096;
   font-size: 0.85rem;
+  text-align: center;
+}
+
+.po-item .item-total {
+  font-weight: 600;
+  color: #2b6cb0;
+  text-align: center;
+}
+
+.po-item .item-price {
+  text-align: center;
+  color: #4a5568;
+}
+
+/* Responsive table styling */
+@media (max-width: 1200px) {
+  .po-items-header,
+  .po-item {
+    grid-template-columns: 1.5fr 1fr 0.7fr 0.8fr 0.8fr 0.8fr;
+    gap: 0.3rem;
+    font-size: 0.85rem;
+  }
+  
+  .po-item-quantity-input,
+  .po-item-price-input {
+    max-width: 70px;
+    padding: 0.4rem;
+  }
+}
+
+@media (max-width: 900px) {
+  .po-items-header,
+  .po-item {
+    grid-template-columns: 2fr 1fr 0.6fr 0.7fr 0.7fr 0.6fr;
+    gap: 0.2rem;
+    font-size: 0.8rem;
+  }
+  
+  .po-item .item-supplier {
+    font-size: 0.75rem;
+  }
+  
+  .remove-item-btn {
+    font-size: 0.7rem;
+    padding: 0.3rem 0.5rem;
+  }
 }

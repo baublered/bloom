@@ -19,6 +19,7 @@ const CreatePurchaseOrder = () => {
     const [expectedDeliveryDate, setExpectedDeliveryDate] = useState('');
     const [notes, setNotes] = useState('');
     const [selectedSupplier, setSelectedSupplier] = useState('');
+    const [accessoryPrices, setAccessoryPrices] = useState({}); // Track prices for accessories
 
     const [formData, setFormData] = useState({
         poNumber: '', // Will be auto-generated
@@ -179,7 +180,8 @@ const CreatePurchaseOrder = () => {
                 supplierName: product.supplierName.trim(),
                 productCategory: product.productCategory,
                 currentStock: product.quantity,
-                minimumThreshold: product.minimumThreshold
+                minimumThreshold: product.minimumThreshold,
+                price: product.productCategory === 'Accessories' ? 0 : product.price || 0 // Initialize price for accessories
             };
             
             setPoItems([...poItems, newItem]);
@@ -201,21 +203,33 @@ const CreatePurchaseOrder = () => {
     };
 
     const handleRemoveItem = (productId) => {
-        const updatedItems = poItems.filter(item => item.productId !== productId);
-        setPoItems(updatedItems);
-        
-        // If no items left, clear the supplier
-        if (updatedItems.length === 0) {
-            setSelectedSupplier('');
-        }
-        
-        // Clear validation errors when items are removed
-        if (validationErrors.items || validationErrors.supplier) {
-            setValidationErrors(prev => ({
-                ...prev,
-                items: updatedItems.length === 0 ? 'Please add at least one item to the purchase order.' : '',
-                supplier: updatedItems.length === 0 ? 'Supplier is required. Please add products to automatically set the supplier.' : ''
-            }));
+        const item = poItems.find(item => item.productId === productId);
+        if (item && window.confirm(`Are you sure you want to remove "${item.name}" from the purchase order?`)) {
+            const updatedItems = poItems.filter(item => item.productId !== productId);
+            setPoItems(updatedItems);
+            
+            // Clean up accessory price if it exists
+            if (accessoryPrices[productId]) {
+                setAccessoryPrices(prev => {
+                    const newPrices = { ...prev };
+                    delete newPrices[productId];
+                    return newPrices;
+                });
+            }
+            
+            // If no items left, clear the supplier
+            if (updatedItems.length === 0) {
+                setSelectedSupplier('');
+            }
+            
+            // Clear validation errors when items are removed
+            if (validationErrors.items || validationErrors.supplier) {
+                setValidationErrors(prev => ({
+                    ...prev,
+                    items: updatedItems.length === 0 ? 'Please add at least one item to the purchase order.' : '',
+                    supplier: updatedItems.length === 0 ? 'Supplier is required. Please add products to automatically set the supplier.' : ''
+                }));
+            }
         }
     };
 
@@ -312,6 +326,55 @@ const CreatePurchaseOrder = () => {
         }
     };
 
+    const handlePriceChange = (productId, price) => {
+        try {
+            setItemError('');
+            
+            // Input validation for price
+            if (price === '' || price === null || price === undefined) {
+                // Allow empty for now, will be validated on submit
+                setPoItems(poItems.map(item =>
+                    item.productId === productId ? { ...item, price: 0 } : item
+                ));
+                return;
+            }
+            
+            const numPrice = parseFloat(price);
+            
+            if (isNaN(numPrice)) {
+                setItemError('Price must be a valid number.');
+                return;
+            }
+            
+            if (numPrice < 0) {
+                setItemError('Price cannot be negative.');
+                return;
+            }
+            
+            if (numPrice > 100000) {
+                setItemError('Price cannot exceed ₱100,000.');
+                return;
+            }
+            
+            // Update the price
+            setPoItems(poItems.map(item =>
+                item.productId === productId ? { ...item, price: numPrice } : item
+            ));
+            
+            // Clear validation errors for prices when user fixes them
+            if (validationErrors.accessoryPrices) {
+                setValidationErrors(prev => ({
+                    ...prev,
+                    accessoryPrices: ''
+                }));
+            }
+            
+        } catch (err) {
+            console.error('Error updating price:', err);
+            setItemError('Failed to update price. Please try again.');
+        }
+    };
+
     const validateForm = () => {
         const errors = {};
         
@@ -374,6 +437,14 @@ const CreatePurchaseOrder = () => {
             errors.missingProducts = 'Some selected products are no longer available. Please refresh and try again.';
         }
         
+        // Validate accessory prices
+        const accessoriesWithoutPrice = poItems.filter(item => 
+            item.productCategory === 'Accessories' && (!item.price || item.price <= 0)
+        );
+        if (accessoriesWithoutPrice.length > 0) {
+            errors.accessoryPrices = 'All accessories must have a valid price greater than 0.';
+        }
+        
         setValidationErrors(errors);
         return Object.keys(errors).length === 0;
     };
@@ -405,12 +476,15 @@ const CreatePurchaseOrder = () => {
                     throw new Error(`Product details not found for ${item.name}`);
                 }
                 
+                // Use the custom price for accessories, otherwise use the product's default price
+                const unitPrice = item.productCategory === 'Accessories' ? item.price : (productDetails?.price || 0);
+                
                 return {
                     productId: item.productId,
                     productName: item.name,
                     quantity: item.quantity,
-                    unitPrice: productDetails?.price || 0,
-                    totalPrice: item.quantity * (productDetails?.price || 0),
+                    unitPrice: unitPrice,
+                    totalPrice: item.quantity * unitPrice,
                 };
             });
 
@@ -508,7 +582,6 @@ const CreatePurchaseOrder = () => {
         }
     };
 
-
     const retryFetchProducts = () => {
         setLoading(true);
         fetchProducts();
@@ -519,6 +592,22 @@ const CreatePurchaseOrder = () => {
         const isLowStockOrOut = product.quantity <= product.minimumThreshold;
         return matchesSearch && isLowStockOrOut;
     });
+
+    // Calculate total cost of the purchase order
+    const calculateTotalCost = () => {
+        return poItems.reduce((total, item) => {
+            const unitPrice = item.productCategory === 'Accessories' ? (item.price || 0) : (item.price || 0);
+            return total + (item.quantity * unitPrice);
+        }, 0);
+    };
+
+    const formatCurrency = (amount) => {
+        return new Intl.NumberFormat('en-PH', {
+            style: 'currency',
+            currency: 'PHP',
+            minimumFractionDigits: 2
+        }).format(amount);
+    };
 
     if (loading) return (
         <div className="loading-state">
@@ -624,7 +713,13 @@ const CreatePurchaseOrder = () => {
                 </div>
 
                 <div className="po-details-section">
-                    <h2>2. Purchase Order Details</h2>
+                    <div className="po-header-section">
+                        <h2>2. Purchase Order Details</h2>
+                        <div className="company-info">
+                            <div className="company-name">Flowers by Edmar</div>
+                            <div className="company-address">H31 New Public Market Antipolo City, Rizal</div>
+                        </div>
+                    </div>
                     <div className="po-form">
                         <div className="po-form-row">
                             <label>Purchase Order ID:</label>
@@ -636,26 +731,6 @@ const CreatePurchaseOrder = () => {
                                 placeholder="Auto-generated"
                             />
                             {validationErrors.poNumber && <span className="field-error">{validationErrors.poNumber}</span>}
-                        </div>
-                        
-                        <div className="po-form-row">
-                            <label>Purchase Order by:</label>
-                            <input
-                                type="text"
-                                value="Flowers by Edmar"
-                                readOnly
-                                className="po-company-input"
-                            />
-                        </div>
-                        
-                        <div className="po-form-row">
-                            <label>Address:</label>
-                            <input
-                                type="text"
-                                value="H31 New Public Market Antipolo City, Rizal"
-                                readOnly
-                                className="po-address-input"
-                            />
                         </div>
                         
                         <div className="po-form-row">
@@ -707,35 +782,56 @@ const CreatePurchaseOrder = () => {
                                     <span>Product Name</span>
                                     <span>Supplier</span>
                                     <span>Quantity</span>
+                                    <span>Unit Price (₱)</span>
+                                    <span>Total (₱)</span>
                                     <span>Actions</span>
                                 </div>
-                                {poItems.map((item) => (
-                                    <div key={item.productId} className="po-item">
-                                        <span className="item-name">{item.name}</span>
-                                        <span className="item-supplier">{item.supplierName}</span>
-                                        <input
-                                            type="number"
-                                            min="1"
-                                            max="100000"
-                                            value={item.quantity}
-                                            onChange={(e) => handleQuantityChange(item.productId, parseInt(e.target.value, 10) || 1)}
-                                            className={`po-item-quantity-input ${validationErrors.quantities || validationErrors.highQuantities ? 'error' : ''}`}
-                                            onBlur={(e) => {
-                                                // Ensure minimum value on blur
-                                                if (!e.target.value || parseInt(e.target.value) < 1) {
-                                                    handleQuantityChange(item.productId, 1);
-                                                }
-                                            }}
-                                        />
-                                        <button 
-                                            onClick={() => handleRemoveItem(item.productId)}
-                                            className="remove-item-btn"
-                                            title={`Remove ${item.name} from purchase order`}
-                                        >
-                                            Remove
-                                        </button>
-                                    </div>
-                                ))}
+                                {poItems.map((item) => {
+                                    const unitPrice = item.productCategory === 'Accessories' ? (item.price || 0) : (item.price || 0);
+                                    const totalPrice = item.quantity * unitPrice;
+                                    
+                                    return (
+                                        <div key={item.productId} className="po-item">
+                                            <span className="item-name">{item.name}</span>
+                                            <span className="item-supplier">{item.supplierName}</span>
+                                            <input
+                                                type="number"
+                                                min="1"
+                                                max="100000"
+                                                value={item.quantity}
+                                                onChange={(e) => handleQuantityChange(item.productId, parseInt(e.target.value, 10) || 1)}
+                                                className={`po-item-quantity-input ${validationErrors.quantities || validationErrors.highQuantities ? 'error' : ''}`}
+                                                onBlur={(e) => {
+                                                    // Ensure minimum value on blur
+                                                    if (!e.target.value || parseInt(e.target.value) < 1) {
+                                                        handleQuantityChange(item.productId, 1);
+                                                    }
+                                                }}
+                                            />
+                                            {item.productCategory === 'Accessories' ? (
+                                                <input
+                                                    type="number"
+                                                    min="0"
+                                                    step="0.01"
+                                                    placeholder="Enter price"
+                                                    value={item.price || ''}
+                                                    onChange={(e) => handlePriceChange(item.productId, e.target.value)}
+                                                    className={`po-item-price-input ${validationErrors.accessoryPrices ? 'error' : ''}`}
+                                                />
+                                            ) : (
+                                                <span className="item-price">₱{unitPrice.toFixed(2)}</span>
+                                            )}
+                                            <span className="item-total">₱{totalPrice.toFixed(2)}</span>
+                                            <button 
+                                                onClick={() => handleRemoveItem(item.productId)}
+                                                className="remove-item-btn"
+                                                title={`Remove ${item.name} from purchase order`}
+                                            >
+                                                Remove
+                                            </button>
+                                        </div>
+                                    );
+                                })}
                             </div>
                         )}
                     </div>
@@ -746,16 +842,21 @@ const CreatePurchaseOrder = () => {
                     {validationErrors.missingProducts && <div className="error-message">{validationErrors.missingProducts}</div>}
 
                     {poItems.length > 0 && (
-                        <button onClick={handleCreatePO} className="create-po-btn" disabled={saving}>
-                            {saving ? (
-                                <>
-                                    <span className="loading-spinner-small"></span>
-                                    Creating...
-                                </>
-                            ) : (
-                                'Create Purchase Order'
-                            )}
-                        </button>
+                        <div className="po-summary">
+                            <div className="po-total">
+                                <h3>Total Purchase Order Cost: {formatCurrency(calculateTotalCost())}</h3>
+                            </div>
+                            <button onClick={handleCreatePO} className="create-po-btn" disabled={saving}>
+                                {saving ? (
+                                    <>
+                                        <span className="loading-spinner-small"></span>
+                                        Creating...
+                                    </>
+                                ) : (
+                                    'Create Purchase Order'
+                                )}
+                            </button>
+                        </div>
                     )}
                 </div>
             </div>

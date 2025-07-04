@@ -5,7 +5,8 @@ const {
     getPurchaseOrders, 
     getPurchaseOrder,
     updatePurchaseOrderStatus,
-    receivePurchaseOrder
+    receivePurchaseOrder,
+    generatePurchaseOrderPDF
 } = require('../controllers/purchaseOrderController');
 const { authenticate, adminOnly } = require('../middleware/authMiddleware');
 
@@ -18,6 +19,11 @@ router.post('/', authenticate, adminOnly, createPurchaseOrder);
 // @desc    Get all purchase orders
 // @access  Private/Admin
 router.get('/', authenticate, adminOnly, getPurchaseOrders);
+
+// @route   GET /api/purchase-orders/:id/pdf
+// @desc    Generate PDF for purchase order
+// @access  Private/Admin
+router.get('/:id/pdf', authenticate, adminOnly, generatePurchaseOrderPDF);
 
 // @route   GET /api/purchase-orders/:id
 // @desc    Get purchase order by ID
