@@ -33,17 +33,38 @@ const SpoilageReport = () => {
   
   // Function to trigger the backend spoilage process
   const handleProcessSpoilage = async () => {
+    const today = new Date().toISOString().split('T')[0]; // Get date in YYYY-MM-DD format
+    const lastProcessedDate = localStorage.getItem('lastSpoilageProcessDate');
+
+    if (lastProcessedDate === today) {
+        setProcessMessage(`Already processed spoilage for today (${new Date().toLocaleDateString()}).`);
+        return;
+    }
+
     if (!window.confirm("Are you sure you want to process spoilage? This will remove expired items from your main inventory.")) {
         return;
     }
     try {
         setProcessMessage('Processing...');
         const response = await axios.post('/api/spoilage/process');
-        setProcessMessage(response.data.message);
+        
+        // On success, record the date
+        localStorage.setItem('lastSpoilageProcessDate', today);
+
+        // Extract the number of processed items from the message
+        const match = response.data.message.match(/\d+/);
+        const processedCount = match ? parseInt(match[0], 10) : 0;
+
+        if (processedCount > 0) {
+            setProcessMessage(`Success! Moved ${processedCount} newly expired item(s) to the spoilage list.`);
+        } else {
+            setProcessMessage('Processing complete. No new expired items were found in the inventory.');
+        }
+
         // Refresh the report to show any newly spoiled items
         fetchSpoilageReport();
     } catch (err) {
-        setProcessMessage('Failed to process spoilage.');
+        setProcessMessage('Failed to process spoilage. Please check server logs.');
         console.error(err);
     }
   };

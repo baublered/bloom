@@ -15,6 +15,7 @@ const Inventory = () => {
   const [error, setError] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [sortOption, setSortOption] = useState('fifo'); // Default to FIFO sorting
+  const [categoryFilter, setCategoryFilter] = useState('all');
   
   const [notifications, setNotifications] = useState([]);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
@@ -221,14 +222,16 @@ const Inventory = () => {
   // Search and sort logic
   useEffect(() => {
     let results = products.filter(product =>
-      product.productName.toLowerCase().includes(searchTerm.toLowerCase())
+      (product.productName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      product._id.slice(-6).toLowerCase().includes(searchTerm.toLowerCase())) &&
+      (categoryFilter === 'all' || product.productCategory === categoryFilter)
     );
     
     // Apply sorting after filtering
     results = sortProducts(results, sortOption);
     
     setFilteredProducts(results);
-  }, [searchTerm, products, sortOption]);
+  }, [searchTerm, products, sortOption, categoryFilter]);
   
   const calculateRemainingLifespan = (dateReceived, lifespanInDays) => {
     if (!dateReceived || !lifespanInDays) return 'N/A';
@@ -284,7 +287,7 @@ const Inventory = () => {
               <span>Products</span>
               <input 
                 type="text" 
-                placeholder="Search by product name..." 
+                placeholder="Search by name or ID..." 
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -305,6 +308,20 @@ const Inventory = () => {
                 <option value="alphabetical"> Name (A-Z)</option>
                 <option value="price-low"> Price (Low to High)</option>
                 <option value="price-high"> Price (High to Low)</option>
+              </select>
+            </div>
+
+            <div className="filter-controls">
+              <label htmlFor="categoryFilter">Filter by:</label>
+              <select 
+                id="categoryFilter"
+                value={categoryFilter} 
+                onChange={(e) => setCategoryFilter(e.target.value)}
+                className="sort-dropdown" // Reuse class for styling
+              >
+                <option value="all">All Categories</option>
+                <option value="Flowers">Flowers</option>
+                <option value="Accessories">Accessories</option>
               </select>
             </div>
             

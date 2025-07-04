@@ -50,10 +50,11 @@ function EventsPayment() {
   
   // Downpayment functionality
   const [isDownpayment, setIsDownpayment] = useState(false);
-  const [downpaymentAmount, setDownpaymentAmount] = useState(0);
+  const [downpaymentAmount, setDownpaymentAmount] = useState(10000); // Default to the minimum
   const [remainingBalance, setRemainingBalance] = useState(0);
   const [existingDownpayment, setExistingDownpayment] = useState(0);
   const [hasExistingDownpayment, setHasExistingDownpayment] = useState(false);
+  const [downpaymentError, setDownpaymentError] = useState('');
 
   // COMBINED useEffect to manage all balance calculations and prevent race conditions
   useEffect(() => {
@@ -96,15 +97,31 @@ function EventsPayment() {
       setHasExistingDownpayment(false);
       setExistingDownpayment(0);
 
+      // New logic: Automatically disable downpayment if total is less than 10,000
+      if (correctGrandTotal < 10000) {
+        setIsDownpayment(false);
+      }
+
       if (isDownpayment) {
         // User is making a NEW downpayment.
         const amount = parseFloat(downpaymentAmount) || 0;
+        
+        // Validate the downpayment amount
+        if (amount < 10000) {
+          setDownpaymentError('Minimum downpayment is ₱10,000.');
+        } else if (amount >= correctGrandTotal) {
+          setDownpaymentError('Downpayment must be less than the total amount.');
+        } else {
+          setDownpaymentError('');
+        }
+        
         const validAmount = Math.min(amount, correctGrandTotal);
         setRemainingBalance(correctGrandTotal - validAmount);
       } else {
         // User is making a FULL payment.
         setDownpaymentAmount(correctGrandTotal);
         setRemainingBalance(0);
+        setDownpaymentError(''); // Clear any previous errors
       }
     }
   }, [eventDetails, correctGrandTotal, isDownpayment, downpaymentAmount]);
@@ -155,6 +172,10 @@ function EventsPayment() {
     }
     if ((paymentMethod === 'GCASH' || paymentMethod === 'BANK') && !proofOfPayment) {
         setStatusMessage('❌ Please upload proof of payment.');
+        return;
+    }
+    if (isDownpayment && downpaymentError) {
+        setStatusMessage(`❌ ${downpaymentError}`);
         return;
     }
     
@@ -276,18 +297,27 @@ function EventsPayment() {
                                 </div>
                             </div>
                         ) : (
-                            // Show normal downpayment option
+                            // Show normal downpayment option, only if total is >= 10,000
                             <>
-                                <div className="downpayment-toggle">
-                                    <label className="downpayment-checkbox">
-                                        <input 
-                                            type="checkbox" 
-                                            checked={isDownpayment} 
-                                            onChange={(e) => setIsDownpayment(e.target.checked)}
-                                        />
-                                        <span>Pay as downpayment only</span>
-                                    </label>
-                                </div>
+                                {correctGrandTotal >= 10000 && (
+                                  <div className="downpayment-toggle">
+                                      <label className="downpayment-checkbox">
+                                          <input 
+                                              type="checkbox" 
+                                              checked={isDownpayment} 
+                                              onChange={(e) => {
+                                                  const isChecked = e.target.checked;
+                                                  setIsDownpayment(isChecked);
+                                                  if (isChecked) {
+                                                      // When switching to downpayment, default to 10k or current value if higher
+                                                      setDownpaymentAmount(Math.max(10000, downpaymentAmount));
+                                                  }
+                                              }}
+                                          />
+                                          <span>Pay as downpayment only</span>
+                                      </label>
+                                  </div>
+                                )}
                                 
                                 {isDownpayment && (
                                     <div className="downpayment-controls">
@@ -298,19 +328,18 @@ function EventsPayment() {
                                                 <input 
                                                     type="number" 
                                                     value={downpaymentAmount} 
-                                                    onChange={(e) => {
-                                                        const amount = parseFloat(e.target.value) || 0;
-                                                        const validAmount = Math.max(0, Math.min(correctGrandTotal, amount));
-                                                        setDownpaymentAmount(validAmount);
-                                                        setRemainingBalance(correctGrandTotal - validAmount);
-                                                    }}
-                                                    min="0" 
-                                                    max={correctGrandTotal}
+                                                    onChange={(e) => setDownpaymentAmount(parseFloat(e.target.value) || 0)}
+                                                    min="10000" 
+                                                    max={correctGrandTotal - 0.01} // Must be less than total
                                                     step="0.01"
-                                                    placeholder="0.00"
+                                                    placeholder="10000.00"
                                                 />
                                             </div>
-                                    <small className="input-helper">Enter amount between ₱0 and ₱{correctGrandTotal.toFixed(2)}</small>
+                                    {downpaymentError ? (
+                                      <small className="input-helper error">{downpaymentError}</small>
+                                    ) : (
+                                      <small className="input-helper">Enter amount between ₱10,000 and ₱{(correctGrandTotal - 0.01).toFixed(2)}</small>
+                                    )}
                                 </div>
                                 <div className="downpayment-breakdown">
                                     <div className="price-line downpayment"><span>Downpayment amount:</span><span>₱{parseFloat(downpaymentAmount || 0).toFixed(2)}</span></div>
@@ -354,7 +383,7 @@ function EventsPayment() {
                     <button 
                         className="confirm-payment-button" 
                         onClick={handleConfirmPayment}
-                        disabled={isLoading || !paymentMethod || (paymentMethod === 'CASH' && 
+                        disabled={isLoading || !paymentMethod || (isDownpayment && !!downpaymentError) || (paymentMethod === 'CASH' && 
                             (parseFloat(amountPaid) < (hasExistingDownpayment ? remainingBalance : (isDownpayment ? downpaymentAmount : correctGrandTotal)) || !amountPaid))}>
                         {isLoading ? 'Processing...' : `Confirm ${hasExistingDownpayment ? 'Final Payment' : (isDownpayment ? 'Downpayment' : 'Full Payment')}`}
                     </button>

@@ -2,6 +2,11 @@
 
 A comprehensive Product Management system designed specifically for flower shops, built with React frontend and Node.js backend.
 
+
+- add Purchase order for Restock
+- Ayusin yung POS add the set/pre-defined bouquet kzo how
+- 
+
 ## 👥 Development Team
 
 **Course**: Software Engineering 2 (BSCS - 3rd year Summer)  

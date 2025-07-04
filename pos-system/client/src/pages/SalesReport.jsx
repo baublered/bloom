@@ -41,6 +41,8 @@ const SalesReport = () => {
         const eventSales = eventsResponse.data
           .filter(event => event.status === 'Fully Paid' && event.totalAmount > 0)
           .map(event => ({
+            // --- FIX: Spread the original event object to include all fields, including user ---
+            ...event, 
             _id: event._id,
             saleType: 'Event',
             customerName: event.customerName,
@@ -155,68 +157,123 @@ const SalesReport = () => {
   };
   
   const handlePrint = () => {
+    // Add error handling to ensure a date range is selected
+    if (!startDate || !endDate) {
+      alert("Please select a start and end date for the report before printing.");
+      return;
+    }
     setIsExportModalOpen(true);
   };
   
   const handleExportPDF = () => {
     setIsExportModalOpen(false);
     
-    // Create a new window for printing without dialog
     const printWindow = window.open('', '_blank');
-    const printContent = document.getElementById('printable-report').outerHTML;
     
-    // Get the summary footer content
-    const summaryFooter = document.querySelector('.sales-report-footer').outerHTML;
-    
+    const totalRevenue = calculateTotalRevenue();
+
+    // Helper to generate table rows for a given month's sales
+    const generateTableRows = (sales) => {
+      return sales.map(sale => `
+        <tr>
+          <td>${new Date(sale.saleDate).toLocaleDateString()}</td>
+          <td>${sale._id.slice(-6).toUpperCase()}</td>
+          <td>${sale.customerName}</td>
+          <td>${sale.saleType}</td>
+          <td>₱${sale.totalAmount.toFixed(2)}</td>
+          <td>₱${sale.totalAmount.toFixed(2)}</td>
+          <td>₱0.00</td>
+        </tr>
+      `).join('');
+    };
+
+    // Helper to generate the entire table body, grouped by month
+    const tableBody = Object.entries(groupedSalesData).map(([year, months]) => {
+      return Object.entries(months).map(([month, sales]) => {
+        const monthTotal = sales.reduce((sum, sale) => sum + sale.totalAmount, 0);
+        return `
+          ${generateTableRows(sales)}
+          <tr class="month-total-row">
+            <td colspan="4" style="text-align: right; font-weight: bold;">${month} ${year} Total</td>
+            <td style="font-weight: bold;">₱${monthTotal.toFixed(2)}</td>
+            <td colspan="2"></td>
+          </tr>
+        `;
+      }).join('');
+    }).join('');
+
     printWindow.document.write(`
       <!DOCTYPE html>
       <html>
         <head>
           <title>Sales Report</title>
           <style>
-            body { font-family: Arial, sans-serif; margin: 20px; }
-            table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-            th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-            th { background-color: #f2f2f2; }
-            .accordion-header h2, .accordion-header h3 { margin: 10px 0; }
-            .accordion-icon { display: none; }
-            .report-summary { margin-bottom: 20px; }
-            .summary-item { margin: 5px 0; }
-            .sales-report-footer { 
-              margin-top: 30px; 
-              padding-top: 20px; 
-              border-top: 2px solid #333; 
-              text-align: center; 
-            }
-            .footer-summary-item { 
-              font-size: 18px; 
-              font-weight: bold; 
-              color: #333; 
-            }
-            .footer-summary-label { 
-              display: block; 
-              margin-bottom: 10px; 
-            }
-            .footer-summary-value { 
-              font-size: 24px; 
-              color: #2e7d32; 
-            }
-            @media print {
-              body { margin: 0; }
-              .no-print { display: none !important; }
-            }
+            body { font-family: Arial, sans-serif; margin: 20px; color: #333; }
+            .header-container { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #333; padding-bottom: 15px; margin-bottom: 20px; }
+            .company-details { flex: 1; }
+            .company-details h2 { margin: 0; font-size: 24px; }
+            .company-details p { margin: 2px 0; font-size: 12px; }
+            .report-meta { flex: 1; text-align: right; }
+            .report-meta .logo-placeholder { border: 1px solid #ccc; padding: 10px 20px; display: inline-block; margin-bottom: 10px; font-size: 14px; color: #999; }
+            .report-meta p { margin: 2px 0; font-size: 12px; }
+            h1 { text-align: center; font-size: 28px; margin-bottom: 20px; }
+            table { width: 100%; border-collapse: collapse; font-size: 12px; }
+            th, td { border: 1px solid #ccc; padding: 6px; text-align: left; }
+            th { background-color: #f2f2f2; font-weight: bold; }
+            .month-total-row { background-color: #e8f5e9; }
+            .grand-total-row { background-color: #c8e6c9; font-size: 14px; font-weight: bold; }
+            .footer { margin-top: 40px; display: flex; justify-content: space-between; font-size: 14px; padding-top: 20px; border-top: 1px solid #ccc; }
+            .signature-line { border-bottom: 1px solid #333; width: 200px; display: inline-block; margin-left: 10px; }
           </style>
         </head>
         <body>
-          <h1>Sales Report</h1>
-          ${printContent}
-          ${summaryFooter}
+          <h1>Sale Report</h1>
+          <div class="header-container">
+            <div class="company-details">
+              <h2>Flowers by Edmar</h2>
+              <p>H31 New Public Market Antipolo City</p>
+              <p>Antipolo City, Rizal</p>
+              <p>Email: admin@bloomtrack.com </p>
+            </div>
+            <div class="report-meta">
+              <p><strong>Date Range:</strong></p>
+              <p>From: ${startDate ? new Date(startDate).toLocaleDateString() : 'Start'}</p>
+              <p>To: ${endDate ? new Date(endDate).toLocaleDateString() : 'End'}</p>
+              <p style="margin-top: 10px;">Generated Report on: ${new Date().toLocaleDateString()}</p>
+            </div>
+          </div>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Invoice #</th>
+                <th>Customer Name</th>
+                <th>Type</th>
+                <th>Total</th>
+                <th>Paid</th>
+                <th>Balance Due</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${tableBody}
+              <tr class="grand-total-row">
+                <td colspan="5" style="text-align: right;">Grand Total</td>
+                <td>₱${totalRevenue.toFixed(2)}</td>
+                <td colspan="2"></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="footer">
+            <div>Signed BY: <span class="signature-line"></span></div>
+            <div>Submitted By: <span class="signature-line"></span></div>
+          </div>
+
           <script>
             window.onload = function() {
               window.print();
-              window.onafterprint = function() {
-                window.close();
-              };
+              window.onafterprint = function() { window.close(); };
             };
           </script>
         </body>
@@ -233,55 +290,47 @@ const SalesReport = () => {
     const excelData = [];
     
     // Add header information
-    excelData.push(['BloomTrack - Sales Report']);
-    excelData.push(['Generated on:', new Date().toLocaleDateString()]);
-    excelData.push(['Period:', dateFilterApplied 
-      ? `${startDate ? new Date(startDate).toLocaleDateString() : 'Beginning'} to ${endDate ? new Date(endDate).toLocaleDateString() : 'Present'}`
-      : 'All Dates'
-    ]);
-    excelData.push([]); // Empty row
-    
-    // Add summary information
-    excelData.push(['SUMMARY']);
-    excelData.push(['Total Sales:', filteredSalesData.length]);
-    excelData.push(['Total Revenue:', `₱${calculateTotalRevenue().toFixed(2)}`]);
-    excelData.push(['Total Discounts:', `₱${calculateTotalDiscount().toFixed(2)}`]);
-    excelData.push([]); // Empty row
+    excelData.push(['Sale Report']);
+    excelData.push(['']);
+    excelData.push(['Company:', 'Flowers by Edmar']);
+    excelData.push(['Address:', 'H31 New Public Market Antipolo City']);
+    excelData.push(['City:', 'Antipolo City, Rizal']);
+    excelData.push(['Email:', 'admin@bloomtrack.com']);
+    excelData.push(['']);
+    excelData.push(['Date Range:']);
+    excelData.push(['From:', startDate ? new Date(startDate).toLocaleDateString() : 'Start']);
+    excelData.push(['To:', endDate ? new Date(endDate).toLocaleDateString() : 'End']);
+    excelData.push(['Generated Report on:', new Date().toLocaleDateString()]);
+    excelData.push(['']); // Empty row
     
     // Add table headers
-    excelData.push(['Date', 'Transaction ID', 'Type', 'Customer', 'Amount', 'Discount']);
+    excelData.push(['Date', 'Invoice #', 'Customer Name', 'Type', 'Total', 'Paid', 'Balance Due']);
     
-    // Group data by year and month for organized export
+    // Add data grouped by year and month (same as PDF)
     Object.entries(groupedSalesData).forEach(([year, months]) => {
-      excelData.push([]); // Empty row
-      excelData.push([`YEAR ${year}`]); // Year header
-      
       Object.entries(months).forEach(([month, sales]) => {
-        excelData.push([`${month} ${year}`]); // Month header
-        
         // Add sales data for this month
         sales.forEach(sale => {
           excelData.push([
             new Date(sale.saleDate).toLocaleDateString(),
-            sale._id.slice(-8).toUpperCase(),
-            sale.saleType + (sale.eventType ? ` (${sale.eventType})` : ''),
+            sale._id.slice(-6).toUpperCase(),
             sale.customerName,
-            sale.totalAmount,
-            sale.discountAmount || 0
+            sale.saleType,
+            `₱${sale.totalAmount.toFixed(2)}`,
+            `₱${sale.totalAmount.toFixed(2)}`,
+            '₱0.00'
           ]);
         });
+        
+        // Add month total row
+        const monthTotal = sales.reduce((sum, sale) => sum + sale.totalAmount, 0);
+        excelData.push(['', '', '', `${month} ${year} Total`, `₱${monthTotal.toFixed(2)}`, '', '']);
       });
     });
     
-    // Add final summary at the bottom
-    excelData.push([]); // Empty row
-    excelData.push(['TOTAL SALES SUMMARY']);
-    excelData.push([
-      dateFilterApplied
-        ? `Total Sales for ${startDate ? new Date(startDate).toLocaleDateString() : 'Beginning'} to ${endDate ? new Date(endDate).toLocaleDateString() : 'Present'}:`
-        : 'Total Sales for All Dates:',
-      `₱${calculateTotalRevenue().toFixed(2)}`
-    ]);
+    // Add grand total row
+    const totalRevenue = calculateTotalRevenue();
+    excelData.push(['', '', '', '', 'Grand Total', `₱${totalRevenue.toFixed(2)}`, '']);
     
     // Create workbook and worksheet
     const wb = XLSX.utils.book_new();
@@ -290,11 +339,12 @@ const SalesReport = () => {
     // Set column widths for better formatting
     const colWidths = [
       { wch: 12 }, // Date
-      { wch: 15 }, // Transaction ID
-      { wch: 20 }, // Type
-      { wch: 25 }, // Customer
-      { wch: 12 }, // Amount
-      { wch: 12 }  // Discount
+      { wch: 15 }, // Invoice #
+      { wch: 20 }, // Customer Name
+      { wch: 15 }, // Type
+      { wch: 12 }, // Total
+      { wch: 12 }, // Paid
+      { wch: 12 }  // Balance Due
     ];
     ws['!cols'] = colWidths;
     
@@ -302,7 +352,7 @@ const SalesReport = () => {
     XLSX.utils.book_append_sheet(wb, ws, 'Sales Report');
     
     // Generate filename with current date
-    const filename = `BloomTrack_Sales_Report_${new Date().toISOString().split('T')[0]}.xlsx`;
+    const filename = `Sales_Report_${new Date().toISOString().split('T')[0]}.xlsx`;
     
     // Save the file
     XLSX.writeFile(wb, filename);
