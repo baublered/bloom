@@ -44,6 +44,8 @@ app.use('/api/products', productRoutes);
 app.use('/api/discounts', discountCodeRoutes);
 app.use('/api/events', require('./routes/eventRoutes'));
 app.use('/api/backup', require('./routes/backupRoutes'));
+app.use('/api/purchase-orders', require('./routes/purchaseOrderRoutes'));
+app.use('/api/inventory', require('./routes/inventoryBatchRoutes'));
 
 
 // 404 Handler and other middleware...

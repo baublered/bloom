@@ -41,6 +41,7 @@ const Retail = () => {
   };
   
   const flowerList = getFilteredProducts('Flowers');
+  const bouquetList = getFilteredProducts('Bouquet');
   const addOnList = getFilteredProducts('Accessories');
 
   const handleFlowerCheck = (product, isChecked) => {
@@ -159,14 +160,6 @@ const Retail = () => {
       {/* Don't render sidebar when in employee dashboard - EmployeeDashboard handles it */}
       {!isEmployeeDashboard && <Sidebar />}
       <main className="retail-page">
-        {/* Only render header when not in employee dashboard */}
-        {!isEmployeeDashboard && (
-          <header className="retail-page-header">
-            <h1>Transaction</h1>
-            <div className="user-profile"><UserProfile /></div>
-          </header>
-        )}
-
         <div className="retail-main-content">
           <div className="retail-card">
             <header className="retail-card-header">
@@ -175,6 +168,12 @@ const Retail = () => {
                 <input type="text" placeholder="Search..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
               </div>
             </header>
+            
+            {error && (
+              <div className="error-message">
+                <p>{error}</p>
+              </div>
+            )}
             
             <div className="pos-layout">
               {/* Left Side - Products */}
@@ -273,6 +272,64 @@ const Retail = () => {
                       )}
                     </div>
                   )}
+                </div>
+
+                {/* Pre-made Bouquets */}
+                <div className="pos-section" data-section="bouquets">
+                  <div className="pos-section-header">
+                    <h3 data-bouquet="true">💐 Pre-made Bouquets</h3>
+                  </div>
+                  <div className="products-grid">
+                    {bouquetList.length === 0 ? (
+                      <div className="empty-section">
+                        <p>No pre-made bouquets available</p>
+                        <small>Try building a custom bouquet above!</small>
+                      </div>
+                    ) : (
+                      bouquetList.map(product => {
+                        const cartItem = cart.find(item => item._id === product._id && !item.isBouquet);
+                        return (
+                          <div key={product._id} className={`product-card bouquet-card ${cartItem ? 'in-cart' : ''} ${product.quantity === 0 ? 'out-of-stock' : ''}`}>
+                            <div className="product-card-header">
+                              <input 
+                                type="checkbox" 
+                                id={`bouquet-${product._id}`} 
+                                checked={!!cartItem} 
+                                disabled={product.quantity === 0 && !cartItem} 
+                                onChange={(e) => handleFlowerCheck(product, e.target.checked)} 
+                              />
+                              <label htmlFor={`bouquet-${product._id}`} className="product-name">
+                                {product.productName}
+                              </label>
+                            </div>
+                            <div className="product-info">
+                              <span className="price">₱{(product.price || 0).toFixed(2)}</span>
+                              <span className="stock">{product.quantity} in stock</span>
+                            </div>
+                            {cartItem && (
+                              <div className="quantity-selector">
+                                <button 
+                                  type="button"
+                                  onClick={() => updateFlowerQuantity(product._id, -1)}
+                                  className="qty-btn"
+                                >
+                                  -
+                                </button>
+                                <span className="qty-display">{cartItem.quantity}</span>
+                                <button 
+                                  type="button"
+                                  onClick={() => updateFlowerQuantity(product._id, 1)}
+                                  className="qty-btn"
+                                >
+                                  +
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })
+                    )}
+                  </div>
                 </div>
 
                 {/* Individual Flowers */}

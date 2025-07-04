@@ -1,4 +1,6 @@
 const Product = require('../models/Product');
+const InventoryBatch = require('../models/InventoryBatch.js');
+const mongoose = require('mongoose');
 
 // Get all products from the database
 const getAllProducts = async (req, res) => {
@@ -13,68 +15,166 @@ const getAllProducts = async (req, res) => {
 // Add a new product to the database
 const addProduct = async (req, res) => {
   try {
-    const { productName, productCategory, price, quantity, supplierName, dateReceived, lifespanInDays } = req.body;
+    const { productName, productCategory, price, quantity, supplierName, dateReceived, lifespanInDays, minimumThreshold, bouquetPackage } = req.body;
     
     // Basic required fields validation
-    if (!productName || !productCategory || !quantity || !supplierName) {
-        return res.status(400).json({ message: 'Please fill out all required fields: product name, category, quantity, and supplier name.' });
+    if (!productName || !productCategory || !supplierName || lifespanInDays === undefined || minimumThreshold === undefined) {
+        return res.status(400).json({ message: 'Please fill out all required fields: product name, category, supplier name, lifespan, and minimum threshold.' });
+    }
+    
+    // Trim and normalize the product name
+    const normalizedProductName = productName.trim();
+    
+    if (!normalizedProductName) {
+        return res.status(400).json({ message: 'Product name cannot be empty.' });
+    }
+    
+    // Check for duplicate product names (case-insensitive)
+    const existingProduct = await Product.findOne({ 
+        productName: { $regex: new RegExp(`^${normalizedProductName}$`, 'i') }
+    });
+    
+    if (existingProduct) {
+        return res.status(400).json({ 
+            message: `A product with the name "${normalizedProductName}" already exists. Please use a different name.` 
+        });
     }
     
     // Category-specific validation
-    if (productCategory === 'Flowers') {
-        if (!price || !lifespanInDays) {
-            return res.status(400).json({ message: 'Price and lifespan are required for flower products.' });
+    if (productCategory === 'Flowers' || productCategory === 'Bouquet') {
+        if (price === undefined || lifespanInDays === undefined) {
+            return res.status(400).json({ message: 'Price and lifespan are required for flower and bouquet products.' });
         }
-    } else if (productCategory === 'Accessories') {
-        // Accessories don't need price or lifespan validation
-        console.log('Creating accessory product without price/lifespan');
-    } else {
-        return res.status(400).json({ message: 'Invalid product category. Must be either "Flowers" or "Accessories".' });
+    } else if (productCategory !== 'Accessories') {
+        return res.status(400).json({ message: 'Invalid product category. Must be either "Flowers", "Bouquet", or "Accessories".' });
     }
     
     // Create product data object
     const productData = {
-        productName,
+        productName: normalizedProductName,
         productCategory,
-        quantity,
-        supplierName,
-        dateReceived
+        quantity: quantity || 0,
+        supplierName: supplierName.trim(),
+        dateReceived: dateReceived || new Date(),
+        minimumThreshold
     };
     
-    // Only add price and lifespan for Flowers
-    if (productCategory === 'Flowers') {
+    // Only add price and lifespan for Flowers and Bouquets
+    if (productCategory === 'Flowers' || productCategory === 'Bouquet') {
         productData.price = price;
         productData.lifespanInDays = lifespanInDays;
     }
     
+    // Add bouquet package information if provided
+    if (bouquetPackage) {
+        productData.bouquetPackage = bouquetPackage;
+    }
+    
+    console.log('Creating product with data:', productData);
+    
     const newProduct = new Product(productData);
     await newProduct.save();
+    
+    console.log('Product created successfully:', newProduct._id);
+    
     res.status(201).json({ message: 'Product added successfully!', product: newProduct });
   } catch (err) {
     console.error('Error adding product:', err);
+    
+    // Handle MongoDB duplicate key errors
+    if (err.code === 11000) {
+        const duplicateField = err.keyPattern ? Object.keys(err.keyPattern)[0] : 'field';
+        return res.status(400).json({ 
+            message: `A product with this ${duplicateField} already exists. Please use a different value.` 
+        });
+    }
+    
+    // Handle validation errors
+    if (err.name === 'ValidationError') {
+        const validationErrors = Object.values(err.errors).map(e => e.message);
+        return res.status(400).json({ 
+            message: 'Validation failed: ' + validationErrors.join(', ') 
+        });
+    }
+    
     res.status(500).json({ message: err.message || 'Failed to add product' });
   }
 };
 
-// Deduct stock after a sale
+// Deduct stock after a sale using FIFO batch system
 const updateStock = async (req, res) => {
+    const session = await mongoose.startSession();
+    session.startTransaction();
+    
     try {
         const { cart } = req.body;
         if (!cart || !Array.isArray(cart)) {
+            await session.abortTransaction();
+            session.endSession();
             return res.status(400).json({ message: 'Invalid cart data provided.' });
         }
-        const operations = cart.map(item => ({
-            updateOne: {
-                filter: { _id: item.productId, quantity: { $gte: item.quantity } },
-                update: { $inc: { quantity: -item.quantity } }
+
+        for (const item of cart) {
+            const { productId, quantity } = item;
+            let remainingToDeduct = quantity;
+
+            // Get all available batches for this product, sorted by expiry date (FIFO)
+            const batches = await InventoryBatch.find({
+                product: productId,
+                remainingQuantity: { $gt: 0 }
+            }).sort({ expiryDate: 1, dateReceived: 1 }).session(session);
+
+            if (batches.length === 0) {
+                await session.abortTransaction();
+                session.endSession();
+                return res.status(400).json({ 
+                    message: `No inventory batches available for product ${productId}` 
+                });
             }
-        }));
-        const result = await Product.bulkWrite(operations);
-        if (result.matchedCount !== cart.length) {
-            return res.status(400).json({ message: 'Could not update stock for one or more items due to insufficient quantity.' });
+
+            // Check if we have enough total stock
+            const totalAvailable = batches.reduce((sum, batch) => sum + batch.remainingQuantity, 0);
+            if (totalAvailable < remainingToDeduct) {
+                await session.abortTransaction();
+                session.endSession();
+                return res.status(400).json({ 
+                    message: `Insufficient stock for product ${productId}. Available: ${totalAvailable}, Requested: ${remainingToDeduct}` 
+                });
+            }
+
+            // Deduct from batches using FIFO
+            for (const batch of batches) {
+                if (remainingToDeduct <= 0) break;
+
+                const deductFromThisBatch = Math.min(remainingToDeduct, batch.remainingQuantity);
+                
+                batch.quantitySold += deductFromThisBatch;
+                batch.remainingQuantity -= deductFromThisBatch;
+                await batch.save({ session });
+
+                remainingToDeduct -= deductFromThisBatch;
+            }
+
+            // Update the main product quantity
+            const product = await Product.findById(productId).session(session);
+            if (!product) {
+                await session.abortTransaction();
+                session.endSession();
+                return res.status(404).json({ message: `Product ${productId} not found` });
+            }
+
+            product.quantity -= quantity;
+            await product.save({ session });
         }
-        res.status(200).json({ success: true, message: 'Inventory updated successfully.' });
+
+        await session.commitTransaction();
+        session.endSession();
+        res.status(200).json({ success: true, message: 'Inventory updated successfully using FIFO batch system.' });
+        
     } catch (error) {
+        await session.abortTransaction();
+        session.endSession();
+        console.error('Error updating stock:', error);
         res.status(500).json({ message: 'Failed to update inventory.' });
     }
 };

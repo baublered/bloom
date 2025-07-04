@@ -10,6 +10,7 @@ import About from '../pages/About';
 import Backup from '../pages/Backup';
 import BillingEvents from '../pages/BillingEvents';
 import BillingRetail from '../pages/BillingRetail';
+import CreatePurchaseOrder from '../pages/CreatePurchaseOrder';
 import Dashboard from '../pages/Dashboard';
 import DashboardHome from '../pages/DashboardHome';
 import EditProduct from '../pages/EditProduct';
@@ -27,6 +28,7 @@ import Maintenance from '../pages/Maintenance';
 import ProductRegistration from '../pages/ProductRegistration';
 import ProductSelection from '../pages/ProductSelection';
 import Profile from '../pages/Profile';
+import PurchaseOrders from '../pages/PurchaseOrders';
 import Receipt from '../pages/Receipt';
 import Register from '../pages/Register';
 import Reports from '../pages/Reports';
@@ -205,6 +207,22 @@ export const RouteManager = () => {
         <RoleProtectedRoute allowedRoles={['admin']}>
           <AdminLayout title="Restock">
             <Restock />
+          </AdminLayout>
+        </RoleProtectedRoute>
+      } />
+
+      <Route path="/purchase-orders" element={
+        <RoleProtectedRoute allowedRoles={['admin']}>
+          <AdminLayout title="Purchase Orders">
+            <PurchaseOrders />
+          </AdminLayout>
+        </RoleProtectedRoute>
+      } />
+
+      <Route path="/create-purchase-order" element={
+        <RoleProtectedRoute allowedRoles={['admin']}>
+          <AdminLayout title="Create Purchase Order">
+            <CreatePurchaseOrder />
           </AdminLayout>
         </RoleProtectedRoute>
       } />

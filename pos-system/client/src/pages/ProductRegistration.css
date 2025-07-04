@@ -206,6 +206,72 @@
   border: 1px solid #f5c2c7;
 }
 
+/* Field note styling */
+.field-note {
+  display: block;
+  color: #6c757d;
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+  font-style: italic;
+  line-height: 1.4;
+}
+
+/* Bouquet Package Selection Styles */
+.package-label {
+  display: block;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+}
+
+.radio-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.radio-item {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 0.75rem 1rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  background: white;
+  transition: all 0.2s ease;
+  min-width: 120px;
+  justify-content: center;
+}
+
+.radio-item:hover {
+  border-color: #007bff;
+  background: #f8f9ff;
+}
+
+.radio-item input[type="radio"] {
+  margin-right: 0.5rem;
+  transform: scale(1.1);
+}
+
+.radio-item input[type="radio"]:checked + .radio-text {
+  color: #007bff;
+  font-weight: 600;
+}
+
+.radio-item:has(input[type="radio"]:checked) {
+  border-color: #007bff;
+  background: #f8f9ff;
+  box-shadow: 0 2px 8px rgba(0, 123, 255, 0.2);
+}
+
+.radio-text {
+  font-size: 0.95rem;
+  color: #333;
+  transition: all 0.2s ease;
+}
+
 /* Responsive design */
 @media (max-width: 768px) {
   .dashboard-main {
@@ -228,5 +294,15 @@
   
   .card-header .logo-text {
     font-size: 1.5rem;
+  }
+  
+  .radio-group {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .radio-item {
+    justify-content: flex-start;
+    min-width: auto;
   }
 }

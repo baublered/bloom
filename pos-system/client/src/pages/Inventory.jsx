@@ -20,8 +20,6 @@ const Inventory = () => {
   const [notifications, setNotifications] = useState([]);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
 
-  const LOW_STOCK_THRESHOLD = 10;
-
   useEffect(() => {
     const fetchAndProcessData = async () => {
       try {
@@ -33,14 +31,14 @@ const Inventory = () => {
         const newNotifications = [];
 
         // 1. Generate Low Stock Alerts
-        const lowStockItems = fetchedProducts.filter(p => p.quantity <= LOW_STOCK_THRESHOLD);
+        const lowStockItems = fetchedProducts.filter(p => p.quantity <= (p.minimumThreshold || 0));
         lowStockItems.forEach(item => { // The item is named 'item' here
           newNotifications.push({
             id: `low-${item._id}`,
             type: 'alert',
             title: 'Low Stock Alert!',
             // --- FIX: Use 'item.productName' instead of 'p.productName' ---
-            message: `${item.productName} is running low.`,
+            message: `${item.productName} is running low (${item.quantity} ≤ ${item.minimumThreshold || 0}).`,
             time: 'now'
           });
         });
@@ -322,6 +320,7 @@ const Inventory = () => {
                 <option value="all">All Categories</option>
                 <option value="Flowers">Flowers</option>
                 <option value="Accessories">Accessories</option>
+                <option value="Bouquet">Bouquet</option>
               </select>
             </div>
             
@@ -338,86 +337,42 @@ const Inventory = () => {
             <table className="inventory-table">
               <thead>
                 <tr>
-                  <th>
-                    {sortOption === 'fifo' && <span className="fifo-header">🔄 </span>}
-                    Product ID
-                  </th>
+                  <th>Product ID</th>
                   <th>Product Name</th>
                   <th>Category</th>
-                  <th>Qty</th>
                   <th>Price</th>
-                  <th>Supplier Name</th>
-                  <th>
-                    Date Received
-                    {sortOption === 'fifo' && <span className="sort-indicator"> ↑ OLDEST FIRST</span>}
-                  </th>
-                  <th>
-                    Remaining Lifespan
-                    {sortOption === 'expiry' && <span className="sort-indicator"> ⚠️</span>}
-                  </th>
-                  <th>Status</th>
-                  <th>Priority</th>
+                  <th>Minimum Threshold</th>
+                  <th>Quantity</th>
+                  <th>Lifespan</th>
+                  <th>Date Restocked</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredProducts.map((p, index) => {
                   const remainingLifespan = calculateRemainingLifespan(p.dateReceived, p.lifespanInDays);
-                  const isExpired = remainingLifespan === 'Expired';
-                  const isExpiringSoon = remainingLifespan.includes('days') && parseInt(remainingLifespan) <= 3;
-                  const isLowStock = p.quantity <= 10;
-                  
-                  // Calculate FIFO priority (for FIFO sorting, earlier items have higher priority)
-                  const getFifoPriority = () => {
-                    if (sortOption === 'fifo') {
-                      if (index < 3) return 'high';
-                      if (index < 6) return 'medium';
-                      return 'low';
-                    }
-                    return 'normal';
-                  };
-                  
-                  const fifoPriority = getFifoPriority();
+                  const isLowStock = p.quantity <= (p.minimumThreshold || 0);
                   
                   return (
                     <tr key={p._id} className={`
-                      ${isExpired ? 'expired-row' : ''} 
-                      ${isExpiringSoon ? 'expiring-soon-row' : ''} 
+                      ${remainingLifespan === 'Expired' ? 'expired-row' : ''} 
+                      ${remainingLifespan.includes('days') && parseInt(remainingLifespan) <= 3 ? 'expiring-soon-row' : ''} 
                       ${isLowStock ? 'low-stock-row' : ''}
-                      ${fifoPriority !== 'normal' ? `fifo-priority-${fifoPriority}` : ''}
                     `}>
-                      <td>
-                        {sortOption === 'fifo' && index < 3 && <span className="fifo-indicator">🎯 </span>}
-                        {p._id.slice(-6).toUpperCase()}
-                      </td>
+                      <td>{p._id.slice(-6).toUpperCase()}</td>
                       <td>{p.productName}</td>
                       <td>{p.productCategory}</td>
+                      <td>₱{(p.price || 0).toFixed(2)}</td>
+                      <td>{p.minimumThreshold || 0}</td>
                       <td>
                         {p.quantity}
                         {isLowStock && <span className="low-stock-warning"> ⚠️</span>}
                       </td>
-                      <td>₱{(p.price || 0).toFixed(2)}</td>
-                      <td>{p.supplierName}</td>
                       <td>
-                        {new Date(p.dateReceived).toLocaleDateString()}
-                        {sortOption === 'fifo' && index === 0 && <span className="oldest-badge"> OLDEST</span>}
-                      </td>
-                      <td>
-                        <span className={`lifespan ${isExpired ? 'expired' : isExpiringSoon ? 'expiring-soon' : ''}`}>
+                        <span className={`lifespan ${remainingLifespan === 'Expired' ? 'expired' : remainingLifespan.includes('days') && parseInt(remainingLifespan) <= 3 ? 'expiring-soon' : ''}`}>
                           {remainingLifespan}
                         </span>
                       </td>
-                      <td>
-                        <span className={`status-dot ${p.quantity > 10 ? 'good' : 'low'}`}></span>
-                      </td>
-                      <td>
-                        <span className={`priority-badge ${fifoPriority}`}>
-                          {fifoPriority === 'high' && sortOption === 'fifo' ? 'USE FIRST' :
-                           fifoPriority === 'medium' && sortOption === 'fifo' ? 'USE NEXT' :
-                           isExpired ? 'SPOILED' :
-                           isExpiringSoon ? 'URGENT' :
-                           isLowStock ? 'RESTOCK' : 'NORMAL'}
-                        </span>
-                      </td>
+                      <td>{p.dateRestocked ? new Date(p.dateRestocked).toLocaleDateString() : 'Not restocked'}</td>
                     </tr>
                   );
                 })}
