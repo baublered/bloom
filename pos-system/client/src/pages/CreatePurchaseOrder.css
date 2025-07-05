@@ -365,13 +365,59 @@
 }
 
 .error-message {
-  color: #dc3545;
+  color: #fdfdfd;
   font-size: 0.9rem;
-  padding: 0.75rem;
-  background-color: #f8d7da;
-  border: 1px solid #f5c6cb;
+  padding: 0.75rem 1rem;
+  background-color: #ffffff;
+  border: 2px solid #000000;
   border-radius: 6px;
-  margin: 0.5rem 0;
+  margin: 1rem 0;
+  display: block;
+  position: relative;
+  z-index: 10;
+  line-height: 1.4;
+  font-weight: 500;
+  clear: both;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Specific styling for error messages in product selection */
+.product-selection-section .error-message {
+  position: relative;
+  z-index: 15;
+  margin: 1rem 0 1.5rem 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  animation: slideDown 0.3s ease-out;
+  background-color: #ffffff;
+  color: #ffffff;
+  border: 2px solid #ffffff;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Ensure product list doesn't overlap with error messages */
+.product-selection-section .product-list {
+  margin-top: 0.5rem;
+}
+
+/* Fix any potential layout conflicts */
+.product-selection-section > * {
+  position: relative;
+  z-index: 1;
+}
+
+.product-selection-section .error-message {
+  z-index: 15 !important;
 }
 
 /* Enhanced Error Handling Styles */
@@ -461,29 +507,23 @@
     background-color: #2980b9;
 }
 
-.error-message {
-    background-color: #f8d7da;
-    color: #721c24;
-    padding: 0.75rem 1rem;
-    border-radius: 6px;
-    border: 1px solid #f5c6cb;
-    margin: 0.5rem 0;
-    font-size: 0.9rem;
-}
-
 .error-message.warning {
-    background-color: #fff3cd;
-    color: #856404;
-    border-color: #ffeaa7;
+    background-color: #ffffff;
+    color: #000000;
+    border: 2px solid #000000;
 }
 
 .error-message.item-error {
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
+    margin-top: 1rem;
 }
 
 .error-message.form-error {
-    margin-top: 1rem;
-    font-weight: 500;
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+    border-left: 4px solid #dc3545;
+    padding-left: 1rem;
 }
 
 /* Error state styling */
